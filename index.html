@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamburg Blackout Build · 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:        #f5f3ef;
+      --surface:   #ffffff;
+      --border:    #e2dfd8;
+      --muted:     #8a8780;
+      --text:      #181816;
+      --ink:       #2c2c28;
+      --green:     #1e5c3a;
+      --green-bg:  #eef5f1;
+      --amber:     #92400e;
+      --amber-bg:  #fef3e2;
+      --mono:      'DM Mono', monospace;
+      --sans:      'Instrument Sans', sans-serif;
+      --serif:     'Fraunces', Georgia, serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 72px 24px 120px;
+    }
+
+    .page > * {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: rise 0.5s ease forwards;
+    }
+    .page > *:nth-child(1) { animation-delay: 0.05s; }
+    .page > *:nth-child(2) { animation-delay: 0.12s; }
+    .page > *:nth-child(3) { animation-delay: 0.19s; }
+    .page > *:nth-child(4) { animation-delay: 0.26s; }
+    .page > *:nth-child(5) { animation-delay: 0.33s; }
+    .page > *:nth-child(6) { animation-delay: 0.40s; }
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── HEADER ── */
+    .header { margin-bottom: 64px; }
+
+    .label {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(40px, 8vw, 66px);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    h1 .light {
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .header-desc {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .budget-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--text);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      padding: 9px 18px;
+      border-radius: 3px;
+    }
+
+    .budget-tag .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #6ee7a0;
+      flex-shrink: 0;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 56px;
+    }
+
+    /* ── SECTION ── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      margin-bottom: 6px;
+    }
+
+    .section-sub {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      line-height: 1.65;
+    }
+
+    section { margin-bottom: 80px; }
+
+    /* ── PARTS LIST ── */
+    .parts-list {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .parts-list > * + * {
+      border-top: 1px solid var(--border);
+    }
+
+    .parts-header {
+      display: grid;
+      grid-template-columns: 80px 1fr 155px 82px;
+      background: var(--ink);
+      padding: 11px 20px;
+      gap: 12px;
+    }
+
+    .parts-header span {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .parts-header .h-price { text-align: right; }
+
+    .part-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 155px 82px;
+      background: var(--surface);
+      padding: 15px 20px;
+      gap: 12px;
+      align-items: center;
+      transition: background 0.12s;
+    }
+
+    .part-row:hover { background: #fafaf8; }
+
+    .part-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      width: fit-content;
+    }
+
+    .part-model {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .part-spec {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .part-where {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .part-price {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--text) !important;
+      padding: 18px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .total-row:hover { background: var(--ink) !important; }
+
+    .total-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .total-lbl {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .total-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      background: rgba(110,231,160,0.18);
+      color: #6ee7a0;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .total-price {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    /* ── PC vs iPad ── */
+    .compare-intro {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 560px;
+    }
+
+    .compare-table {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .compare-table > * + * { border-top: 1px solid var(--border); }
+
+    .ch-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 1fr;
+      background: var(--ink);
+    }
+
+    .ch-row div {
+      padding: 12px 18px;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .ch-row .ch-cat { color: rgba(255,255,255,0.35); }
+    .ch-row .ch-pc  { color: #6ee7a0; border-left: 1px solid rgba(255,255,255,0.07); }
+    .ch-row .ch-ipad{ color: rgba(255,255,255,0.3); border-left: 1px solid rgba(255,255,255,0.07); }
+
+    .c-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 1fr;
+      background: var(--surface);
+      transition: background 0.1s;
+    }
+
+    .c-row:hover { background: #fafaf8; }
+
+    .c-row div {
+      padding: 14px 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .c-cat {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .c-pc {
+      color: var(--green);
+      border-left: 1px solid var(--border);
+    }
+
+    .c-ipad {
+      color: var(--amber);
+      border-left: 1px solid var(--border);
+    }
+
+    .callout {
+      background: var(--green-bg);
+      border: 1px solid #c2dfd0;
+      border-radius: 6px;
+      padding: 22px 26px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .callout-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+    .callout-text {
+      font-size: 15px;
+      color: var(--green);
+      line-height: 1.65;
+    }
+
+    .callout-text strong { font-weight: 600; }
+
+    /* ── RATIONALE ── */
+    .r-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .r-card {
+      background: var(--surface);
+      padding: 24px;
+      transition: background 0.12s;
+    }
+
+    .r-card + .r-card { border-left: 1px solid var(--border); }
+    .r-card:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .r-card:nth-child(3) { border-left: none; }
+
+    .r-card.wide {
+      grid-column: 1 / -1;
+      border-left: none !important;
+      border-top: 1px solid var(--border);
+    }
+
+    .r-card:hover { background: #fafaf8; }
+
+    .r-icon { font-size: 20px; margin-bottom: 10px; display: block; }
+
+    .r-title {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .r-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── UPGRADES ── */
+    .upgrades {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .upgrades > * + * { border-top: 1px solid var(--border); }
+
+    .u-row {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      background: var(--surface);
+      transition: background 0.12s;
+    }
+
+    .u-row:hover { background: #fafaf8; }
+
+    .u-num {
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 8px;
+      gap: 4px;
+    }
+
+    .u-n {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .u-when {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .u-body { padding: 18px 22px; }
+
+    .u-title {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .u-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 72px;
+      padding-top: 26px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 580px) {
+      .parts-header,
+      .part-row { grid-template-columns: 70px 1fr 76px; }
+      .parts-header .h-store,
+      .part-where { display: none; }
+
+      .ch-row,
+      .c-row { grid-template-columns: 110px 1fr 1fr; }
+
+      .r-grid { grid-template-columns: 1fr; }
+      .r-card + .r-card { border-left: none; border-top: 1px solid var(--border); }
+      .r-card.wide { border-top: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="label">Hamburg · Gaming Setup · Budget Build 2026</div>
+    <h1>Blackout<br><span class="light">Budget Build</span></h1>
+    <p class="header-desc">A complete, all-black 1080p gaming setup — sourced from local Hamburg retailers. Fast, upgradable, and well under budget.</p>
+    <span class="budget-tag"><span class="dot"></span> Final total: 775,82 € of 800 € target</span>
+  </header>
+
+  <hr>
+
+  <!-- PARTS LIST -->
+  <section>
+    <div class="section-label">01 — Component List</div>
+    <h2>The Build</h2>
+    <p class="section-sub">Every part available for same-day pickup in Hamburg. Prices verified Spring 2026.</p>
+
+    <div class="parts-list">
+      <div class="parts-header">
+        <span>Part</span>
+        <span>Model</span>
+        <span class="h-store">Store</span>
+        <span class="h-price">Price</span>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">CPU</span>
+        <div><div class="part-model">AMD Ryzen 5 5500</div><div class="part-spec">6 cores · AM4 · Zen 3</div></div>
+        <div class="part-where">MediaMarkt (Farmsen)</div>
+        <div class="part-price">94,09 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">GPU</span>
+        <div><div class="part-model">ASRock RX 6500 XT 4GB</div><div class="part-spec">1080p gaming · RDNA 2</div></div>
+        <div class="part-where">K&amp;M (Eimsbüttel)</div>
+        <div class="part-price">180,00 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">Board</span>
+        <div><div class="part-model">ASRock B550 mATX Black</div><div class="part-spec">PCIe 4.0 · Dual M.2</div></div>
+        <div class="part-where">MediaMarkt (Farmsen)</div>
+        <div class="part-price">80,29 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">RAM</span>
+        <div><div class="part-model">T-Force Vulcan Black 16GB</div><div class="part-spec">2×8GB · DDR4 3200MHz</div></div>
+        <div class="part-where">Schiwi (Winterhude)</div>
+        <div class="part-price">120,00 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">SSD</span>
+        <div><div class="part-model">500GB NVMe M.2</div><div class="part-spec">Gen 3 · fast boot drive</div></div>
+        <div class="part-where">K&amp;M (Eimsbüttel)</div>
+        <div class="part-price">65,00 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">PSU</span>
+        <div><div class="part-model">SMX Daito G1 600W</div><div class="part-spec">80+ Bronze · upgrade-ready</div></div>
+        <div class="part-where">MediaMarkt (Farmsen)</div>
+        <div class="part-price">52,40 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">Case</span>
+        <div><div class="part-model">Inter-Tech 88881306</div><div class="part-spec">ATX · full black aesthetic</div></div>
+        <div class="part-where">MediaMarkt (Farmsen)</div>
+        <div class="part-price">31,04 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">Monitor</span>
+        <div><div class="part-model">LG UltraGear 24" 144Hz</div><div class="part-spec">IPS · 1ms · 1080p</div></div>
+        <div class="part-where">Saturn (Hauptbahnhof)</div>
+        <div class="part-price">89,00 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">Mouse</span>
+        <div><div class="part-model">Logitech G502 Hero</div><div class="part-spec">HERO 25K sensor · black</div></div>
+        <div class="part-where">MediaMarkt (Farmsen)</div>
+        <div class="part-price">44,00 €</div>
+      </div>
+
+      <div class="part-row">
+        <span class="part-tag">Keys</span>
+        <div><div class="part-model">EVGA Z12 Gaming</div><div class="part-spec">Full-size · RGB · black</div></div>
+        <div class="part-where">Schiwi (Winterhude)</div>
+        <div class="part-price">20,00 €</div>
+      </div>
+
+      <div class="total-row">
+        <div class="total-left">
+          <span class="total-lbl">Total</span>
+          <span class="total-badge">Under 800 € ✓</span>
+        </div>
+        <span class="total-price">775,82 €</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PC vs iPad -->
+  <section>
+    <div class="section-label">02 — Why a PC</div>
+    <h2>PC vs. iPad</h2>
+    <p class="compare-intro">An iPad is a capable device for everyday tasks — but for gaming, it's a different story. Here's an honest, category-by-category comparison.</p>
+
+    <div class="compare-table">
+      <div class="ch-row">
+        <div class="ch-cat">Category</div>
+        <div class="ch-pc">Gaming PC</div>
+        <div class="ch-ipad">iPad</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Game Library</div>
+        <div class="c-pc">50,000+ titles on Steam alone. Every major release, any genre.</div>
+        <div class="c-ipad">~1,000 App Store games. Most are mobile ports — simplified versions.</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Graphics</div>
+        <div class="c-pc">Full resolution, maximum settings. Games look exactly as designed.</div>
+        <div class="c-ipad">Mobile-grade graphics. Many titles run at reduced quality.</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Controls</div>
+        <div class="c-pc">Mouse + keyboard — the standard. Precise, comfortable, zero compromise.</div>
+        <div class="c-ipad">Touchscreen only, or an external controller is required separately.</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Multiplayer</div>
+        <div class="c-pc">Full access. Play with anyone, on any platform, on every title.</div>
+        <div class="c-ipad">Very limited. Most multiplayer games have no iOS version at all.</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Screen Size</div>
+        <div class="c-pc">24" 144Hz IPS monitor — more than 3× larger, 3× the refresh rate.</div>
+        <div class="c-ipad">11" display. Fine for portable use, but not for extended gaming.</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Upgradability</div>
+        <div class="c-pc">Swap any single part — GPU, RAM, storage — without touching the rest.</div>
+        <div class="c-ipad">Not upgradable. The whole device is replaced every 3–4 years.</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Cost Over Time</div>
+        <div class="c-pc">One investment. Individual upgrades over years keep it current.</div>
+        <div class="c-ipad">700–1,100 € per replacement cycle with no component-level options.</div>
+      </div>
+
+      <div class="c-row">
+        <div class="c-cat">Sustained Performance</div>
+        <div class="c-pc">Runs any game at 60–144fps. Dedicated hardware, no thermal limits.</div>
+        <div class="c-ipad">Chips throttle under long gaming loads. Not built for sustained use.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <p class="callout-text">
+        <strong>The bottom line:</strong> This PC at 775 € delivers a gaming experience that an iPad simply cannot replicate — a larger screen, proper controls, access to every game, and hardware that can be upgraded piece by piece for years. An iPad at the same price has a fraction of the game library and no upgrade path at all.
+      </p>
+    </div>
+  </section>
+
+  <!-- BUILD RATIONALE -->
+  <section>
+    <div class="section-label">03 — Build Logic</div>
+    <h2>Why These Parts?</h2>
+    <p class="section-sub">Every component selected for performance, long-term value, and the all-black aesthetic.</p>
+
+    <div class="r-grid">
+      <div class="r-card">
+        <span class="r-icon">⬡</span>
+        <div class="r-title">Upgradable Foundation</div>
+        <div class="r-body">The AM4 socket and B550 board allow a direct swap to a Ryzen 7 5800X3D later — the best gaming CPU for this platform — without changing anything else.</div>
+      </div>
+      <div class="r-card">
+        <span class="r-icon">◈</span>
+        <div class="r-title">1080p at 60–144Hz</div>
+        <div class="r-body">The RX 6500 XT handles esports titles easily at 120fps and demanding games at 60fps. Performance matched to the 144Hz IPS monitor included in this build.</div>
+      </div>
+      <div class="r-card">
+        <span class="r-icon">◉</span>
+        <div class="r-title">IPS Display Quality</div>
+        <div class="r-body">The LG UltraGear uses an IPS panel — 178° viewing angles, accurate colours, and no colour shift. A clear step above the TN screens common at this price point.</div>
+      </div>
+      <div class="r-card">
+        <span class="r-icon">⚡</span>
+        <div class="r-title">600W Headroom</div>
+        <div class="r-body">The 600W PSU runs this build efficiently and has enough capacity for a future mid-range GPU upgrade — RTX 5060 or equivalent — without any other changes.</div>
+      </div>
+      <div class="r-card wide">
+        <span class="r-icon">🚇</span>
+        <div class="r-title">Efficient Local Sourcing — One Day, Three Stops</div>
+        <div class="r-body">
+          Core components come from <strong>MediaMarkt Farmsen</strong> (Berner Heerweg). RAM and keyboard from <strong>Schiwi Winterhude</strong>, reachable direct via U1 from Farmsen. GPU from <strong>K&amp;M Eimsbüttel</strong>. Everything in-stock for immediate pickup — no shipping, no waiting, local warranty support on every item. Estimated procurement time: under four hours using the Hamburg U-Bahn network.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UPGRADE PATH -->
+  <section>
+    <div class="section-label">04 — Future Upgrades</div>
+    <h2>Where It Goes Next</h2>
+    <p class="section-sub">Three clear upgrade steps — each one builds on what's already here, nothing needs replacing.</p>
+
+    <div class="upgrades">
+      <div class="u-row">
+        <div class="u-num">
+          <span class="u-n">1</span>
+          <span class="u-when">Soon</span>
+        </div>
+        <div class="u-body">
+          <div class="u-title">More Storage</div>
+          <div class="u-desc">The B550 board has a second M.2 slot ready to go. Adding a 1TB or 2TB NVMe drive is a 10-minute job. No other components affected.</div>
+        </div>
+      </div>
+      <div class="u-row">
+        <div class="u-num">
+          <span class="u-n">2</span>
+          <span class="u-when">~2028</span>
+        </div>
+        <div class="u-body">
+          <div class="u-title">Faster Graphics Card</div>
+          <div class="u-desc">The RX 6500 XT swaps out for an RTX 5060-class card. The PCIe 4.0 slot and 600W PSU already support it. Immediate jump to high-settings gaming on any title.</div>
+        </div>
+      </div>
+      <div class="u-row">
+        <div class="u-num">
+          <span class="u-n">3</span>
+          <span class="u-when">2029+</span>
+        </div>
+        <div class="u-body">
+          <div class="u-title">Better Processor</div>
+          <div class="u-desc">The Ryzen 7 5800X3D drops straight into the same AM4 socket — no new motherboard, no new RAM. It's the top gaming CPU for this platform and extends the system's life by several more years.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span class="footer-meta">Hamburg, DE · Build Spec · Spring 2026</span>
+    <span class="footer-meta">775,82 € total · 800 € budget</span>
+  </footer>
+
+</div>
+</body>
+</html>
