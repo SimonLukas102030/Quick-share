@@ -3,73 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body {
-            font-family: sans-serif;
-            line-height: 1.5;
-            color: #000;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
+        body { font-family: 'Segoe UI', sans-serif; color: #000; background: #f0f0f0; padding: 20px; }
+        .plakat-container { 
+            background: white; 
+            width: 800px; 
+            height: 1131px; /* A3 Proportion */
+            margin: 0 auto 50px auto; 
+            border: 3px solid #000; 
+            position: relative;
+            padding: 40px;
+            box-shadow: 10px 10px 0px #ccc;
         }
-        .header-box {
-            border: 2px solid #000;
-            padding: 10px;
+        h1 { text-align: center; border-bottom: 5px solid #000; margin-bottom: 30px; text-transform: uppercase; }
+        .image-box { 
+            border: 2px dashed #000; 
+            background: #eee; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
             text-align: center;
-            margin-bottom: 30px;
+            font-weight: bold;
+            padding: 10px;
         }
-        h1 {
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 1.4rem;
-        }
-        .task-section {
-            margin-bottom: 25px;
-            border-left: 3px solid #000;
-            padding-left: 15px;
-        }
-        h2 {
-            font-size: 1.1rem;
-            text-decoration: underline;
-            margin-bottom: 8px;
-        }
-        p {
-            margin: 0;
-            font-size: 1rem;
-        }
-        .bullet {
-            margin-top: 10px;
-            padding-left: 10px;
-        }
+        .text-box { border: 1px solid #000; padding: 15px; margin-bottom: 20px; background: #fff; }
+        .source { font-size: 0.75rem; display: block; margin-top: 10px; border-top: 1px solid #eee; padding-top: 5px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        h2 { font-size: 1.2rem; margin-top: 0; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="header-box">
-        <h1>Religion und Religionen – Lösungen</h1>
+    <div class="plakat-container">
+        <h1>I. Judentum: Geschichte</h1>
+        
+        <div class="grid">
+            <div class="image-box" style="height: 250px;">
+                [BILD 1.1]<br>Zentrales Symbol:<br>Blau-Weißer Davidstern<br>(Magen David)
+            </div>
+            <div class="text-box">
+                <h2>1.4 Wichtige Figuren</h2>
+                <p><b>Abraham:</b> Urvater, der den Bund mit Gott schloss.</p>
+                <p><b>Mose:</b> Führte das Volk aus Ägypten und erhielt die Zehn Gebote.</p>
+                <span class="source">Stemberger, G.: Einführung in die Judaistik, München: Beck, 2021: S. 112.</span>
+            </div>
+        </div>
+
+        <div class="text-box" style="margin-top: 30px;">
+            <h2>1.2 Chronologie</h2>
+            <ul>
+                <li><b>1900 v. Chr.:</b> Berufung Abrahams.</li>
+                <li><b>1300 v. Chr.:</b> Exodus & Tora-Erhalt (Mose).</li>
+                <li><b>1000 v. Chr.:</b> König David macht Jerusalem zur Hauptstadt.</li>
+                <li><b>70 n. Chr.:</b> Zerstörung des Tempels (Exil beginnt).</li>
+                <li><b>1945-heute:</b> Nach dem Holocaust Neuanfang & Staatsgründung Israels (1948).</li>
+            </ul>
+            <span class="source">Maier, J.: Jüdische Geschichte, München: C.H. Beck, 2022: S. 45.</span>
+        </div>
+
+        <div class="image-box" style="height: 200px; margin-top: 20px;">
+            [BILD 1.2]<br>Zeitstrahl-Grafik oder<br>Foto einer alten Tora-Rolle
+        </div>
     </div>
 
-    <div class="task-section">
-        <h2>1. Das Definitionsproblem</h2>
-        <p>Das Problem ist, dass Begriffe wie „Christentum“ nur grobe Sammelnamen sind. In echt gibt es tausende Untergruppen (Konfessionen, Sekten, Reformgruppen). Je länger eine Religion existiert, desto mehr spaltet sie sich auf. Eine einzige Definition kann diese krasse Vielfalt niemals genau abdecken.</p>
+    <div class="plakat-container">
+        <h1>II. Praxis & Heilige Orte</h1>
+
+        <div class="text-box">
+            <h2>1.3 Repräsentative Orte</h2>
+            <p><b>Jerusalem:</b> Religiöses Zentrum (Klagemauer).</p>
+            <p><b>Synagoge:</b> Versammlungsort weltweit.</p>
+            <p><i>Grund:</i> Diese Orte verbinden die Geschichte direkt mit der heutigen Gebetspraxis.</p>
+            <span class="source">Schäfer, P.: Geschichte der Juden, Tübingen: Mohr Siebeck, 2020: S. 204.</span>
+        </div>
+
+        <div class="grid">
+            <div class="image-box" style="height: 300px;">
+                [BILD 1.3]<br>Foto der Klagemauer<br>in Jerusalem
+            </div>
+            <div class="text-box">
+                <h2>1.5 Ritus & Tradition</h2>
+                <p><b>Schabbat:</b> Wöchentlicher Ruhetag (Freitagabend bis Samstagabend). Fokus auf Familie und Gott.</p>
+                <p><b>Bar Mizwa:</b> Übergang ins Erwachsenenalter.</p>
+                <span class="source">Goldberg, S.: Jüdische Riten, Basel: Helbing, 2023: S. 88.</span>
+            </div>
+        </div>
+
+        <div class="image-box" style="height: 250px; margin-top: 30px;">
+            [BILD 1.5]<br>Sabbat-Kerzen oder<br>ein Junge mit Kippa bei der Bar Mizwa
+        </div>
     </div>
 
-    <div class="task-section">
-        <h2>2. Sinnbedürfnisse der Menschen</h2>
-        <p>Jeder Mensch hat andere Fragen an das Leben: Einer sucht Trost nach dem Tod, ein anderer Orientierung für sein Verhalten oder einfach Gemeinschaft. Da wir alle unterschiedlich sind, braucht jeder eine andere Art von „Sinn“. Religionen bieten dafür den Rahmen.</p>
-    </div>
+    <div class="plakat-container">
+        <h1>III. Glaube & Symbole</h1>
 
-    <div class="task-section">
-        <h2>3. Befriedigung der Bedürfnisse</h2>
-        <p>Religionen nutzen dafür „deutungsoffene“ Symbole, Texte und Rituale. Das bedeutet: Die Inhalte sind so flexibel, dass jeder Mensch seine eigene Bedeutung darin finden kann. So kriegt jeder genau die Antwort, die er für sein persönliches Bedürfnis gerade braucht.</p>
-    </div>
+        <div class="grid">
+            <div class="text-box">
+                <h2>1.7 Heilige Gegenstände</h2>
+                <ul>
+                    <li><b>Menora:</b> 7-armiger Leuchter.</li>
+                    <li><b>Tallit:</b> Gebetsschal.</li>
+                    <li><b>Mezusa:</b> Kapsel am Türpfosten.</li>
+                </ul>
+                <span class="source">Müller, K.: Das Judentum, Berlin: De Gruyter, 2021: S. 156.</span>
+            </div>
+            <div class="image-box" style="height: 200px;">
+                [BILD 1.7]<br>Zeichnung einer Menora<br>oder einer Mezusa
+            </div>
+        </div>
 
-    <div class="task-section">
-        <h2>4. Sammelbegriffe in anderen Religionen</h2>
-        <p>Das Konzept lässt sich voll auf andere übertragen:</p>
-        <div class="bullet">• <b>Islam:</b> Keine Einheit, sondern Spaltung in Sunniten, Schiiten, Sufis etc.</div>
-        <div class="bullet">• <b>Buddhismus:</b> Riesige Unterschiede zwischen z.B. Zen-Buddhismus und Tibetischem Buddhismus.</div>
-        <p style="margin-top: 10px;">Überall vermischen sich die Religionen mit lokalen Sitten und Kulturen, sodass der Name nur noch als „Dach“ dient.</p>
+        <div class="text-box" style="margin-top: 30px;">
+            <h2>1.6 Grundlegende Säulen</h2>
+            <ul>
+                <li><b>Monotheismus:</b> Nur ein Gott (JHWH).</li>
+                <li><b>Mitzwot:</b> 613 Lebensregeln (Gebote).</li>
+                <li><b>Ethik:</b> Gerechtigkeit und Nächstenliebe.</li>
+                <li><b>Kaschrut:</b> Speisegesetze (Koscher essen).</li>
+            </ul>
+            <span class="source">Neusner, J.: Grundlagen des Judentums, Frankfurt: Fischer, 2020: S. 33.</span>
+        </div>
+
+        <div class="image-box" style="height: 300px; margin-top: 20px;">
+            [BILD 1.6]<br>Infografik:<br>Zwei Gesetzestafeln mit<br>den 10 Geboten
+        </div>
     </div>
 
 </body>
