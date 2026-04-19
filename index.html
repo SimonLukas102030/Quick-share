@@ -1,131 +1,142 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Nexus</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; color: #000; background: #f0f0f0; padding: 20px; }
-        .plakat-container { 
-            background: white; 
-            width: 800px; 
-            height: 1131px; /* A3 Proportion */
-            margin: 0 auto 50px auto; 
-            border: 3px solid #000; 
+        :root {
+            --bg: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent: #00f2ff;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 242, 255, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(157, 0, 255, 0.15) 0px, transparent 50%);
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #00f2ff, #9d00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
             position: relative;
-            padding: 40px;
-            box-shadow: 10px 10px 0px #ccc;
+            overflow: hidden;
         }
-        h1 { text-align: center; border-bottom: 5px solid #000; margin-bottom: 30px; text-transform: uppercase; }
-        .image-box { 
-            border: 2px dashed #000; 
-            background: #eee; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
+        }
+
+        .card a {
+            display: block;
+            padding: 30px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-transform: capitalize;
+        }
+
+        .card .icon {
+            font-size: 0.8rem;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .loading {
+            grid-column: 1 / -1;
             text-align: center;
-            font-weight: bold;
-            padding: 10px;
+            opacity: 0.6;
+            font-size: 1.2rem;
+            margin-top: 50px;
         }
-        .text-box { border: 1px solid #000; padding: 15px; margin-bottom: 20px; background: #fff; }
-        .source { font-size: 0.75rem; display: block; margin-top: 10px; border-top: 1px solid #eee; padding-top: 5px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        h2 { font-size: 1.2rem; margin-top: 0; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="plakat-container">
-        <h1>I. Judentum: Geschichte</h1>
-        
-        <div class="grid">
-            <div class="image-box" style="height: 250px;">
-                [BILD 1.1]<br>Zentrales Symbol:<br>Blau-Weißer Davidstern<br>(Magen David)
-            </div>
-            <div class="text-box">
-                <h2>1.4 Wichtige Figuren</h2>
-                <p><b>Abraham:</b> Urvater, der den Bund mit Gott schloss.</p>
-                <p><b>Mose:</b> Führte das Volk aus Ägypten und erhielt die Zehn Gebote.</p>
-                <span class="source">Stemberger, G.: Einführung in die Judaistik, München: Beck, 2021: S. 112.</span>
-            </div>
-        </div>
+    <h1>Project Nexus</h1>
 
-        <div class="text-box" style="margin-top: 30px;">
-            <h2>1.2 Chronologie</h2>
-            <ul>
-                <li><b>1900 v. Chr.:</b> Berufung Abrahams.</li>
-                <li><b>1300 v. Chr.:</b> Exodus & Tora-Erhalt (Mose).</li>
-                <li><b>1000 v. Chr.:</b> König David macht Jerusalem zur Hauptstadt.</li>
-                <li><b>70 n. Chr.:</b> Zerstörung des Tempels (Exil beginnt).</li>
-                <li><b>1945-heute:</b> Nach dem Holocaust Neuanfang & Staatsgründung Israels (1948).</li>
-            </ul>
-            <span class="source">Maier, J.: Jüdische Geschichte, München: C.H. Beck, 2022: S. 45.</span>
-        </div>
+    <ul id="file-list">
+        <li class="loading">Initializing System...</li>
+    </ul>
 
-        <div class="image-box" style="height: 200px; margin-top: 20px;">
-            [BILD 1.2]<br>Zeitstrahl-Grafik oder<br>Foto einer alten Tora-Rolle
-        </div>
-    </div>
+    <script>
+        async function loadFiles() {
+            const username = "YOUR_GITHUB_USERNAME";
+            const repo = "YOUR_REPO_NAME";
+            const listElement = document.getElementById('file-list');
 
-    <div class="plakat-container">
-        <h1>II. Praxis & Heilige Orte</h1>
+            try {
+                const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/`);
+                const files = await response.json();
+                
+                listElement.innerHTML = ''; 
 
-        <div class="text-box">
-            <h2>1.3 Repräsentative Orte</h2>
-            <p><b>Jerusalem:</b> Religiöses Zentrum (Klagemauer).</p>
-            <p><b>Synagoge:</b> Versammlungsort weltweit.</p>
-            <p><i>Grund:</i> Diese Orte verbinden die Geschichte direkt mit der heutigen Gebetspraxis.</p>
-            <span class="source">Schäfer, P.: Geschichte der Juden, Tübingen: Mohr Siebeck, 2020: S. 204.</span>
-        </div>
+                files.forEach(file => {
+                    if (file.name.endsWith('.html') && file.name !== 'index.html') {
+                        const li = document.createElement('li');
+                        li.className = 'card';
+                        
+                        const displayName = file.name.replace('.html', '').replace(/[-_]/g, ' ');
+                        
+                        li.innerHTML = `
+                            <a href="${file.name}">
+                                <span class="icon">HTML Project</span>
+                                ${displayName}
+                            </a>
+                        `;
+                        listElement.appendChild(li);
+                    }
+                });
 
-        <div class="grid">
-            <div class="image-box" style="height: 300px;">
-                [BILD 1.3]<br>Foto der Klagemauer<br>in Jerusalem
-            </div>
-            <div class="text-box">
-                <h2>1.5 Ritus & Tradition</h2>
-                <p><b>Schabbat:</b> Wöchentlicher Ruhetag (Freitagabend bis Samstagabend). Fokus auf Familie und Gott.</p>
-                <p><b>Bar Mizwa:</b> Übergang ins Erwachsenenalter.</p>
-                <span class="source">Goldberg, S.: Jüdische Riten, Basel: Helbing, 2023: S. 88.</span>
-            </div>
-        </div>
+                if (listElement.children.length === 0) {
+                    listElement.innerHTML = '<li class="loading">No modules detected.</li>';
+                }
+            } catch (error) {
+                listElement.innerHTML = '<li class="loading" style="color: #ff4b4b;">Connection Failed: Repository search aborted.</li>';
+            }
+        }
 
-        <div class="image-box" style="height: 250px; margin-top: 30px;">
-            [BILD 1.5]<br>Sabbat-Kerzen oder<br>ein Junge mit Kippa bei der Bar Mizwa
-        </div>
-    </div>
-
-    <div class="plakat-container">
-        <h1>III. Glaube & Symbole</h1>
-
-        <div class="grid">
-            <div class="text-box">
-                <h2>1.7 Heilige Gegenstände</h2>
-                <ul>
-                    <li><b>Menora:</b> 7-armiger Leuchter.</li>
-                    <li><b>Tallit:</b> Gebetsschal.</li>
-                    <li><b>Mezusa:</b> Kapsel am Türpfosten.</li>
-                </ul>
-                <span class="source">Müller, K.: Das Judentum, Berlin: De Gruyter, 2021: S. 156.</span>
-            </div>
-            <div class="image-box" style="height: 200px;">
-                [BILD 1.7]<br>Zeichnung einer Menora<br>oder einer Mezusa
-            </div>
-        </div>
-
-        <div class="text-box" style="margin-top: 30px;">
-            <h2>1.6 Grundlegende Säulen</h2>
-            <ul>
-                <li><b>Monotheismus:</b> Nur ein Gott (JHWH).</li>
-                <li><b>Mitzwot:</b> 613 Lebensregeln (Gebote).</li>
-                <li><b>Ethik:</b> Gerechtigkeit und Nächstenliebe.</li>
-                <li><b>Kaschrut:</b> Speisegesetze (Koscher essen).</li>
-            </ul>
-            <span class="source">Neusner, J.: Grundlagen des Judentums, Frankfurt: Fischer, 2020: S. 33.</span>
-        </div>
-
-        <div class="image-box" style="height: 300px; margin-top: 20px;">
-            [BILD 1.6]<br>Infografik:<br>Zwei Gesetzestafeln mit<br>den 10 Geboten
-        </div>
-    </div>
-
+        loadFiles();
+    </script>
 </body>
 </html>
