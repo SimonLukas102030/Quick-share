@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PC Build Tracker</title>
+  <style>
+    /* ===== RESET & CSS VARIABLES ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --bg-card:   #1a1d27;
+      --bg-card2:  #1e2130;
+      --border:    #2a2d3e;
+      --text:      #e2e8f0;
+      --text-muted:#64748b;
+      --text-dim:  #94a3b8;
+      --accent:    #6366f1;
+      --accent-h:  #818cf8;
+      --success:   #10b981;
+      --danger:    #ef4444;
+      --warning:   #f59e0b;
+      --radius:    8px;
+      --shadow:    0 4px 24px rgba(0,0,0,0.45);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    /* ===== HEADER ===== */
+    header { margin-bottom: 28px; }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    header h1 .accent { color: var(--accent); }
+
+    header p {
+      color: var(--text-muted);
+      margin-top: 5px;
+      font-size: 13px;
+    }
+
+    /* ===== SUMMARY CARDS ===== */
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .card-value.warning { color: var(--warning); }
+    .card-value.success { color: var(--success); }
+
+    .card-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--bg);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), #34d399);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-pct {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--success);
+      white-space: nowrap;
+    }
+
+    /* ===== TOOLBAR ===== */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:not(:last-child) { border-right: 1px solid var(--border); }
+    .filter-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .filter-btn.active { color: #fff; background: var(--accent); }
+
+    .count-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 1px 6px;
+      font-size: 10px;
+      margin-left: 5px;
+      font-weight: 700;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-h); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+
+    .btn-sm-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(239,68,68,0.4);
+      padding: 4px 9px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-sm-danger:hover { background: rgba(239,68,68,0.12); }
+
+    .link-btn {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(99,102,241,0.5);
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.15s;
+    }
+    .link-btn:hover { background: rgba(99,102,241,0.15); }
+
+    /* ===== TABLE ===== */
+    .table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      overflow-x: auto;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      background: var(--bg-card2);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.025); }
+
+    /* Bought row */
+    tbody tr.bought { opacity: 0.55; }
+    tbody tr.bought .model-text {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    td {
+      padding: 11px 16px;
+      vertical-align: middle;
+    }
+
+    .col-check   { width: 48px;  text-align: center; }
+    .col-source  { width: 120px; }
+    .col-price   { width: 120px; }
+    .col-note    { width: 200px; }
+    .col-actions { width: 130px; text-align: right; white-space: nowrap; }
+
+    /* ===== CUSTOM CHECKBOX ===== */
+    .check-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .check-wrap input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 5px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .check-wrap input[type="checkbox"]:hover { border-color: var(--success); }
+
+    .check-wrap input[type="checkbox"]:checked {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .check-wrap input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      width: 6px;
+      height: 10px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+
+    /* ===== TYPE BADGES ===== */
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    /* ===== INLINE PRICE EDIT ===== */
+    .price-display {
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-weight: 600;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.1s;
+      user-select: none;
+    }
+
+    .price-display:hover { background: rgba(255,255,255,0.07); }
+
+    .price-edit-icon {
+      font-size: 10px;
+      opacity: 0;
+      transition: opacity 0.1s;
+    }
+
+    .price-display:hover .price-edit-icon { opacity: 0.5; }
+
+    .price-input {
+      width: 90px;
+      padding: 4px 8px;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 5px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    /* ===== NOTE TEXT ===== */
+    .note-text {
+      font-size: 12px;
+      color: var(--text-dim);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+    }
+
+    .source-text {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 56px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 15px; }
+
+    /* ===== ADD FORM ===== */
+    .add-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .add-header {
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .add-header:hover { background: rgba(255,255,255,0.025); }
+
+    .add-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .toggle-icon {
+      color: var(--text-muted);
+      transition: transform 0.2s;
+      font-size: 14px;
+    }
+
+    .add-header.open .toggle-icon { transform: rotate(180deg); }
+
+    .add-body {
+      display: none;
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .add-body.open { display: block; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    select {
+      padding: 9px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    input:focus, select:focus { border-color: var(--accent); }
+    select option { background: var(--bg-card); }
+
+    .form-actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 800px) {
+      .col-note, .col-source { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .summary { grid-template-columns: 1fr 1fr; }
+      .card-value { font-size: 20px; }
+      header h1 { font-size: 20px; }
+      td, th { padding: 10px 10px; }
+      .progress-wrap { flex-direction: column; align-items: stretch; gap: 8px; }
+    }
+
+    @media (max-width: 400px) {
+      .summary { grid-template-columns: 1fr; }
+    }
+
+    /* ===== TOAST ===== */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--success);
+      border-radius: var(--radius);
+      padding: 11px 16px;
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>🖥️ PC Build <span class="accent">Tracker</span></h1>
+    <p>Verwalte Komponenten, verfolge Preise und den Einkaufsfortschritt.</p>
+  </header>
+
+  <!-- ===== SUMMARY CARDS ===== -->
+  <div class="summary">
+    <div class="card">
+      <div class="card-label">Gesamtpreis</div>
+      <div class="card-value" id="total-price">—</div>
+      <div class="card-sub" id="total-count">0 Komponenten</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Noch offen</div>
+      <div class="card-value warning" id="remaining-price">—</div>
+      <div class="card-sub" id="remaining-count">0 ausstehend</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Bereits bezahlt</div>
+      <div class="card-value success" id="paid-price">—</div>
+      <div class="card-sub" id="paid-count">0 gekauft</div>
+    </div>
+  </div>
+
+  <!-- ===== PROGRESS BAR ===== -->
+  <div class="progress-wrap">
+    <span class="progress-label">Fortschritt</span>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <span class="progress-pct" id="progress-pct">0 %</span>
+  </div>
+
+  <!-- ===== FILTER TOOLBAR ===== -->
+  <div class="toolbar">
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all">
+        Alle <span class="count-badge" id="cnt-all">0</span>
+      </button>
+      <button class="filter-btn" data-filter="open">
+        Offen <span class="count-badge" id="cnt-open">0</span>
+      </button>
+      <button class="filter-btn" data-filter="bought">
+        Gekauft <span class="count-badge" id="cnt-bought">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== COMPONENT TABLE ===== -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-check">✓</th>
+          <th>Typ</th>
+          <th>Modell</th>
+          <th class="col-source">Quelle</th>
+          <th class="col-price">Preis</th>
+          <th class="col-note">Notiz</th>
+          <th class="col-actions">Aktionen</th>
+        </tr>
+      </thead>
+      <tbody id="component-list"></tbody>
+    </table>
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div class="icon">📦</div>
+      <p>Keine Komponenten in dieser Ansicht.</p>
+    </div>
+  </div>
+
+  <!-- ===== ADD FORM ===== -->
+  <div class="add-section">
+    <div class="add-header" id="add-toggle">
+      <h2>+ Neue Komponente hinzufügen</h2>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="add-body" id="add-form-body">
+      <form id="add-form" autocomplete="off">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="f-type">Typ</label>
+            <select id="f-type">
+              <option value="GPU">GPU</option>
+              <option value="CPU">CPU</option>
+              <option value="RAM">RAM</option>
+              <option value="Mainboard">Mainboard</option>
+              <option value="SSD">SSD</option>
+              <option value="HDD">HDD</option>
+              <option value="Netzteil">Netzteil</option>
+              <option value="Gehäuse">Gehäuse</option>
+              <option value="Kühlung">Kühlung</option>
+              <option value="Sonstiges">Sonstiges</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-model">Modell *</label>
+            <input type="text" id="f-model" placeholder="z.B. RTX 4080 Super" required />
+          </div>
+          <div class="form-group">
+            <label for="f-source">Quelle</label>
+            <input type="text" id="f-source" placeholder="Amazon, Kleinanzeigen …" />
+          </div>
+          <div class="form-group">
+            <label for="f-price">Preis (€) *</label>
+            <input type="number" id="f-price" step="0.01" min="0" placeholder="0.00" required />
+          </div>
+          <div class="form-group full">
+            <label for="f-link">Link</label>
+            <input type="url" id="f-link" placeholder="https://…" />
+          </div>
+          <div class="form-group full">
+            <label for="f-note">Notiz</label>
+            <input type="text" id="f-note" placeholder="z.B. VB, Angebotspreis, Ziel: X €" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Hinzufügen</button>
+          <button type="button" class="btn btn-ghost" id="reset-data-btn">Daten zurücksetzen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+  /* ============================================================
+     TYPE BADGE COLORS
+  ============================================================ */
+  const TYPE_COLORS = {
+    GPU:       { bg:'rgba(139,92,246,0.18)',  color:'#a78bfa', border:'rgba(139,92,246,0.45)' },
+    CPU:       { bg:'rgba(16,185,129,0.18)',  color:'#6ee7b7', border:'rgba(16,185,129,0.45)' },
+    RAM:       { bg:'rgba(59,130,246,0.18)',  color:'#93c5fd', border:'rgba(59,130,246,0.45)' },
+    Mainboard: { bg:'rgba(245,158,11,0.18)',  color:'#fcd34d', border:'rgba(245,158,11,0.45)' },
+    SSD:       { bg:'rgba(6,182,212,0.18)',   color:'#67e8f9', border:'rgba(6,182,212,0.45)'  },
+    HDD:       { bg:'rgba(6,182,212,0.18)',   color:'#67e8f9', border:'rgba(6,182,212,0.45)'  },
+    Netzteil:  { bg:'rgba(239,68,68,0.18)',   color:'#fca5a5', border:'rgba(239,68,68,0.45)'  },
+    Gehäuse:   { bg:'rgba(236,72,153,0.18)',  color:'#f9a8d4', border:'rgba(236,72,153,0.45)' },
+    Kühlung:   { bg:'rgba(20,184,166,0.18)',  color:'#5eead4', border:'rgba(20,184,166,0.45)' },
+    Sonstiges: { bg:'rgba(100,116,139,0.18)', color:'#94a3b8', border:'rgba(100,116,139,0.45)'},
+  };
+
+  /* ============================================================
+     DEFAULT DATA
+  ============================================================ */
+  const DEFAULT_COMPONENTS = [
+    {
+      type:'GPU', model:'RTX 3080 10GB OC', source:'Kleinanzeigen', price:350.00,
+      note:'VB, Ziel: 320 €', bought:false,
+      link:'https://www.kleinanzeigen.de/s-anzeige/geforce-rtx-3080-oc-10gb/3374831997-225-2899'
+    },
+    {
+      type:'RAM', model:'32GB G.Skill Ripjaws V DDR4', source:'Kleinanzeigen', price:140.00,
+      note:'2×16GB 3600MHz', bought:false,
+      link:'https://www.kleinanzeigen.de/s-anzeige/g-skill-ripjaws-v-ddr4-ram-32gb-2x16gb-3600mhz/3374911583-225-360'
+    },
+    {
+      type:'CPU', model:'AMD Ryzen 5 5600X', source:'Kleinanzeigen', price:100.00,
+      note:'Inkl. Boxed Kühler', bought:false,
+      link:'https://www.kleinanzeigen.de/s-anzeige/amd-ryzen-5-5600x-6x-3-70ghz-so-am4-box-ovp-mit-boxed-kuehler/3374680409-225-26034'
+    },
+    {
+      type:'Mainboard', model:'ASRock B550 Phantom Gaming 4', source:'Amazon', price:82.90,
+      note:'AM4, Top Preis-Leistung', bought:false,
+      link:'https://www.amazon.de/ASRock-B550-Phantom-Gaming-AM4/dp/B089VTZ83Q'
+    },
+    {
+      type:'SSD', model:'Lexar NM790 1TB NVMe Gen4', source:'Amazon', price:139.99,
+      note:'7000 MB/s', bought:false,
+      link:'https://www.amazon.de/Lexar-Schreiben-Intensive-Workloads-Leistungsstarkes/dp/B0DNMCJHJP'
+    },
+    {
+      type:'Netzteil', model:'Corsair CX750 750W Bronze', source:'Amazon', price:64.71,
+      note:'Angebotspreis', bought:false,
+      link:'https://www.amazon.de/CORSAIR-CX750-ATX-750W-Netzteil/dp/B0CK8P3SRG'
+    },
+    {
+      type:'Gehäuse', model:'Musetex Fishtank K2', source:'Amazon', price:56.99,
+      note:'Befristetes Angebot −29%', bought:false,
+      link:'https://www.amazon.de/MUSETEX-PC-GEHAUSE-Pre-Install-Computergehause-Vollsicht-Doppelglas/dp/B0CK28YRBJ'
+    },
+  ];
+
+  /* ============================================================
+     STATE
+  ============================================================ */
+  let components   = [];
+  let activeFilter = 'all';
+
+  /* ============================================================
+     PERSISTENCE — localStorage
+  ============================================================ */
+  const STORAGE_KEY = 'pc-build-v1';
+
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(components));
+  }
+
+  function loadData() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      try {
+        components = JSON.parse(raw);
+      } catch {
+        components = deepClone(DEFAULT_COMPONENTS);
+      }
+    } else {
+      components = deepClone(DEFAULT_COMPONENTS);
+    }
+    // Ensure every item has a unique id
+    components.forEach((c, i) => { if (!c.id) c.id = Date.now() + i; });
+  }
+
+  function resetData() {
+    if (!confirm('Alle Daten zurücksetzen auf Standardwerte?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    loadData();
+    render();
+    toast('🔄 Daten zurückgesetzt');
+  }
+
+  function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  /* ============================================================
+     HELPERS
+  ============================================================ */
+  function eur(n) {
+    return Number(n).toLocaleString('de-DE', { style:'currency', currency:'EUR' });
+  }
+
+  function esc(str) {
+    return String(str ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  function badge(type) {
+    const c = TYPE_COLORS[type] || TYPE_COLORS.Sonstiges;
+    return `<span class="badge" style="background:${c.bg};color:${c.color};border:1px solid ${c.border}">${esc(type)}</span>`;
+  }
+
+  /* ============================================================
+     FILTERED VIEW
+  ============================================================ */
+  function getFiltered() {
+    if (activeFilter === 'open')   return components.filter(c => !c.bought);
+    if (activeFilter === 'bought') return components.filter(c =>  c.bought);
+    return components;
+  }
+
+  /* ============================================================
+     RENDER
+  ============================================================ */
+  function render() {
+    const filtered   = getFiltered();
+    const tbody      = document.getElementById('component-list');
+    const emptyState = document.getElementById('empty-state');
+
+    /* ---- Compute totals ---- */
+    const total     = components.reduce((s, c) => s + Number(c.price), 0);
+    const paid      = components.filter(c => c.bought).reduce((s, c) => s + Number(c.price), 0);
+    const remaining = total - paid;
+    const paidCount = components.filter(c =>  c.bought).length;
+    const openCount = components.filter(c => !c.bought).length;
+    const pct       = total > 0 ? Math.round((paid / total) * 100) : 0;
+
+    /* ---- Update summary cards ---- */
+    document.getElementById('total-price').textContent     = eur(total);
+    document.getElementById('total-count').textContent     = `${components.length} Komponente${components.length !== 1 ? 'n' : ''}`;
+    document.getElementById('remaining-price').textContent = eur(remaining);
+    document.getElementById('remaining-count').textContent = `${openCount} ausstehend`;
+    document.getElementById('paid-price').textContent      = eur(paid);
+    document.getElementById('paid-count').textContent      = `${paidCount} gekauft`;
+
+    /* ---- Progress bar ---- */
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent  = pct + ' %';
+
+    /* ---- Filter badges ---- */
+    document.getElementById('cnt-all').textContent    = components.length;
+    document.getElementById('cnt-open').textContent   = openCount;
+    document.getElementById('cnt-bought').textContent = paidCount;
+
+    /* ---- Table rows ---- */
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(c => `
+      <tr class="${c.bought ? 'bought' : ''}" data-id="${c.id}">
+        <td class="col-check">
+          <div class="check-wrap">
+            <input
+              type="checkbox"
+              ${c.bought ? 'checked' : ''}
+              onchange="toggleBought(${c.id})"
+              title="${c.bought ? 'Als offen markieren' : 'Als gekauft markieren'}"
+            />
+          </div>
+        </td>
+        <td>${badge(c.type)}</td>
+        <td><span class="model-text">${esc(c.model)}</span></td>
+        <td class="col-source"><span class="source-text">${esc(c.source)}</span></td>
+        <td class="col-price">
+          <span class="price-display" onclick="startEditPrice(${c.id}, this)" title="Klicken zum Bearbeiten">
+            ${eur(c.price)}<span class="price-edit-icon">✎</span>
+          </span>
+        </td>
+        <td class="col-note">
+          <span class="note-text" title="${esc(c.note)}">${esc(c.note) || '<span style="color:var(--text-muted)">—</span>'}</span>
+        </td>
+        <td class="col-actions">
+          ${c.link
+            ? `<a class="link-btn" href="${esc(c.link)}" target="_blank" rel="noopener noreferrer">↗ Link</a>`
+            : '<span style="color:var(--text-muted);font-size:12px">—</span>'
+          }
+          &nbsp;
+          <button class="btn-sm-danger" onclick="deleteComponent(${c.id})" title="Löschen">✕</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ============================================================
+     ACTIONS
+  ============================================================ */
+
+  /* Toggle bought state */
+  function toggleBought(id) {
+    const comp = components.find(c => c.id === id);
+    if (!comp) return;
+    comp.bought = !comp.bought;
+    saveData();
+    render();
+    toast(comp.bought
+      ? `✅ ${comp.model} als gekauft markiert`
+      : `↩ ${comp.model} zurückgesetzt`
+    );
+  }
+
+  /* Delete component */
+  function deleteComponent(id) {
+    const comp = components.find(c => c.id === id);
+    if (!comp) return;
+    if (!confirm(`"${comp.model}" wirklich löschen?`)) return;
+    components = components.filter(c => c.id !== id);
+    saveData();
+    render();
+    toast(`🗑 ${comp.model} gelöscht`);
+  }
+
+  /* Inline price editing — replaces span with input, commits on blur/Enter */
+  function startEditPrice(id, el) {
+    const comp = components.find(c => c.id === id);
+    if (!comp) return;
+
+    const input = document.createElement('input');
+    input.type      = 'number';
+    input.className = 'price-input';
+    input.step      = '0.01';
+    input.min       = '0';
+    input.value     = Number(comp.price).toFixed(2);
+
+    el.replaceWith(input);
+    input.focus();
+    input.select();
+
+    let committed = false;
+
+    function commit() {
+      if (committed) return;
+      committed = true;
+      const val = parseFloat(input.value);
+      if (!isNaN(val) && val >= 0) {
+        const old = comp.price;
+        comp.price = val;
+        saveData();
+        if (old !== val) toast(`💶 Preis aktualisiert: ${eur(val)}`);
+      }
+      render();
+    }
+
+    input.addEventListener('blur',    commit);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter')  { e.preventDefault(); input.blur(); }
+      if (e.key === 'Escape') { committed = true; render(); }
+    });
+  }
+
+  /* ============================================================
+     FILTER BUTTONS
+  ============================================================ */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      render();
+    });
+  });
+
+  /* ============================================================
+     ADD FORM — collapse/expand toggle
+  ============================================================ */
+  document.getElementById('add-toggle').addEventListener('click', () => {
+    const body   = document.getElementById('add-form-body');
+    const header = document.getElementById('add-toggle');
+    const isOpen = body.classList.toggle('open');
+    header.classList.toggle('open', isOpen);
+  });
+
+  /* ============================================================
+     ADD FORM — submit
+  ============================================================ */
+  document.getElementById('add-form').addEventListener('submit', e => {
+    e.preventDefault();
+
+    const type   = document.getElementById('f-type').value;
+    const model  = document.getElementById('f-model').value.trim();
+    const source = document.getElementById('f-source').value.trim();
+    const price  = parseFloat(document.getElementById('f-price').value);
+    const link   = document.getElementById('f-link').value.trim();
+    const note   = document.getElementById('f-note').value.trim();
+
+    if (!model || isNaN(price) || price < 0) return;
+
+    components.push({ id:Date.now(), type, model, source, price, link, note, bought:false });
+    saveData();
+    render();
+    e.target.reset();
+    toast(`➕ ${model} hinzugefügt`);
+  });
+
+  /* Reset data button */
+  document.getElementById('reset-data-btn').addEventListener('click', resetData);
+
+  /* ============================================================
+     TOAST NOTIFICATIONS
+  ============================================================ */
+  function toast(msg, duration = 3000) {
+    const el       = document.createElement('div');
+    el.className   = 'toast';
+    el.textContent = msg;
+    document.getElementById('toast-container').appendChild(el);
+    setTimeout(() => el.remove(), duration);
+  }
+
+  /* ============================================================
+     INIT
+  ============================================================ */
+  loadData();
+  render();
+</script>
+</body>
+</html>

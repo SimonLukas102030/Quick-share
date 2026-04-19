@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Judentum — 3 Plakate DIN A3</title>
+  <style>
+    /* ── Global ── */
+    :root {
+      --blue:    #1a3a6b;
+      --blue-mid:#2a5298;
+      --blue-lt: #e8eef8;
+      --gold:    #c8960a;
+      --gold-lt: #fdf4d8;
+      --border:  #1a3a6b;
+      --text:    #111;
+      --muted:   #444;
+      --white:   #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #ccc;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: var(--text);
+      padding: 2rem;
+    }
+
+    /* ── Page navigation ── */
+    .nav {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav button {
+      padding: 0.6rem 1.4rem;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .nav button.active { background: var(--gold); color: #000; }
+    .nav button:hover  { opacity: 0.85; }
+
+    .nav span {
+      padding: 0.6rem 1rem;
+      background: #555;
+      color: #ccc;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Poster wrapper ── */
+    .poster-wrap {
+      display: none;
+      justify-content: center;
+    }
+
+    .poster-wrap.active { display: flex; }
+
+    /* A3 portrait = 297mm × 420mm. At 96dpi: ~1122 × 1587px.
+       We display at 65% for comfortable screen viewing. */
+    .poster {
+      width:  1122px;
+      min-height: 1587px;
+      background: var(--white);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      transform-origin: top center;
+      transform: scale(0.65);
+      margin-bottom: calc((1587px * 0.65 - 1587px));  /* collapse scaled space */
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 3px solid var(--blue);
+    }
+
+    /* ── Decorative outer border (hand-drawable double-line) ── */
+    .poster::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border: 1.5px solid var(--blue);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Header band ── */
+    .poster-header {
+      background: var(--blue);
+      color: white;
+      padding: 18px 30px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .poster-header .star {
+      font-size: 2.2rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .poster-header .title-block { flex: 1; text-align: center; }
+
+    .poster-header .plakat-nr {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 4px;
+    }
+
+    .poster-header h1 {
+      font-size: 1.9rem;
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+
+    .poster-header .subtitle {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* ── Gold sub-header ── */
+    .gold-band {
+      background: var(--gold);
+      color: white;
+      text-align: center;
+      padding: 5px 20px;
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    /* ── Body layout ── */
+    .poster-body {
+      flex: 1;
+      padding: 20px 22px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .col { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    .col-40 { flex: 0 0 38%; }
+    .col-60 { flex: 0 0 59%; }
+
+    /* ── Info box ── */
+    .box {
+      border: 2px solid var(--blue);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .box-title {
+      background: var(--blue);
+      color: white;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .box-title.gold {
+      background: var(--gold);
+    }
+
+    .box-body {
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      background: white;
+    }
+
+    .box-body.tinted { background: var(--blue-lt); }
+    .box-body.gold-tint { background: var(--gold-lt); }
+
+    .box-body ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .box-body ul li {
+      padding: 2px 0 2px 14px;
+      position: relative;
+    }
+
+    .box-body ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-size: 0.7rem;
+      top: 3px;
+    }
+
+    .box-body p { margin-bottom: 6px; }
+    .box-body p:last-child { margin-bottom: 0; }
+
+    .box-body strong { color: var(--blue); }
+
+    /* ── Timeline ── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 95px 18px 1fr;
+      align-items: start;
+      font-size: 0.78rem;
+      line-height: 1.3;
+      padding: 3px 0;
+    }
+
+    .tl-year {
+      text-align: right;
+      font-weight: bold;
+      color: var(--blue);
+      padding-right: 6px;
+      font-size: 0.75rem;
+    }
+
+    .tl-dot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 4px;
+    }
+
+    .tl-dot .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid var(--blue);
+      flex-shrink: 0;
+    }
+
+    .tl-dot .line {
+      width: 2px;
+      flex: 1;
+      background: var(--blue);
+      min-height: 10px;
+    }
+
+    .tl-text { padding-left: 4px; color: var(--text); }
+
+    .tl-item:last-child .tl-dot .line { display: none; }
+
+    /* ── 10 Gebote grid ── */
+    .gebote-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    .gebot {
+      border: 1px solid var(--blue);
+      padding: 5px 8px;
+      font-size: 0.74rem;
+      line-height: 1.35;
+    }
+
+    .gebot .nr {
+      font-weight: bold;
+      color: var(--gold);
+      font-size: 0.85rem;
+    }
+
+    /* ── Festival list ── */
+    .fest-item {
+      display: flex;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px dashed #bbb;
+    }
+
+    .fest-item:last-child { border-bottom: none; }
+
+    .fest-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      width: 28px;
+      text-align: center;
+    }
+
+    .fest-name {
+      font-weight: bold;
+      color: var(--blue);
+      font-size: 0.82rem;
+    }
+
+    .fest-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.4; }
+
+    /* ── Symbol box ── */
+    .symbol-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .symbol-card {
+      border: 1.5px solid var(--blue);
+      text-align: center;
+      padding: 8px 5px;
+    }
+
+    .symbol-card svg, .symbol-card .sym-emoji {
+      display: block;
+      margin: 0 auto 4px;
+    }
+
+    .sym-emoji { font-size: 1.8rem; }
+
+    .symbol-card .sym-name {
+      font-size: 0.72rem;
+      font-weight: bold;
+      color: var(--blue);
+    }
+
+    .symbol-card .sym-desc {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Lifecycle ── */
+    .lifecycle {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .lc-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 5px 0;
+      border-bottom: 1px solid #ddd;
+      font-size: 0.78rem;
+    }
+
+    .lc-item:last-child { border-bottom: none; }
+
+    .lc-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    .lc-title { font-weight: bold; color: var(--blue); font-size: 0.8rem; }
+
+    /* ── Quellen (footer) ── */
+    .quellen {
+      margin: 12px 22px 16px;
+      border-top: 2px solid var(--blue);
+      padding-top: 8px;
+    }
+
+    .quellen-title {
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+
+    .quellen-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 24px;
+    }
+
+    .quellen-list span {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px dashed var(--blue);
+      opacity: 0.4;
+    }
+
+    /* ── Mizwot two-column ── */
+    .two-col {
+      column-count: 2;
+      column-gap: 16px;
+    }
+
+    .two-col li { break-inside: avoid; }
+
+    /* ── Print ── */
+    @media print {
+      body { background: white; padding: 0; }
+      .nav { display: none; }
+      .poster-wrap { display: flex !important; }
+      .poster {
+        transform: none;
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        width: 297mm;
+        min-height: 420mm;
+      }
+    }
+
+    /* ── Highlight tag ── */
+    .tag {
+      display: inline-block;
+      background: var(--blue);
+      color: white;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    .tag.gold { background: var(--gold); color: #000; }
+  </style>
+</head>
+<body>
+
+<div class="nav">
+  <button onclick="show(1)" id="btn1" class="active">Plakat 1 — Geschichte &amp; Grundlagen</button>
+  <button onclick="show(2)" id="btn2">Plakat 2 — Glaube, Gebote &amp; Symbole</button>
+  <button onclick="show(3)" id="btn3">Plakat 3 — Feste &amp; Lebenszyklus</button>
+  <span>DIN A3 · 297 × 420 mm</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PLAKAT 1 — GESCHICHTE & GRUNDLAGEN
+     ═══════════════════════════════════════════════════════════ -->
+<div class="poster-wrap active" id="wrap1">
+<div class="poster">
+
+  <div class="poster-header">
+    <div class="star">✡</div>
+    <div class="title-block">
+      <div class="plakat-nr">Plakat 1 von 3 &nbsp;·&nbsp; Judentum</div>
+      <h1>Geschichte &amp; Grundlagen</h1>
+      <div class="subtitle">Die älteste abrahamitische Weltreligion</div>
+    </div>
+    <div class="star">✡</div>
+  </div>
+
+  <div class="gold-band">Von Abraham bis zur Gegenwart &nbsp;·&nbsp; Heilige Schriften &nbsp;·&nbsp; Die Synagoge</div>
+
+  <div class="poster-body">
+
+    <!-- Row 1: Was ist Judentum + Davidstern + Richtungen -->
+    <div class="row">
+      <div class="col col-60">
+        <div class="box">
+          <div class="box-title">Was ist Judentum?</div>
+          <div class="box-body">
+            <p>Das Judentum ist eine der ältesten Religionen der Welt und die älteste der drei <strong>abrahamitischen Religionen</strong> (Judentum, Christentum, Islam). Es ist gleichzeitig Religion, Volk und Kultur.</p>
+            <ul>
+              <li><strong>Monotheismus:</strong> Glaube an einen einzigen, unsichtbaren und allumfassenden Gott (JHWH)</li>
+              <li><strong>Bund (Brit):</strong> Gott schloss einen Bund mit Abraham und erneuerte ihn mit Mose auf dem Sinai</li>
+              <li><strong>Auserwähltes Volk:</strong> Die Juden verstehen sich als Volk, dem Gott die Tora offenbart hat</li>
+              <li><strong>Weltweit:</strong> Heute ca. <strong>15–16 Millionen</strong> Jüdinnen und Juden weltweit</li>
+              <li><strong>Israel:</strong> Seit 1948 existiert der Staat Israel als jüdischer Staat</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-40">
+        <div class="box">
+          <div class="box-title gold">Der Davidstern ✡</div>
+          <div class="box-body" style="text-align:center; padding: 10px;">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <!-- Star of David: two overlapping equilateral triangles -->
+              <polygon points="55,5 103,88 7,88" fill="none" stroke="#1a3a6b" stroke-width="4"/>
+              <polygon points="55,105 7,22 103,22" fill="none" stroke="#1a3a6b" stroke-width="4"/>
+            </svg>
+            <div style="font-size:0.75rem; color:var(--muted); margin-top:6px; line-height:1.4;">
+              <strong>Magen David</strong> (Schild Davids)<br>
+              Zwei ineinander liegende Dreiecke.<br>
+              Wichtigstes Symbol des Judentums.<br>
+              Auch auf der Flagge Israels.
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-title">Richtungen</div>
+          <div class="box-body">
+            <ul>
+              <li><strong>Orthodox:</strong> strenge Auslegung der Tora und aller Gebote</li>
+              <li><strong>Konservativ:</strong> Tradition mit moderaten Anpassungen</li>
+              <li><strong>Reform / Liberal:</strong> zeitgemäße Auslegung der Gebote</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Timeline (full width) -->
+    <div class="box">
+      <div class="box-title">Geschichte des Judentums — Zeitleiste</div>
+      <div class="box-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-year">~1800 v. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Abraham</strong> — Stammvater des jüdischen Volkes. Gott schließt mit ihm den Bund und verspricht ihm das Land Kanaan.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">~1200 v. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Mose und der Exodus</strong> — Befreiung der Israeliten aus ägyptischer Sklaverei. Gott offenbart Mose die Tora auf dem Berg Sinai.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">~950 v. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Erster Tempel</strong> — König Salomo baut den Ersten Tempel in Jerusalem als zentralen Ort des Gottesdienstes.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">586 v. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Zerstörung des 1. Tempels</strong> — König Nebukadnezar II. (Babylon) zerstört den Tempel. Babylonische Gefangenschaft beginnt.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">515 v. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Zweiter Tempel</strong> — Wiederaufbau nach der Rückkehr aus Babylon. Später von König Herodes prachtvoll erweitert.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">70 n. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Zerstörung des 2. Tempels</strong> — Römer unter Titus zerstören den Tempel. Beginn der <em>Diaspora</em> (Zerstreuung der Juden in alle Welt).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">200 n. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Mischna</strong> — Rabbi Jehuda ha-Nassi lässt die mündliche Überlieferung schriftlich festhalten (Teil des Talmud).</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1948 n. Chr.</div>
+            <div class="tl-dot"><div class="dot"></div><div class="line"></div></div>
+            <div class="tl-text"><strong>Staatsgründung Israel</strong> — Nach der Schoah (Holocaust) wird der jüdische Staat Israel im heutigen Nahen Osten gegründet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Heilige Schriften + Synagoge -->
+    <div class="row">
+      <div class="col col-60">
+        <div class="box">
+          <div class="box-title">Die Heiligen Schriften</div>
+          <div class="box-body tinted">
+            <p><strong>TANACH</strong> = Die hebräische Bibel (entspricht weitgehend dem christlichen Alten Testament)</p>
+            <ul>
+              <li><strong>T — Tora</strong> (5 Bücher Mose): Genesis, Exodus, Levitikus, Numeri, Deuteronomium. Kern des jüdischen Glaubens — enthält Gesetze, Geschichte und Lebensregeln.</li>
+              <li><strong>N — Nevi'im</strong> (Propheten): Bücher der Propheten, z. B. Jesaja, Jeremia, Hesekiel.</li>
+              <li><strong>K — Ketuvim</strong> (Schriften): Weisheitsbücher, Psalmen, Sprüche, Ruth u. a.</li>
+            </ul>
+            <hr class="divider" style="margin: 8px 0;">
+            <p><strong>TALMUD</strong> = Sammlung rabbinischer Diskussionen, Auslegungen und Gesetze</p>
+            <ul>
+              <li><strong>Mischna</strong> — schriftlich niedergelegte mündliche Überlieferung (~200 n. Chr.)</li>
+              <li><strong>Gemara</strong> — Kommentare und Diskussionen zur Mischna</li>
+            </ul>
+            <hr class="divider" style="margin: 8px 0;">
+            <p>Die <strong>Torarolle (Sefer Tora)</strong> wird von Hand auf Pergament geschrieben und ist der heiligste Gegenstand in der Synagoge.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-40">
+        <div class="box">
+          <div class="box-title">Die Synagoge</div>
+          <div class="box-body">
+            <p style="font-size:0.74rem; margin-bottom:6px;">Haus des Gebets, Lernens und der Gemeinschaft</p>
+            <ul>
+              <li><strong>Aron ha-Kodesch:</strong> der heilige Schrein, in dem die Torarollen aufbewahrt werden</li>
+              <li><strong>Bima:</strong> erhöhtes Lesepult, von dem die Tora vorgelesen wird</li>
+              <li><strong>Ner Tamid:</strong> das ewige Licht über dem Aron ha-Kodesch — brennt immer</li>
+              <li><strong>Siddur:</strong> das Gebetbuch für den täglichen Gottesdienst</li>
+              <li><strong>Rabbi:</strong> religiöser Gelehrter und geistlicher Leiter der Gemeinde</li>
+              <li><strong>Chasan (Kantor):</strong> singt und leitet die Gebete musikalisch</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /poster-body -->
+
+  <div class="quellen">
+    <div class="quellen-title">Quellen</div>
+    <div class="quellen-list">
+      <span>[1] Trepp, Leo: <em>Die Juden. Volk, Geschichte, Religion.</em> Rowohlt Taschenbuch Verlag, Reinbek bei Hamburg, 1998.</span>
+      <span>[2] Brenner, Michael: <em>Kleine jüdische Geschichte.</em> Verlag C.H. Beck, München, 2008.</span>
+      <span>[3] Stemberger, Günter: <em>Einführung in die Judaistik.</em> Verlag C.H. Beck, München, 2003.</span>
+    </div>
+  </div>
+
+</div><!-- /poster -->
+</div><!-- /poster-wrap -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PLAKAT 2 — GLAUBE, GEBOTE & SYMBOLE
+     ═══════════════════════════════════════════════════════════ -->
+<div class="poster-wrap" id="wrap2">
+<div class="poster">
+
+  <div class="poster-header">
+    <div class="star">✡</div>
+    <div class="title-block">
+      <div class="plakat-nr">Plakat 2 von 3 &nbsp;·&nbsp; Judentum</div>
+      <h1>Glaube, Gebote &amp; Symbole</h1>
+      <div class="subtitle">Was Jüdinnen und Juden glauben und wie sie leben</div>
+    </div>
+    <div class="star">✡</div>
+  </div>
+
+  <div class="gold-band">13 Glaubensgrundsätze &nbsp;·&nbsp; Die Zehn Gebote &nbsp;·&nbsp; Kaschrut &nbsp;·&nbsp; Symbole des Judentums</div>
+
+  <div class="poster-body">
+
+    <!-- Row 1: 13 Grundsätze + 10 Gebote -->
+    <div class="row">
+      <div class="col col-60">
+        <div class="box">
+          <div class="box-title">Die 13 Glaubensgrundsätze des Maimonides <span class="tag gold">12. Jh. n. Chr.</span></div>
+          <div class="box-body">
+            <p style="font-size:0.74rem; margin-bottom:8px;">Der jüdische Gelehrte Rabbi Mosche ben Maimon (<strong>Maimonides, „Rambam"</strong>, 1135–1204) formulierte 13 Grundprinzipien des jüdischen Glaubens:</p>
+            <div class="two-col">
+              <ul>
+                <li><strong>1.</strong> Gott existiert</li>
+                <li><strong>2.</strong> Gott ist einzig und einzigartig</li>
+                <li><strong>3.</strong> Gott ist körperlos und nicht abbildbar</li>
+                <li><strong>4.</strong> Gott ist ewig — ohne Anfang und Ende</li>
+                <li><strong>5.</strong> Nur Gott darf angebetet werden</li>
+                <li><strong>6.</strong> Die Prophetie ist wahr</li>
+                <li><strong>7.</strong> Mose ist der größte aller Propheten</li>
+                <li><strong>8.</strong> Die Tora wurde Mose von Gott gegeben</li>
+                <li><strong>9.</strong> Die Tora ist unveränderlich</li>
+                <li><strong>10.</strong> Gott kennt alle Gedanken und Taten</li>
+                <li><strong>11.</strong> Gott belohnt das Gute und bestraft das Böse</li>
+                <li><strong>12.</strong> Der Messias wird kommen</li>
+                <li><strong>13.</strong> Die Auferstehung der Toten wird geschehen</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-title">Die 613 Gebote (Mizwot)</div>
+          <div class="box-body tinted">
+            <p>Die Tora enthält insgesamt <strong>613 Gebote</strong> (hebr. Mizwot, Einzahl: Mizwa = Gebot / gute Tat):</p>
+            <div style="display:flex; gap:12px; margin:8px 0;">
+              <div style="flex:1; border:2px solid var(--blue); padding:8px; text-align:center;">
+                <div style="font-size:1.6rem; font-weight:bold; color:var(--gold);">248</div>
+                <div style="font-size:0.72rem; color:var(--blue);">Positive Gebote</div>
+                <div style="font-size:0.68rem; color:var(--muted);">„Tue dies …"</div>
+              </div>
+              <div style="flex:1; border:2px solid var(--blue); padding:8px; text-align:center;">
+                <div style="font-size:1.6rem; font-weight:bold; color:var(--gold);">365</div>
+                <div style="font-size:0.72rem; color:var(--blue);">Negative Gebote</div>
+                <div style="font-size:0.68rem; color:var(--muted);">„Tue dies nicht …"</div>
+              </div>
+            </div>
+            <p style="font-size:0.74rem;">Die Mizwot regeln alle Bereiche des Lebens: Gottesdienst, Essen, zwischenmenschliche Beziehungen, Feste und vieles mehr. Durch das Erfüllen der Gebote verbindet sich der Mensch mit Gott.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-40">
+        <div class="box">
+          <div class="box-title">Die Zehn Gebote (Dekalog)</div>
+          <div class="box-body" style="padding:8px;">
+            <div class="gebote-grid">
+              <div class="gebot"><span class="nr">I.</span> Du sollst keine anderen Götter haben neben Gott.</div>
+              <div class="gebot"><span class="nr">II.</span> Du sollst dir kein Gottesbild machen oder anbeten.</div>
+              <div class="gebot"><span class="nr">III.</span> Du sollst den Namen Gottes nicht missbrauchen.</div>
+              <div class="gebot"><span class="nr">IV.</span> Gedenke des Schabbats und halte ihn heilig.</div>
+              <div class="gebot"><span class="nr">V.</span> Ehre deinen Vater und deine Mutter.</div>
+              <div class="gebot"><span class="nr">VI.</span> Du sollst nicht töten.</div>
+              <div class="gebot"><span class="nr">VII.</span> Du sollst nicht die Ehe brechen.</div>
+              <div class="gebot"><span class="nr">VIII.</span> Du sollst nicht stehlen.</div>
+              <div class="gebot"><span class="nr">IX.</span> Du sollst nicht falsch Zeugnis ablegen.</div>
+              <div class="gebot"><span class="nr">X.</span> Du sollst nicht begehren, was deinem Nächsten gehört.</div>
+            </div>
+            <p style="font-size:0.68rem; color:var(--muted); margin-top:6px; font-style:italic;">Quelle: Exodus 20, 2–17 / Deuteronomium 5, 6–21</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Kaschrut + Schabbat + Symbole -->
+    <div class="row">
+      <div class="col col-60">
+        <div class="box">
+          <div class="box-title gold">Kaschrut — Die jüdischen Speisegesetze</div>
+          <div class="box-body gold-tint">
+            <p style="margin-bottom:6px;"><strong>Koscher</strong> (hebr. „kaschrut") bedeutet rituell erlaubt. Die Speisegesetze stammen aus der Tora (3. Buch Mose, Kap. 11).</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <div>
+                <p style="color:green; font-weight:bold; font-size:0.75rem;">✔ Erlaubt (Koscher)</p>
+                <ul>
+                  <li>Wiederkäuende Tiere mit gespaltenen Hufen (z. B. Rind, Schaf)</li>
+                  <li>Fische mit Schuppen und Flossen</li>
+                  <li>Bestimmtes Geflügel</li>
+                  <li>Rituelles Schächten (Schechita)</li>
+                </ul>
+              </div>
+              <div>
+                <p style="color:#b00; font-weight:bold; font-size:0.75rem;">✘ Verboten (Treyfe)</p>
+                <ul>
+                  <li>Schweinefleisch</li>
+                  <li>Meeresfrüchte, Muscheln</li>
+                  <li>Mischung von Fleisch und Milch <em>(„Milchig" und „Fleischig" streng trennen)</em></li>
+                  <li>Blut — muss vollständig entfernt werden</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-40">
+        <div class="box">
+          <div class="box-title">Der Schabbat — Wöchentlicher Ruhetag</div>
+          <div class="box-body">
+            <ul>
+              <li><strong>Wann:</strong> Von Freitagabend (Sonnenuntergang) bis Samstagabend</li>
+              <li><strong>Bedeutung:</strong> Gott ruhte am 7. Tag der Schöpfung — diesen Tag heiligen</li>
+              <li><strong>Keine Arbeit:</strong> 39 Tätigkeiten sind verboten (u. a. Kochen, Schreiben, Schalten von Licht)</li>
+              <li><strong>Bräuche:</strong> Kerzen anzünden, Kiddusch (Segensspruch über Wein), Challot (Hefebrote)</li>
+              <li><strong>Gebet:</strong> Besuch der Synagoge am Freitagabend und Samstagmorgen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Symbole (full width) -->
+    <div class="box">
+      <div class="box-title">Symbole des Judentums</div>
+      <div class="box-body">
+        <div class="symbol-grid">
+          <div class="symbol-card">
+            <svg width="60" height="60" viewBox="0 0 110 110">
+              <polygon points="55,5 103,88 7,88" fill="none" stroke="#1a3a6b" stroke-width="5"/>
+              <polygon points="55,105 7,22 103,22" fill="none" stroke="#1a3a6b" stroke-width="5"/>
+            </svg>
+            <div class="sym-name">Davidstern ✡</div>
+            <div class="sym-desc">„Magen David" — das bekannteste jüdische Symbol; auf der israelischen Flagge</div>
+          </div>
+          <div class="symbol-card">
+            <svg width="60" height="60" viewBox="0 0 100 100">
+              <!-- Menorah: 7-armig -->
+              <line x1="50" y1="10" x2="50" y2="80" stroke="#1a3a6b" stroke-width="4"/>
+              <line x1="20" y1="40" x2="80" y2="40" stroke="#1a3a6b" stroke-width="4"/>
+              <line x1="20" y1="40" x2="20" y2="80" stroke="#1a3a6b" stroke-width="3.5"/>
+              <line x1="80" y1="40" x2="80" y2="80" stroke="#1a3a6b" stroke-width="3.5"/>
+              <line x1="32" y1="50" x2="32" y2="80" stroke="#1a3a6b" stroke-width="3"/>
+              <line x1="68" y1="50" x2="68" y2="80" stroke="#1a3a6b" stroke-width="3"/>
+              <line x1="32" y1="50" x2="50" y2="50" stroke="#1a3a6b" stroke-width="3"/>
+              <line x1="68" y1="50" x2="50" y2="50" stroke="#1a3a6b" stroke-width="3"/>
+              <line x1="20" y1="40" x2="50" y2="40" stroke="#1a3a6b" stroke-width="3"/>
+              <line x1="80" y1="40" x2="50" y2="40" stroke="#1a3a6b" stroke-width="3"/>
+              <rect x="38" y="80" width="24" height="5" fill="#1a3a6b"/>
+              <rect x="30" y="85" width="40" height="4" fill="#1a3a6b"/>
+            </svg>
+            <div class="sym-name">Menora 🕎</div>
+            <div class="sym-desc">7-armiger Leuchter — uraltes Symbol des Judentums; auf dem Wappen Israels</div>
+          </div>
+          <div class="symbol-card">
+            <div class="sym-emoji">📜</div>
+            <div class="sym-name">Torarolle</div>
+            <div class="sym-desc">„Sefer Tora" — von Hand geschriebene Rolle, heiligster Gegenstand der Synagoge</div>
+          </div>
+          <div class="symbol-card">
+            <div class="sym-emoji">🔷</div>
+            <div class="sym-name">Mezuza</div>
+            <div class="sym-desc">Kleines Behältnis mit Toratext (Sch'ma Israel) an Türpfosten jüdischer Wohnungen</div>
+          </div>
+          <div class="symbol-card">
+            <div class="sym-emoji">🎺</div>
+            <div class="sym-name">Schofar</div>
+            <div class="sym-desc">Widderhorn — wird zu Rosch Haschana und Jom Kippur als Ruf zur Besinnung geblasen</div>
+          </div>
+          <div class="symbol-card">
+            <div class="sym-emoji">🎩</div>
+            <div class="sym-name">Kippa</div>
+            <div class="sym-desc">Kleine Kopfbedeckung als Zeichen der Ehrerbietung vor Gott — von jüdischen Männern getragen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /poster-body -->
+
+  <div class="quellen">
+    <div class="quellen-title">Quellen</div>
+    <div class="quellen-list">
+      <span>[1] Trepp, Leo: <em>Die Juden. Volk, Geschichte, Religion.</em> Rowohlt Taschenbuch Verlag, Reinbek bei Hamburg, 1998.</span>
+      <span>[2] Brenner, Michael: <em>Kleine jüdische Geschichte.</em> Verlag C.H. Beck, München, 2008.</span>
+      <span>[3] Stemberger, Günter: <em>Einführung in die Judaistik.</em> Verlag C.H. Beck, München, 2003.</span>
+    </div>
+  </div>
+
+</div><!-- /poster -->
+</div><!-- /poster-wrap -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PLAKAT 3 — FESTE & LEBENSZYKLUS
+     ═══════════════════════════════════════════════════════════ -->
+<div class="poster-wrap" id="wrap3">
+<div class="poster">
+
+  <div class="poster-header">
+    <div class="star">✡</div>
+    <div class="title-block">
+      <div class="plakat-nr">Plakat 3 von 3 &nbsp;·&nbsp; Judentum</div>
+      <h1>Feste &amp; Lebenszyklus</h1>
+      <div class="subtitle">Das jüdische Jahr und die wichtigen Lebensereignisse</div>
+    </div>
+    <div class="star">✡</div>
+  </div>
+
+  <div class="gold-band">Rosch ha-Schana · Jom Kippur · Pessach · Chanukka · Bar Mizwa · Hochzeit · Schiva</div>
+
+  <div class="poster-body">
+
+    <!-- Row 1: Der jüdische Kalender + Schabbat-Info -->
+    <div class="row">
+      <div class="col col-60">
+        <div class="box">
+          <div class="box-title">Der jüdische Kalender</div>
+          <div class="box-body tinted">
+            <ul>
+              <li><strong>Mondkalender:</strong> Der jüdische Kalender ist ein lunisolar Kalender (Mond + Sonne). Das Jahr beginnt im Herbst.</li>
+              <li><strong>Jahr:</strong> Das jüdische Jahr 5786 entspricht dem Gregorianischen Jahr 2025/2026.</li>
+              <li><strong>Tage:</strong> Der jüdische Tag beginnt bei Sonnenuntergang — nicht um Mitternacht.</li>
+              <li><strong>12 Monate:</strong> Tischri, Cheschwan, Kislew, Tewet, Schewat, Adar, Nisan, Ijar, Siwan, Tammus, Aw, Elul</li>
+              <li><strong>Schaltjahr:</strong> Im jüdischen Schaltjahr wird ein 13. Monat (Adar II) eingefügt.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-40">
+        <div class="box">
+          <div class="box-title gold">✡ Sch'ma Israel</div>
+          <div class="box-body gold-tint" style="text-align:center;">
+            <p style="font-size:1.1rem; font-weight:bold; line-height:1.5; color:var(--blue);">שְׁמַע יִשְׂרָאֵל</p>
+            <p style="font-size:0.82rem; font-style:italic; margin-top:4px;">"Höre, Israel: Der Ewige ist unser Gott, der Ewige ist einzig!"</p>
+            <p style="font-size:0.72rem; color:var(--muted); margin-top:6px;">Das wichtigste Glaubensbekenntnis im Judentum. Wird morgens und abends gebetet.<br><em>Deuteronomium 6,4</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Feste (two-col with all festivals) -->
+    <div class="row">
+      <div class="col col-60">
+        <div class="box">
+          <div class="box-title">Wichtige jüdische Feste (1. Halbjahr)</div>
+          <div class="box-body">
+            <div class="fest-item">
+              <div class="fest-icon">🍎</div>
+              <div>
+                <div class="fest-name">Rosch ha-Schana — Jüdisches Neujahrsfest</div>
+                <div class="fest-desc"><strong>Wann:</strong> 1.–2. Tischri (Sept./Okt.) &nbsp;|&nbsp; <strong>Dauer:</strong> 2 Tage<br>
+                Beginn der 10 Bußtage (Jamim Noraim). Der Schofar (Widderhorn) wird geblasen. Apfelscheiben in Honig — Symbol für ein „süßes neues Jahr".</div>
+              </div>
+            </div>
+            <div class="fest-item">
+              <div class="fest-icon">🕍</div>
+              <div>
+                <div class="fest-name">Jom Kippur — Versöhnungstag</div>
+                <div class="fest-desc"><strong>Wann:</strong> 10. Tischri (Sept./Okt.) &nbsp;|&nbsp; <strong>Höchster Feiertag!</strong><br>
+                25-stündiges Fasten (kein Essen, kein Trinken). Ganzer Tag in der Synagoge mit Gebet und Reue. Versöhnung mit Gott und den Mitmenschen.</div>
+              </div>
+            </div>
+            <div class="fest-item">
+              <div class="fest-icon">🛖</div>
+              <div>
+                <div class="fest-name">Sukkot — Laubhüttenfest</div>
+                <div class="fest-desc"><strong>Wann:</strong> 15.–22. Tischri (Okt.) &nbsp;|&nbsp; <strong>Dauer:</strong> 7 Tage<br>
+                Erinnerung an 40 Jahre Wüstenwanderung der Israeliten. Man baut und wohnt in provisorischen Hütten (Sukkot) mit Dach aus Zweigen.</div>
+              </div>
+            </div>
+            <div class="fest-item">
+              <div class="fest-icon">📖</div>
+              <div>
+                <div class="fest-name">Simchat Tora — Freude der Tora</div>
+                <div class="fest-desc"><strong>Wann:</strong> 23. Tischri (Okt.) — Direkt nach Sukkot<br>
+                Abschluss und Neuanfang des jährlichen Toralesezyklus. Fröhliches Tanzen mit den Torarollen in der Synagoge.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-40">
+        <div class="box">
+          <div class="box-title">Wichtige jüdische Feste (2. Halbjahr)</div>
+          <div class="box-body">
+            <div class="fest-item">
+              <div class="fest-icon">🕯️</div>
+              <div>
+                <div class="fest-name">Chanukka — Lichterfest</div>
+                <div class="fest-desc"><strong>Wann:</strong> 25. Kislew (Nov./Dez.) &nbsp;|&nbsp; <strong>Dauer:</strong> 8 Tage<br>
+                Sieg der Makkabäer über die Griechen (167 v. Chr.). Wunder: Öl für einen Tag reichte 8 Tage. Jeden Abend eine Kerze mehr am Chanukia entzünden.</div>
+              </div>
+            </div>
+            <div class="fest-item">
+              <div class="fest-icon">🎭</div>
+              <div>
+                <div class="fest-name">Purim — Freudenfest</div>
+                <div class="fest-desc"><strong>Wann:</strong> 14. Adar (Feb./März)<br>
+                Erinnerung an Königin Esther, die das jüdische Volk rettete. Verkleidungen, Lärmen beim Verlesen der Megillat Esther, Gebäck (Hamantaschen).</div>
+              </div>
+            </div>
+            <div class="fest-item">
+              <div class="fest-icon">🌾</div>
+              <div>
+                <div class="fest-name">Pessach — Passa-Fest</div>
+                <div class="fest-desc"><strong>Wann:</strong> 15.–22. Nisan (März/Apr.) &nbsp;|&nbsp; <strong>Dauer:</strong> 8 Tage<br>
+                Erinnerung an den Auszug aus Ägypten (Exodus). Seder-Abend: Festmahl mit Mazzot (ungesäuertes Brot), bitteren Kräutern, Haggada-Lesung.</div>
+              </div>
+            </div>
+            <div class="fest-item">
+              <div class="fest-icon">🌸</div>
+              <div>
+                <div class="fest-name">Schawuot — Wochenfest</div>
+                <div class="fest-desc"><strong>Wann:</strong> 50 Tage nach Pessach (Mai/Juni)<br>
+                Feier der Übergabe der Tora an Mose auf dem Sinai. Traditionell werden Milchspeisen gegessen und die ganze Nacht Tora gelernt.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Lebenszyklus -->
+    <div class="box">
+      <div class="box-title">Der jüdische Lebenszyklus — Von der Geburt bis zum Tod</div>
+      <div class="box-body">
+        <div class="row" style="gap:20px;">
+          <div class="col" style="gap:0;">
+            <div class="lifecycle">
+              <div class="lc-item">
+                <div class="lc-icon">👶</div>
+                <div>
+                  <div class="lc-title">Brit Mila — Beschneidung</div>
+                  <div style="font-size:0.74rem; color:var(--muted);">Am 8. Lebenstag eines Jungen wird er durch die Beschneidung in den Bund Gottes mit Abraham aufgenommen. Ausgeführt vom Mohel.</div>
+                </div>
+              </div>
+              <div class="lc-item">
+                <div class="lc-icon">📚</div>
+                <div>
+                  <div class="lc-title">Bar Mizwa / Bat Mizwa — Religiöse Mündigkeit</div>
+                  <div style="font-size:0.74rem; color:var(--muted);"><strong>Jungen</strong> mit <strong>13 Jahren</strong> (Bar Mizwa = „Sohn des Gebots") und <strong>Mädchen</strong> mit <strong>12 Jahren</strong> (Bat Mizwa) übernehmen volle Verantwortung für die Einhaltung der Gebote. Der Junge liest erstmals aus der Tora in der Synagoge vor.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col" style="gap:0;">
+            <div class="lifecycle">
+              <div class="lc-item">
+                <div class="lc-icon">💍</div>
+                <div>
+                  <div class="lc-title">Chuppa — Jüdische Hochzeit</div>
+                  <div style="font-size:0.74rem; color:var(--muted);">Die Zeremonie findet unter einem Baldachin (Chuppa) statt. Ein Ehevertrag (Ketuba) wird unterzeichnet. Am Ende zerbricht der Bräutigam ein Glas — Erinnerung an die Zerstörung des Tempels.</div>
+                </div>
+              </div>
+              <div class="lc-item">
+                <div class="lc-icon">🕯️</div>
+                <div>
+                  <div class="lc-title">Schiva — Sieben Tage der Trauer</div>
+                  <div style="font-size:0.74rem; color:var(--muted);">Nach dem Tod verbringen die nächsten Angehörigen 7 Tage (Schiva) in Trauer zu Hause. Freunde und Familie besuchen und trösten sie. Das Kaddisch-Gebet wird 11 Monate lang täglich gesprochen.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /poster-body -->
+
+  <div class="quellen">
+    <div class="quellen-title">Quellen</div>
+    <div class="quellen-list">
+      <span>[1] Trepp, Leo: <em>Die Juden. Volk, Geschichte, Religion.</em> Rowohlt Taschenbuch Verlag, Reinbek bei Hamburg, 1998.</span>
+      <span>[2] Brenner, Michael: <em>Kleine jüdische Geschichte.</em> Verlag C.H. Beck, München, 2008.</span>
+      <span>[3] Stemberger, Günter: <em>Einführung in die Judaistik.</em> Verlag C.H. Beck, München, 2003.</span>
+    </div>
+  </div>
+
+</div><!-- /poster -->
+</div><!-- /poster-wrap -->
+
+<script>
+  function show(n) {
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById('wrap' + i).classList.toggle('active', i === n);
+      document.getElementById('btn' + i).classList.toggle('active', i === n);
+    }
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>
