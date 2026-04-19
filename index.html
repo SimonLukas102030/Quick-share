@@ -12,7 +12,6 @@
             --accent: #58a6ff;
             --text: #c9d1d9;
         }
-
         body {
             background: var(--bg);
             color: var(--text);
@@ -20,21 +19,9 @@
             margin: 0;
             padding: 40px 20px;
         }
-
-        .wrapper {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
+        .wrapper { max-width: 1000px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         h1 { font-size: 1.25rem; font-weight: 600; margin: 0; }
-
         #search {
             background: var(--panel);
             border: 1px solid var(--border);
@@ -44,9 +31,7 @@
             width: 250px;
             outline: none;
         }
-
-        #search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
-
+        #search:focus { border-color: var(--accent); }
         #file-list {
             display: grid;
             grid-template-columns: 1fr;
@@ -58,20 +43,15 @@
             list-style: none;
             overflow: hidden;
         }
-
         .file-item { background: var(--panel); }
-
         .file-item a {
             display: flex;
             padding: 16px;
             color: var(--accent);
             text-decoration: none;
             font-size: 0.95rem;
-            transition: background 0.1s;
         }
-
         .file-item a:hover { background: #1f242c; }
-
         .status-msg { padding: 20px; text-align: center; color: #8b949e; }
     </style>
 </head>
@@ -82,7 +62,6 @@
         <h1>Quick Share Rep</h1>
         <input type="text" id="search" placeholder="Filter files..." onkeyup="filterFiles()">
     </header>
-
     <ul id="file-list">
         <li class="status-msg" id="status">Loading repository...</li>
     </ul>
@@ -92,22 +71,23 @@
     let allFiles = [];
 
     async function fetchFiles() {
-        // REPLACE THESE
-        const user = "YOUR_GITHUB_USERNAME";
-        const repo = "YOUR_REPO_NAME";
+        // Updated with your actual details
+        const user = "simonlukas102030";
+        const repo = "Quick-share";
         
         const list = document.getElementById('file-list');
         const status = document.getElementById('status');
 
         try {
             const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/`);
-            if (!res.ok) throw new Error();
+            if (!res.ok) throw new Error("API Limit or Private Repo");
             
             const data = await res.json();
-            allFiles = data.filter(f => f.name.endsWith('.html') && f.name !== 'index.html');
+            // Filter for HTML files and exclude index.html
+            allFiles = data.filter(f => f.name.endsWith('.html') && f.name.toLowerCase() !== 'index.html');
             renderList(allFiles);
         } catch (e) {
-            status.textContent = "Error: Check repo name or privacy settings.";
+            status.textContent = "Error: GitHub API access failed. Check if repo is public.";
         }
     }
 
