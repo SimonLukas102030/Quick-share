@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Best Phones by Price — Simon's Guide</title>
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a24;
+      --surface2: #22222f;
+      --border: #2e2e3f;
+      --accent: #6c63ff;
+      --accent2: #00c896;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --gold: #f5c842;
+      --red: #ff5f6d;
+      --tier1: #1e2a1e;
+      --tier2: #1e1e2a;
+      --tier3: #2a1e1e;
+      --tier4: #1e2a2a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #6c63ff, #00c896);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .tier {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .tier-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tier-header .price-badge {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .tier-header .subtitle {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .tier-1 .tier-header { background: #161d16; }
+    .tier-2 .tier-header { background: #161625; }
+    .tier-3 .tier-header { background: #201616; }
+    .tier-4 .tier-header { background: #141f20; }
+
+    .tier-1 .price-badge { color: #5dbb6c; }
+    .tier-2 .price-badge { color: #6c9fff; }
+    .tier-3 .price-badge { color: #ff9a5c; }
+    .tier-4 .price-badge { color: #bf80ff; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--surface);
+    }
+
+    @media (max-width: 700px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      padding: 1.5rem;
+      border-right: 1px solid var(--border);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .card:last-child { border-right: none; }
+
+    .card.best-pick::before {
+      content: '⭐ Best Pick';
+      position: absolute;
+      top: 0.8rem;
+      right: 0.8rem;
+      background: var(--gold);
+      color: #000;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      width: fit-content;
+    }
+
+    .brand-samsung { background: #1c3a5e; color: #5bb3ff; }
+    .brand-google  { background: #1e3522; color: #5dcc80; }
+    .brand-nothing { background: #2a1a2a; color: #cc88ff; }
+    .brand-apple   { background: #2a2018; color: #ffbb55; }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-top: 0.2rem;
+    }
+
+    .card .price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .card .price-source {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: -0.5rem;
+    }
+
+    .specs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .specs span { display: flex; align-items: flex-start; gap: 0.4rem; }
+
+    .spec-icon { opacity: 0.7; flex-shrink: 0; }
+
+    .pros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+    }
+
+    .pro-tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      background: #1e2a1e;
+      color: var(--accent2);
+      border: 1px solid #2a3f2a;
+    }
+
+    .pro-tag.warn {
+      background: #2a1e1e;
+      color: #ff8a80;
+      border-color: #3f2a2a;
+    }
+
+    .buy-link {
+      display: block;
+      text-align: center;
+      padding: 0.6rem;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-top: auto;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .buy-link:hover {
+      background: var(--border);
+      border-color: var(--accent);
+    }
+
+    /* Best value section */
+    .verdict {
+      max-width: 1100px;
+      margin: 3rem auto 0;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid #6c63ff55;
+      border-radius: 16px;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) {
+      .verdict { grid-template-columns: 1fr; }
+    }
+
+    .verdict h2 {
+      font-size: 1.3rem;
+      background: linear-gradient(90deg, #6c63ff, #00c896);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .verdict p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .verdict-winner {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .verdict-winner .crown {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .verdict-winner h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .verdict-winner .vp {
+      font-size: 0.8rem;
+      color: var(--accent2);
+      font-weight: 600;
+      margin: 0.3rem 0 0.8rem;
+    }
+
+    .verdict-winner .big-price {
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #6c63ff, #00c896);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .verdict-winner p {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .condition-note {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Best Phones by Price</h1>
+  <p>Samsung · Google · Nothing · Apple &nbsp;|&nbsp; New &amp; Refurbished &nbsp;|&nbsp; April 2026 &nbsp;|&nbsp; Screen: near-perfect required</p>
+</header>
+
+<div class="tiers">
+
+  <!-- UNDER €300 -->
+  <div class="tier tier-1">
+    <div class="tier-header">
+      <div>
+        <div class="price-badge">Under €300</div>
+        <div class="subtitle">Budget · Older flagships &amp; mid-range</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card best-pick">
+        <span class="brand-tag brand-google">Google</span>
+        <h3>Pixel 8a 128GB</h3>
+        <div class="price">€230</div>
+        <div class="price-source">rebuy.de · sehr gut</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Tensor G3 · 8GB RAM</span>
+          <span><span class="spec-icon">📷</span> 64MP + 13MP · AI-enhanced</span>
+          <span><span class="spec-icon">🔋</span> 4492mAh · 18W</span>
+          <span><span class="spec-icon">🔄</span> 7 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.1" OLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">Best camera under €300</span>
+          <span class="pro-tag">Pure Android</span>
+          <span class="pro-tag">AI features</span>
+        </div>
+        <a class="buy-link" href="https://www.rebuy.de/kaufen/handy/google/pixel-8-generation/pixel-8a" target="_blank">View on rebuy.de →</a>
+      </div>
+
+      <div class="card">
+        <span class="brand-tag brand-nothing">Nothing</span>
+        <h3>Phone (3a) 128GB</h3>
+        <div class="price">€260</div>
+        <div class="price-source">Geizhals · Brand new</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Snapdragon 7s Gen 3 · 8GB</span>
+          <span><span class="spec-icon">📷</span> 50MP + 8MP + 50MP tele</span>
+          <span><span class="spec-icon">🔋</span> 5000mAh · 50W</span>
+          <span><span class="spec-icon">🔄</span> 3 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.77" AMOLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">Brand new</span>
+          <span class="pro-tag">Glyph interface</span>
+          <span class="pro-tag">Big battery</span>
+          <span class="pro-tag warn">Mid-range chip</span>
+        </div>
+        <a class="buy-link" href="https://geizhals.de/nothing-phone-3a-v192081.html" target="_blank">Compare prices →</a>
+      </div>
+
+      <div class="card">
+        <span class="brand-tag brand-samsung">Samsung</span>
+        <h3>Galaxy S23 128GB</h3>
+        <div class="price">€267</div>
+        <div class="price-source">refurbed.de · "Funktioniert wie neu"</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Snapdragon 8 Gen 2 · 8GB</span>
+          <span><span class="spec-icon">📷</span> 50MP + 12MP + 10MP</span>
+          <span><span class="spec-icon">🔋</span> 3900mAh · 25W</span>
+          <span><span class="spec-icon">🔄</span> 4 years OS updates left</span>
+          <span><span class="spec-icon">📱</span> 6.1" Dynamic AMOLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">2023 flagship chip</span>
+          <span class="pro-tag">Compact size</span>
+          <span class="pro-tag warn">Smaller battery</span>
+        </div>
+        <a class="buy-link" href="https://www.refurbed.de/p/samsung-galaxy-s23/" target="_blank">View on refurbed.de →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- UNDER €400 -->
+  <div class="tier tier-2">
+    <div class="tier-header">
+      <div>
+        <div class="price-badge">Under €400</div>
+        <div class="subtitle">Mid-high · Recent flagships start to appear</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card best-pick">
+        <span class="brand-tag brand-nothing">Nothing</span>
+        <h3>Phone (3a) Pro 256GB</h3>
+        <div class="price">€349</div>
+        <div class="price-source">Geizhals · Brand new</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Snapdragon 7s Gen 3 · 12GB</span>
+          <span><span class="spec-icon">📷</span> 50MP + 50MP 3x periscope + 8MP</span>
+          <span><span class="spec-icon">🔋</span> 5000mAh · 50W</span>
+          <span><span class="spec-icon">🔄</span> 3 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.77" AMOLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">Brand new</span>
+          <span class="pro-tag">3x periscope zoom</span>
+          <span class="pro-tag">Best value new phone</span>
+          <span class="pro-tag warn">Not flagship chip</span>
+        </div>
+        <a class="buy-link" href="https://geizhals.de/nothing-phone-3a-pro-v192093.html" target="_blank">Compare prices →</a>
+      </div>
+
+      <div class="card">
+        <span class="brand-tag brand-samsung">Samsung</span>
+        <h3>Galaxy S24 128GB</h3>
+        <div class="price">€374</div>
+        <div class="price-source">rebuy.de · sehr gut</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Snapdragon 8 Gen 3 · 8GB</span>
+          <span><span class="spec-icon">📷</span> 50MP + 12MP + 10MP</span>
+          <span><span class="spec-icon">🔋</span> 4000mAh · 25W</span>
+          <span><span class="spec-icon">🔄</span> 7 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.2" Dynamic AMOLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">2024 flagship chip</span>
+          <span class="pro-tag">7yr updates</span>
+          <span class="pro-tag">Galaxy AI</span>
+        </div>
+        <a class="buy-link" href="https://www.rebuy.de/kaufen/handy/samsung/galaxy-s24-serie/galaxy-s24" target="_blank">View on rebuy.de →</a>
+      </div>
+
+      <div class="card">
+        <span class="brand-tag brand-apple">Apple</span>
+        <h3>iPhone 14 128GB</h3>
+        <div class="price">€335</div>
+        <div class="price-source">rebuy.de · sehr gut</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> A15 Bionic · 6GB RAM</span>
+          <span><span class="spec-icon">📷</span> 12MP + 12MP ultrawide</span>
+          <span><span class="spec-icon">🔋</span> 3279mAh · 20W</span>
+          <span><span class="spec-icon">🔄</span> iOS 18+ · updates until ~2028</span>
+          <span><span class="spec-icon">📱</span> 6.1" Super Retina OLED</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">Best iOS option here</span>
+          <span class="pro-tag">Fast A15 chip</span>
+          <span class="pro-tag warn">No 120Hz</span>
+          <span class="pro-tag warn">Smaller battery</span>
+        </div>
+        <a class="buy-link" href="https://www.rebuy.de/kaufen/handy/apple/iphone-14-generation/iphone-14" target="_blank">View on rebuy.de →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- UNDER €500 -->
+  <div class="tier tier-3">
+    <div class="tier-header">
+      <div>
+        <div class="price-badge">Under €500</div>
+        <div class="subtitle">Current flagships · Near-perfect screen guaranteed</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card best-pick">
+        <span class="brand-tag brand-samsung">Samsung</span>
+        <h3>Galaxy S24 128GB — Very Good</h3>
+        <div class="price">€440</div>
+        <div class="price-source">refurbed.de · sehr gut (screen near-perfect)</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Snapdragon 8 Gen 3 · 8GB RAM</span>
+          <span><span class="spec-icon">📷</span> 50MP + 12MP + 10MP</span>
+          <span><span class="spec-icon">🔋</span> 4000mAh · 25W</span>
+          <span><span class="spec-icon">🔄</span> 7 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.2" Dynamic AMOLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">2024 flagship</span>
+          <span class="pro-tag">Screen guaranteed</span>
+          <span class="pro-tag">7yr updates</span>
+          <span class="pro-tag">Best price/perf tier</span>
+        </div>
+        <a class="buy-link" href="https://www.refurbed.de/p/samsung-galaxy-s24/" target="_blank">View on refurbed.de →</a>
+      </div>
+
+      <div class="card">
+        <span class="brand-tag brand-google">Google</span>
+        <h3>Pixel 8a 256GB</h3>
+        <div class="price">€330</div>
+        <div class="price-source">rebuy.de · sehr gut</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Tensor G3 · 8GB RAM</span>
+          <span><span class="spec-icon">📷</span> 64MP + 13MP · AI camera</span>
+          <span><span class="spec-icon">🔋</span> 4492mAh · 18W</span>
+          <span><span class="spec-icon">🔄</span> 7 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.1" OLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">256GB storage</span>
+          <span class="pro-tag">Best camera AI</span>
+          <span class="pro-tag">Well under budget</span>
+          <span class="pro-tag warn">Smaller screen</span>
+        </div>
+        <a class="buy-link" href="https://www.rebuy.de/kaufen/handy/google/pixel-8-generation/pixel-8a" target="_blank">View on rebuy.de →</a>
+      </div>
+
+      <div class="card">
+        <span class="brand-tag brand-apple">Apple</span>
+        <h3>iPhone 15 Pro 128GB</h3>
+        <div class="price">€522</div>
+        <div class="price-source">rebuy.de · sehr gut · slightly over</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> A17 Pro · 8GB RAM</span>
+          <span><span class="spec-icon">📷</span> 48MP + 12MP + 12MP 3x</span>
+          <span><span class="spec-icon">🔋</span> 3274mAh · 27W</span>
+          <span><span class="spec-icon">🔄</span> iOS updates until ~2030</span>
+          <span><span class="spec-icon">📱</span> 6.1" Super Retina 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">Best iOS option</span>
+          <span class="pro-tag">A17 Pro chip</span>
+          <span class="pro-tag">Titanium frame</span>
+          <span class="pro-tag warn">€22 over €500</span>
+        </div>
+        <a class="buy-link" href="https://www.rebuy.de/kaufen/handy/apple/iphone-15-generation/iphone-15-pro" target="_blank">View on rebuy.de →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- UNDER €600 -->
+  <div class="tier tier-4">
+    <div class="tier-header">
+      <div>
+        <div class="price-badge">Under €600</div>
+        <div class="subtitle">2024–2025 top flagships · Close to iPhone 17 Pro territory</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card">
+        <span class="brand-tag brand-google">Google</span>
+        <h3>Pixel 9 Pro 128GB</h3>
+        <div class="price">€537</div>
+        <div class="price-source">refurbed.de · sehr gut</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Tensor G4 · 16GB RAM</span>
+          <span><span class="spec-icon">📷</span> 50MP + 48MP ultrawide + 48MP 5x</span>
+          <span><span class="spec-icon">🔋</span> 4700mAh · 27W</span>
+          <span><span class="spec-icon">🔄</span> 7 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.3" LTPO OLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">Best camera this tier</span>
+          <span class="pro-tag">16GB RAM</span>
+          <span class="pro-tag">5x telephoto</span>
+        </div>
+        <a class="buy-link" href="https://www.refurbed.de/p/google-pixel-9-pro/" target="_blank">View on refurbed.de →</a>
+      </div>
+
+      <div class="card best-pick">
+        <span class="brand-tag brand-samsung">Samsung</span>
+        <h3>Galaxy S25 128GB</h3>
+        <div class="price">€537</div>
+        <div class="price-source">refurbed.de · sehr gut</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Snapdragon 8 Elite · 12GB</span>
+          <span><span class="spec-icon">📷</span> 50MP + 12MP + 10MP 3x</span>
+          <span><span class="spec-icon">🔋</span> 4000mAh · 25W</span>
+          <span><span class="spec-icon">🔄</span> 7 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.2" Dynamic AMOLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">2025 flagship chip</span>
+          <span class="pro-tag">Fastest Android</span>
+          <span class="pro-tag">Galaxy AI</span>
+        </div>
+        <a class="buy-link" href="https://www.refurbed.de/p/samsung-galaxy-s25/" target="_blank">View on refurbed.de →</a>
+      </div>
+
+      <div class="card">
+        <span class="brand-tag brand-samsung">Samsung</span>
+        <h3>Galaxy S24 Ultra 256GB</h3>
+        <div class="price">€543</div>
+        <div class="price-source">rebuy.de · condition: verify before buying</div>
+        <div class="specs">
+          <span><span class="spec-icon">⚙</span> Snapdragon 8 Gen 3 · 12GB</span>
+          <span><span class="spec-icon">📷</span> 200MP + 12MP + 50MP 5x + 10MP</span>
+          <span><span class="spec-icon">🔋</span> 5000mAh · 45W</span>
+          <span><span class="spec-icon">🔄</span> 7 years OS updates</span>
+          <span><span class="spec-icon">📱</span> 6.8" Dynamic AMOLED 120Hz</span>
+        </div>
+        <div class="pros">
+          <span class="pro-tag">S Pen included</span>
+          <span class="pro-tag">200MP camera</span>
+          <span class="pro-tag">Biggest screen</span>
+          <span class="pro-tag warn">Verify screen grade!</span>
+        </div>
+        <a class="buy-link" href="https://www.rebuy.de/kaufen/handy-samsung-galaxy-s24-ultra" target="_blank">View on rebuy.de →</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- VERDICT -->
+<div class="verdict">
+  <div>
+    <h2>Best Price-to-Performance</h2>
+    <p>
+      The <strong>Samsung Galaxy S24</strong> hits the sweet spot. You get a genuine 2024 flagship processor (Snapdragon 8 Gen 3), 7 years of updates, and a 120Hz AMOLED display — for around €374–440 depending on condition. That's the same chip found in the S24 Ultra which costs 2–3× more when new.<br><br>
+      At €440 with a near-perfect screen guarantee on refurbed.de, it offers more raw performance per euro than anything else in this list — beating phones that cost €200–300 more.
+    </p>
+  </div>
+  <div class="verdict-winner">
+    <div class="crown">🏆</div>
+    <h3>Samsung Galaxy S24</h3>
+    <div class="vp">Best Price-to-Performance</div>
+    <div class="big-price">€374–440</div>
+    <p style="color: var(--muted);">Snapdragon 8 Gen 3 · 7yr updates · 120Hz AMOLED · near-perfect screen</p>
+    <a class="buy-link" style="margin-top: 1rem;" href="https://www.refurbed.de/p/samsung-galaxy-s24/" target="_blank">View on refurbed.de →</a>
+  </div>
+</div>
+
+<div class="condition-note">
+  * All used/refurbished prices are approximate as of April 2026 and may fluctuate. "Sehr gut" = max 1 tiny scratch on screen, only visible in direct light — not visible during normal use. Always verify condition grade before purchasing. Prices from rebuy.de, refurbed.de, and Geizhals.de.
+</div>
+
+</body>
+</html>
