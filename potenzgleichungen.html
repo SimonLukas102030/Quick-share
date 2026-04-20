@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potenzgleichungen - Interaktives Lerntool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #378ADD;
+            --primary-light: #85B7EB;
+            --secondary: #639922;
+            --danger: #E24B4A;
+            --bg: #ffffff;
+            --surface: #F1EFE8;
+            --text: #2C2C2A;
+            --text-secondary: #5F5E5A;
+            --border: #D3D1C7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        nav {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        nav a.active {
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--primary);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text);
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .info-box {
+            background: var(--surface);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .example {
+            background: var(--surface);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .formula-display {
+            font-size: 1.3rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #185FA5;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--surface);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--surface);
+        }
+
+        canvas {
+            max-width: 100%;
+            height: 400px;
+            margin: 1rem 0;
+        }
+
+        .quiz-question {
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: var(--surface);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--secondary);
+            background: #EAF3DE;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--danger);
+            background: #FCEBEB;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #EAF3DE;
+            color: #3B6D11;
+            border: 1px solid var(--secondary);
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FCEBEB;
+            color: #A32D2D;
+            border: 1px solid var(--danger);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--surface);
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .score-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--surface);
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .score-number {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            margin: 1rem 0;
+            padding-left: 3rem;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .solution-steps {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .error-message {
+            background: #FCEBEB;
+            color: #A32D2D;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#theorie" class="nav-link active" onclick="showSection('theorie')">Theorie</a></li>
+            <li><a href="#rechner" class="nav-link" onclick="showSection('rechner')">Rechner</a></li>
+            <li><a href="#quiz" class="nav-link" onclick="showSection('quiz')">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Theorie-Sektion -->
+        <section id="theorie" class="section active">
+            <h1>Potenzgleichungen verstehen</h1>
+            
+            <div class="card">
+                <h2>Was ist eine Potenzgleichung?</h2>
+                <p>Eine Potenzgleichung ist eine Gleichung, in der die Variable als Basis einer Potenz auftritt. Die allgemeine Form lautet:</p>
+                <div class="formula-display">
+                    x<sup>n</sup> = a
+                </div>
+                <p>Dabei ist <strong>n</strong> der Exponent (eine positive ganze Zahl) und <strong>a</strong> eine reelle Zahl.</p>
+            </div>
+
+            <div class="card">
+                <h2>Grundprinzip der Lösung</h2>
+                <p>Um eine Potenzgleichung zu lösen, ziehen wir die n-te Wurzel auf beiden Seiten:</p>
+                <div class="formula-display">
+                    x = ⁿ√a
+                </div>
+                
+                <div class="info-box">
+                    <strong>Wichtig:</strong> Die Anzahl der Lösungen hängt vom Exponenten und vom Vorzeichen von a ab!
+                </div>
+
+                <h3>Regeln für Lösungen</h3>
+                <ul class="step-list">
+                    <li><strong>Gerader Exponent (n = 2, 4, 6, ...):</strong>
+                        <ul style="margin-top: 0.5rem; padding-left: 1rem;">
+                            <li>Wenn a > 0: Zwei Lösungen: x = ±ⁿ√a</li>
+                            <li>Wenn a = 0: Eine Lösung: x = 0</li>
+                            <li>Wenn a < 0: Keine reellen Lösungen</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ungerader Exponent (n = 3, 5, 7, ...):</strong>
+                        <ul style="margin-top: 0.5rem; padding-left: 1rem;">
+                            <li>Für jeden Wert von a: Genau eine Lösung: x = ⁿ√a</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Lösungsschritte im Detail</h2>
+                <ol class="step-list">
+                    <li>Gleichung in die Form x<sup>n</sup> = a bringen (Umstellen)</li>
+                    <li>Überprüfen, ob der Exponent gerade oder ungerade ist</li>
+                    <li>Überprüfen, ob a positiv, negativ oder null ist</li>
+                    <li>Die n-te Wurzel ziehen (bei geradem n: ± nicht vergessen!)</li>
+                    <li>Probe machen: Lösungen in die ursprüngliche Gleichung einsetzen</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h2>Beispiele</h2>
+                
+                <h3>Beispiel 1: x² = 25</h3>
+                <div class="solution-steps">
+                    <p><strong>Exponent:</strong> 2 (gerade)</p>
+                    <p><strong>Rechte Seite:</strong> 25 (positiv)</p>
+                    <p><strong>Lösung:</strong> x = ±√25 = ±5</p>
+                    <p><strong>Probe:</strong></p>
+                    <ul>
+                        <li>x₁ = 5: 5² = 25 ✓</li>
+                        <li>x₂ = -5: (-5)² = 25 ✓</li>
+                    </ul>
+                </div>
+
+                <h3>Beispiel 2: x³ = -8</h3>
+                <div class="solution-steps">
+                    <p><strong>Exponent:</strong> 3 (ungerade)</p>
+                    <p><strong>Rechte Seite:</strong> -8 (negativ)</p>
+                    <p><strong>Lösung:</strong> x = ³√(-8) = -2</p>
+                    <p><strong>Probe:</strong> (-2)³ = -8 ✓</p>
+                </div>
+
+                <h3>Beispiel 3: x⁴ = -16</h3>
+                <div class="solution-steps">
+                    <p><strong>Exponent:</strong> 4 (gerade)</p>
+                    <p><strong>Rechte Seite:</strong> -16 (negativ)</p>
+                    <p><strong>Lösung:</strong> Keine reellen Lösungen!</p>
+                    <p><strong>Begründung:</strong> x⁴ ist immer positiv oder null, kann also nie -16 sein.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Komplexere Gleichungen</h2>
+                <p>Manchmal muss die Gleichung erst umgeformt werden:</p>
+                
+                <h3>Beispiel: 3x² - 12 = 0</h3>
+                <div class="solution-steps">
+                    <p><strong>Schritt 1:</strong> Umformen</p>
+                    <p>3x² = 12</p>
+                    <p>x² = 4</p>
+                    <p><strong>Schritt 2:</strong> Lösen</p>
+                    <p>x = ±√4 = ±2</p>
+                </div>
+
+                <h3>Beispiel: (x - 1)³ = 27</h3>
+                <div class="solution-steps">
+                    <p><strong>Schritt 1:</strong> Wurzel ziehen</p>
+                    <p>x - 1 = ³√27 = 3</p>
+                    <p><strong>Schritt 2:</strong> Nach x auflösen</p>
+                    <p>x = 3 + 1 = 4</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rechner-Sektion -->
+        <section id="rechner" class="section">
+            <h1>Potenzgleichungs-Rechner</h1>
+            
+            <div class="card">
+                <h2>Gleichung eingeben</h2>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="coeff">Koeffizient (a)</label>
+                        <input type="number" id="coeff" value="1" step="0.1">
+                    </div>
+                    <div class="control-group">
+                        <label for="exponent">Exponent (n)</label>
+                        <input type="number" id="exponent" value="2" min="1" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="constant">Konstante (c)</label>
+                        <input type="number" id="constant" value="0" step="0.1">
+                    </div>
+                    <div class="control-group">
+                        <label for="rightSide">Rechte Seite (b)</label>
+                        <input type="number" id="rightSide" value="16" step="0.1">
+                    </div>
+                </div>
+                
+                <div class="formula-display" id="equationDisplay">
+                    x² = 16
+                </div>
+
+                <div class="button-group">
+                    <button onclick="solveEquation()">Gleichung lösen</button>
+                    <button onclick="createValueTable()">Wertetabelle erstellen</button>
+                    <button onclick="drawGraph()">Graph anzeigen</button>
+                    <button onclick="findValue()">Funktionswert finden</button>
+                </div>
+            </div>
+
+            <div class="card" id="solutionCard" style="display: none;">
+                <h2>Lösung</h2>
+                <div id="solutionSteps"></div>
+            </div>
+
+            <div class="card" id="valueTableCard" style="display: none;">
+                <h2>Wertetabelle</h2>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="rangeStart">Von</label>
+                        <input type="number" id="rangeStart" value="-5" step="0.5">
+                    </div>
+                    <div class="control-group">
+                        <label for="rangeEnd">Bis</label>
+                        <input type="number" id="rangeEnd" value="5" step="0.5">
+                    </div>
+                    <div class="control-group">
+                        <label for="rangeStep">Schrittweite</label>
+                        <input type="number" id="rangeStep" value="0.5" min="0.1" step="0.1">
+                    </div>
+                </div>
+                <button onclick="createValueTable()" style="margin: 1rem 0;">Tabelle aktualisieren</button>
+                <div id="valueTable"></div>
+            </div>
+
+            <div class="card" id="findValueCard" style="display: none;">
+                <h2>Funktionswert finden</h2>
+                <div class="control-group">
+                    <label for="xValue">x-Wert eingeben</label>
+                    <input type="number" id="xValue" value="2" step="0.1">
+                </div>
+                <button onclick="calculateFunctionValue()" style="margin: 1rem 0;">Wert berechnen</button>
+                <div id="functionValueResult"></div>
+            </div>
+
+            <div class="card" id="graphCard" style="display: none;">
+                <h2>Graph</h2>
+                <canvas id="graph"></canvas>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="graphRangeStart">x von</label>
+                        <input type="number" id="graphRangeStart" value="-10" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="graphRangeEnd">x bis</label>
+                        <input type="number" id="graphRangeEnd" value="10" step="1">
+                    </div>
+                </div>
+                <button onclick="drawGraph()">Graph neu zeichnen</button>
+            </div>
+        </section>
+
+        <!-- Quiz-Sektion -->
+        <section id="quiz" class="section">
+            <h1>Potenzgleichungen Quiz</h1>
+            
+            <div class="card">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div id="quizContainer"></div>
+                
+                <div id="quizResults" style="display: none;">
+                    <div class="score-card">
+                        <h2>Quiz beendet!</h2>
+                        <div class="score-number" id="finalScore">0/0</div>
+                        <p id="scoreMessage"></p>
+                        <button onclick="restartQuiz()" style="margin-top: 1.5rem;">Quiz wiederholen</button>
+                    </div>
+                    <div id="detailedResults"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script>
+        let currentChart = null;
+        let quizState = {
+            questions: [],
+            currentQuestion: 0,
+            answers: [],
+            score: 0
+        };
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (sectionId === 'quiz' && quizState.questions.length === 0) {
+                generateQuiz();
+            }
+        }
+
+        function updateEquationDisplay() {
+            const a = parseFloat(document.getElementById('coeff').value);
+            const n = parseInt(document.getElementById('exponent').value);
+            const c = parseFloat(document.getElementById('constant').value);
+            const b = parseFloat(document.getElementById('rightSide').value);
+            
+            let leftSide = '';
+            if (a !== 1) leftSide += a;
+            leftSide += `x<sup>${n}</sup>`;
+            if (c !== 0) leftSide += ` ${c >= 0 ? '+' : ''} ${c}`;
+            
+            document.getElementById('equationDisplay').innerHTML = `${leftSide} = ${b}`;
+        }
+
+        document.getElementById('coeff').addEventListener('input', updateEquationDisplay);
+        document.getElementById('exponent').addEventListener('input', updateEquationDisplay);
+        document.getElementById('constant').addEventListener('input', updateEquationDisplay);
+        document.getElementById('rightSide').addEventListener('input', updateEquationDisplay);
+
+        function solveEquation() {
+            const a = parseFloat(document.getElementById('coeff').value);
+            const n = parseInt(document.getElementById('exponent').value);
+            const c = parseFloat(document.getElementById('constant').value);
+            const b = parseFloat(document.getElementById('rightSide').value);
+            
+            const solutionCard = document.getElementById('solutionCard');
+            const solutionSteps = document.getElementById('solutionSteps');
+            solutionCard.style.display = 'block';
+            
+            let html = '<div class="solution-steps">';
+            html += `<h3>Gegeben: ${a !== 1 ? a : ''}x<sup>${n}</sup>${c !== 0 ? ` ${c >= 0 ? '+' : ''} ${c}` : ''} = ${b}</h3>`;
+            
+            const value = (b - c) / a;
+            
+            if (c !== 0) {
+                html += `<p><strong>Schritt 1:</strong> Konstante subtrahieren</p>`;
+                html += `<p>${a !== 1 ? a : ''}x<sup>${n}</sup> = ${b} - ${c} = ${b - c}</p>`;
+            }
+            
+            if (a !== 1) {
+                html += `<p><strong>Schritt ${c !== 0 ? 2 : 1}:</strong> Durch ${a} teilen</p>`;
+                html += `<p>x<sup>${n}</sup> = ${value.toFixed(4)}</p>`;
+            }
+            
+            const isEven = n % 2 === 0;
+            
+            html += `<p><strong>Analyse:</strong></p>`;
+            html += `<ul>`;
+            html += `<li>Exponent n = ${n} ist ${isEven ? 'gerade' : 'ungerade'}</li>`;
+            html += `<li>Rechte Seite = ${value.toFixed(4)} ist ${value > 0 ? 'positiv' : value < 0 ? 'negativ' : 'null'}</li>`;
+            html += `</ul>`;
+            
+            if (isEven && value < 0) {
+                html += `<div class="error-message">`;
+                html += `<strong>Keine reellen Lösungen!</strong><br>`;
+                html += `Bei geradem Exponent kann x<sup>${n}</sup> nicht negativ sein.`;
+                html += `</div>`;
+            } else {
+                html += `<p><strong>Lösung:</strong></p>`;
+                
+                if (value === 0) {
+                    html += `<div class="formula-display">x = 0</div>`;
+                    html += `<p><strong>Probe:</strong> 0<sup>${n}</sup> = 0 ✓</p>`;
+                } else if (isEven) {
+                    const root = Math.pow(Math.abs(value), 1/n);
+                    html += `<div class="formula-display">x₁ = ${root.toFixed(4)}<br>x₂ = ${(-root).toFixed(4)}</div>`;
+                    html += `<p><strong>Probe:</strong></p>`;
+                    html += `<ul>`;
+                    html += `<li>x₁: ${root.toFixed(4)}<sup>${n}</sup> = ${Math.pow(root, n).toFixed(4)} ✓</li>`;
+                    html += `<li>x₂: ${(-root).toFixed(4)}<sup>${n}</sup> = ${Math.pow(-root, n).toFixed(4)} ✓</li>`;
+                    html += `</ul>`;
+                } else {
+                    const root = Math.sign(value) * Math.pow(Math.abs(value), 1/n);
+                    html += `<div class="formula-display">x = ${root.toFixed(4)}</div>`;
+                    html += `<p><strong>Probe:</strong> ${root.toFixed(4)}<sup>${n}</sup> = ${Math.pow(root, n).toFixed(4)} ✓</p>`;
+                }
+            }
+            
+            html += '</div>';
+            solutionSteps.innerHTML = html;
+        }
+
+        function createValueTable() {
+            const a = parseFloat(document.getElementById('coeff').value);
+            const n = parseInt(document.getElementById('exponent').value);
+            const c = parseFloat(document.getElementById('constant').value);
+            
+            const start = parseFloat(document.getElementById('rangeStart').value);
+            const end = parseFloat(document.getElementById('rangeEnd').value);
+            const step = parseFloat(document.getElementById('rangeStep').value);
+            
+            const tableCard = document.getElementById('valueTableCard');
+            const tableDiv = document.getElementById('valueTable');
+            tableCard.style.display = 'block';
+            
+            let html = '<table><thead><tr><th>x</th><th>y = ' + (a !== 1 ? a : '') + 'x<sup>' + n + '</sup>' + (c !== 0 ? ` ${c >= 0 ? '+' : ''} ${c}` : '') + '</th></tr></thead><tbody>';
+            
+            for (let x = start; x <= end; x += step) {
+                const y = a * Math.pow(x, n) + c;
+                html += `<tr><td>${x.toFixed(2)}</td><td>${y.toFixed(4)}</td></tr>`;
+            }
+            
+            html += '</tbody></table>';
+            tableDiv.innerHTML = html;
+        }
+
+        function findValue() {
+            document.getElementById('findValueCard').style.display = 'block';
+        }
+
+        function calculateFunctionValue() {
+            const a = parseFloat(document.getElementById('coeff').value);
+            const n = parseInt(document.getElementById('exponent').value);
+            const c = parseFloat(document.getElementById('constant').value);
+            const x = parseFloat(document.getElementById('xValue').value);
+            
+            const y = a * Math.pow(x, n) + c;
+            
+            const resultDiv = document.getElementById('functionValueResult');
+            resultDiv.innerHTML = `
+                <div class="solution-steps">
+                    <p><strong>Berechnung:</strong></p>
+                    <p>f(${x}) = ${a !== 1 ? a + ' · ' : ''}${x}<sup>${n}</sup>${c !== 0 ? ` ${c >= 0 ? '+' : ''} ${c}` : ''}</p>
+                    <p>f(${x}) = ${a !== 1 ? a + ' · ' : ''}${Math.pow(x, n).toFixed(4)}${c !== 0 ? ` ${c >= 0 ? '+' : ''} ${c}` : ''}</p>
+                    <div class="formula-display">f(${x}) = ${y.toFixed(4)}</div>
+                </div>
+            `;
+        }
+
+        function drawGraph() {
+            const a = parseFloat(document.getElementById('coeff').value);
+            const n = parseInt(document.getElementById('exponent').value);
+            const c = parseFloat(document.getElementById('constant').value);
+            
+            const start = parseFloat(document.getElementById('graphRangeStart').value);
+            const end = parseFloat(document.getElementById('graphRangeEnd').value);
+            
+            const graphCard = document.getElementById('graphCard');
+            graphCard.style.display = 'block';
+            
+            const points = 200;
+            const step = (end - start) / points;
+            const data = [];
+            
+            for (let x = start; x <= end; x += step) {
+                const y = a * Math.pow(x, n) + c;
+                if (!isNaN(y) && isFinite(y)) {
+                    data.push({x: x, y: y});
+                }
+            }
+            
+            const ctx = document.getElementById('graph').getContext('2d');
+            
+            if (currentChart) {
+                currentChart.destroy();
+            }
+            
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: `y = ${a !== 1 ? a : ''}x^${n}${c !== 0 ? ` ${c >= 0 ? '+' : ''} ${c}` : ''}`,
+                        data: data,
+                        borderColor: '#378ADD',
+                        backgroundColor: 'rgba(55, 138, 221, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            title: {
+                                display: true,
+                                text: 'x'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'y'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateQuiz() {
+            const templates = [
+                {
+                    generate: () => {
+                        const n = Math.random() < 0.5 ? 2 : 3;
+                        const a = [4, 9, 16, 25, 36, 49][Math.floor(Math.random() * 6)];
+                        const root = Math.sqrt(a);
+                        return {
+                            question: `Löse die Gleichung: x<sup>${n}</sup> = ${n === 3 ? a : a}`,
+                            options: n === 2 
+                                ? [`x = ${root}`, `x = ±${root}`, `x = ${root * 2}`, `x = ±${root * 2}`]
+                                : [`x = ${Math.cbrt(a).toFixed(1)}`, `x = ±${Math.cbrt(a).toFixed(1)}`, `x = ${(Math.cbrt(a) * 2).toFixed(1)}`, `Keine Lösung`],
+                            correct: n === 2 ? 1 : 0,
+                            explanation: n === 2 
+                                ? `Bei geradem Exponent gibt es zwei Lösungen: x = ±√${a} = ±${root}`
+                                : `Bei ungeradem Exponent gibt es eine Lösung: x = ³√${a} = ${Math.cbrt(a).toFixed(1)}`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const n = 2;
+                        const a = -[4, 9, 16, 25][Math.floor(Math.random() * 4)];
+                        return {
+                            question: `Wie viele reelle Lösungen hat x<sup>2</sup> = ${a}?`,
+                            options: ['Keine', 'Eine', 'Zwei', 'Unendlich viele'],
+                            correct: 0,
+                            explanation: `x² kann nicht negativ sein, daher gibt es keine reellen Lösungen für x² = ${a}`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const n = [3, 5][Math.floor(Math.random() * 2)];
+                        const base = [2, 3, 4][Math.floor(Math.random() * 3)];
+                        const a = -Math.pow(base, n);
+                        const solution = -base;
+                        return {
+                            question: `Löse die Gleichung: x<sup>${n}</sup> = ${a}`,
+                            options: [`x = ${-solution}`, `x = ${solution}`, `x = ±${Math.abs(solution)}`, 'Keine Lösung'],
+                            correct: 1,
+                            explanation: `Bei ungeradem Exponent kann die rechte Seite negativ sein. x = ${solution}`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const coeff = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+                        const a = [8, 12, 16, 20][Math.floor(Math.random() * 4)];
+                        const result = Math.sqrt(a / coeff);
+                        return {
+                            question: `Löse: ${coeff}x<sup>2</sup> = ${a}`,
+                            options: [`x = ${result.toFixed(1)}`, `x = ±${result.toFixed(1)}`, `x = ${(result * 2).toFixed(1)}`, `x = ±${(result / 2).toFixed(1)}`],
+                            correct: 1,
+                            explanation: `Erst durch ${coeff} teilen: x² = ${(a/coeff).toFixed(1)}, dann Wurzel ziehen: x = ±${result.toFixed(1)}`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const n = [2, 4, 6][Math.floor(Math.random() * 3)];
+                        return {
+                            question: `Welche Aussage über x<sup>${n}</sup> = a ist richtig?`,
+                            options: [
+                                'Hat immer genau eine Lösung',
+                                'Hat keine Lösung wenn a < 0',
+                                'Hat zwei Lösungen wenn a < 0',
+                                'Hat unendlich viele Lösungen'
+                            ],
+                            correct: 1,
+                            explanation: `Bei geradem Exponent ist x<sup>${n}</sup> immer positiv oder null, daher gibt es keine Lösung für negative a`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const base = [2, 3, 4][Math.floor(Math.random() * 3)];
+                        const result = Math.pow(base, 2);
+                        return {
+                            question: `Berechne: (${base})² = ?`,
+                            options: [`${result}`, `${result * 2}`, `${base * 2}`, `${base + 2}`],
+                            correct: 0,
+                            explanation: `${base}² = ${base} · ${base} = ${result}`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const n = 3;
+                        const base = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+                        const a = Math.pow(base, n);
+                        return {
+                            question: `Berechne: ³√${a} = ?`,
+                            options: [`${base}`, `${base * 3}`, `${a / 3}`, `${base / 3}`],
+                            correct: 0,
+                            explanation: `³√${a} = ${base}, denn ${base}³ = ${a}`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const constant = [3, 5, 7][Math.floor(Math.random() * 3)];
+                        const a = [12, 20, 28][Math.floor(Math.random() * 3)];
+                        const result = Math.sqrt(a - constant);
+                        return {
+                            question: `Löse: x² + ${constant} = ${a}`,
+                            options: [`x = ${result.toFixed(1)}`, `x = ±${result.toFixed(1)}`, `x = ${(result * 2).toFixed(1)}`, 'Keine Lösung'],
+                            correct: 1,
+                            explanation: `x² = ${a} - ${constant} = ${a - constant}, dann x = ±√${a - constant} = ±${result.toFixed(1)}`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const n = [3, 5][Math.floor(Math.random() * 2)];
+                        return {
+                            question: `Wie viele Lösungen hat x<sup>${n}</sup> = 0?`,
+                            options: ['Keine', 'Genau eine', 'Zwei', 'Drei'],
+                            correct: 1,
+                            explanation: `Bei x<sup>${n}</sup> = 0 ist die einzige Lösung x = 0`
+                        };
+                    }
+                },
+                {
+                    generate: () => {
+                        const shift = [1, 2, 3][Math.floor(Math.random() * 3)];
+                        const a = [8, 27, 64][Math.floor(Math.random() * 3)];
+                        const root = Math.cbrt(a);
+                        const result = root + shift;
+                        return {
+                            question: `Löse: (x - ${shift})³ = ${a}`,
+                            options: [`x = ${result.toFixed(0)}`, `x = ${(result - 2 * shift).toFixed(0)}`, `x = ${root.toFixed(0)}`, `x = ±${result.toFixed(0)}`],
+                            correct: 0,
+                            explanation: `x - ${shift} = ³√${a} = ${root.toFixed(0)}, also x = ${root.toFixed(0)} + ${shift} = ${result.toFixed(0)}`
+                        };
+                    }
+                }
+            ];
+
+            quizState.questions = [];
+            for (let i = 0; i < 10; i++) {
+                const template = templates[i % templates.length];
+                quizState.questions.push(template.generate());
+            }
+            
+            quizState.currentQuestion = 0;
+            quizState.answers = [];
+            quizState.score = 0;
+            
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('quizContainer');
+            const question = quizState.questions[quizState.currentQuestion];
+            const progress = ((quizState.currentQuestion) / quizState.questions.length) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            let html = `
+                <h2>Frage ${quizState.currentQuestion + 1} von ${quizState.questions.length}</h2>
+                <p style="font-size: 1.2rem; margin: 1.5rem 0;">${question.question}</p>
+                <div class="quiz-options">
+            `;
+            
+            question.options.forEach((option, index) => {
+                html += `<div class="quiz-option" onclick="selectAnswer(${index})">${option}</div>`;
+            });
+            
+            html += `</div>
+                <div class="quiz-feedback" id="feedback"></div>
+                <div class="button-group" style="margin-top: 1.5rem;">
+                    <button id="checkBtn" onclick="checkAnswer()" disabled>Antwort prüfen</button>
+                    <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Nächste Frage</button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function selectAnswer(index) {
+            document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === index) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            quizState.answers[quizState.currentQuestion] = index;
+            document.getElementById('checkBtn').disabled = false;
+        }
+
+        function checkAnswer() {
+            const question = quizState.questions[quizState.currentQuestion];
+            const userAnswer = quizState.answers[quizState.currentQuestion];
+            const isCorrect = userAnswer === question.correct;
+            
+            if (isCorrect) quizState.score++;
+            
+            document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+                opt.onclick = null;
+                if (i === question.correct) {
+                    opt.classList.add('correct');
+                } else if (i === userAnswer && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            const feedback = document.getElementById('feedback');
+            feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+            feedback.innerHTML = `
+                <strong>${isCorrect ? 'Richtig!' : 'Leider falsch.'}</strong><br>
+                ${question.explanation}
+            `;
+            
+            document.getElementById('checkBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            quizState.currentQuestion++;
+            
+            if (quizState.currentQuestion < quizState.questions.length) {
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const percentage = (quizState.score / quizState.questions.length) * 100;
+            
+            let message = '';
+            if (percentage >= 90) message = 'Ausgezeichnet! Du beherrschst Potenzgleichungen perfekt!';
+            else if (percentage >= 70) message = 'Sehr gut! Du hast die meisten Konzepte verstanden.';
+            else if (percentage >= 50) message = 'Gut gemacht! Mit etwas Übung wirst du noch besser.';
+            else message = 'Übe weiter! Schau dir die Theorie nochmal an.';
+            
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('quizResults').style.display = 'block';
+            document.getElementById('finalScore').textContent = `${quizState.score}/${quizState.questions.length}`;
+            document.getElementById('scoreMessage').textContent = message;
+            
+            let detailedHtml = '<div class="card"><h2>Detaillierte Ergebnisse</h2>';
+            quizState.questions.forEach((q, i) => {
+                const userAnswer = quizState.answers[i];
+                const isCorrect = userAnswer === q.correct;
+                detailedHtml += `
+                    <div style="margin: 1.5rem 0; padding: 1rem; background: ${isCorrect ? '#EAF3DE' : '#FCEBEB'}; border-radius: 8px;">
+                        <p><strong>Frage ${i + 1}:</strong> ${q.question}</p>
+                        <p>Deine Antwort: ${q.options[userAnswer]} ${isCorrect ? '✓' : '✗'}</p>
+                        ${!isCorrect ? `<p>Richtig: ${q.options[q.correct]}</p>` : ''}
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">${q.explanation}</p>
+                    </div>
+                `;
+            });
+            detailedHtml += '</div>';
+            document.getElementById('detailedResults').innerHTML = detailedHtml;
+        }
+
+        function restartQuiz() {
+            document.getElementById('quizResults').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            generateQuiz();
+        }
+
+        updateEquationDisplay();
+    </script>
+</body>
+</html>
