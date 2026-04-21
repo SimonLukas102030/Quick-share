@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Potenzgleichungen - Interaktives Lerntool</title>
+    <script>
+      // Prüft, ob der Nutzer von der Index-Seite kommt
+      if (document.referrer === "" || !document.referrer.includes("index.html")) {
+        alert("Zugriff verweigert. Bitte nutze den Hub.");
+        window.location.href = "index.html";
+      }
+    </script>
     <style>
         * {
             margin: 0;
