@@ -2,112 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Share</title>
+    <title>Quick Share Hub</title>
     <style>
-        :root {
-            --bg: #0d1117;
-            --panel: #161b22;
-            --border: #30363d;
-            --accent: #58a6ff;
-            --text: #c9d1d9;
+        body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 40px; }
+        .wrapper { max-width: 800px; margin: 0 auto; }
+        .file-item { 
+            background: #161b22; border: 1px solid #30363d; 
+            margin-bottom: 8px; border-radius: 6px; list-style: none;
         }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 40px 20px;
-        }
-        .wrapper { max-width: 1000px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        h1 { font-size: 1.25rem; font-weight: 600; margin: 0; }
-        #search {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 12px;
-            border-radius: 6px;
-            width: 250px;
-            outline: none;
-        }
-        #search:focus { border-color: var(--accent); }
-        #file-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 0;
-            list-style: none;
-            overflow: hidden;
-        }
-        .file-item { background: var(--panel); }
-        .file-item a {
-            display: flex;
-            padding: 16px;
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.95rem;
+        .file-item a { 
+            display: block; padding: 15px; color: #58a6ff; 
+            text-decoration: none; cursor: pointer;
         }
         .file-item a:hover { background: #1f242c; }
-        .status-msg { padding: 20px; text-align: center; color: #8b949e; }
+        .locked::after { content: " 🔒"; font-size: 0.8rem; }
     </style>
 </head>
 <body>
+    <div class="wrapper">
+        <h1>Quick Share</h1>
+        <ul id="file-list">Loading...</ul>
+    </div>
 
-<div class="wrapper">
-    <header>
-        <h1>Quick Share Rep</h1>
-        <input type="text" id="search" placeholder="Filter files..." onkeyup="filterFiles()">
-    </header>
-    <ul id="file-list">
-        <li class="status-msg" id="status">Loading repository...</li>
-    </ul>
-</div>
+    <script>
+        let passwords = {};
 
-<script>
-    let allFiles = [];
-
-    async function fetchFiles() {
-        // Updated with your actual details
-        const user = "simonlukas102030";
-        const repo = "Quick-share";
-        
-        const list = document.getElementById('file-list');
-        const status = document.getElementById('status');
-
-        try {
-            const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/`);
-            if (!res.ok) throw new Error("API Limit or Private Repo");
-            
-            const data = await res.json();
-            // Filter for HTML files and exclude index.html
-            allFiles = data.filter(f => f.name.endsWith('.html') && f.name.toLowerCase() !== 'index.html');
-            renderList(allFiles);
-        } catch (e) {
-            status.textContent = "Error: GitHub API access failed. Check if repo is public.";
+        // Funktion zum Hashen des Inputs
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
-    }
 
-    function renderList(files) {
-        const list = document.getElementById('file-list');
-        list.innerHTML = files.map(file => `
-            <li class="file-item">
-                <a href="${file.name}">${file.name}</a>
-            </li>
-        `).join('') || '<li class="status-msg">No HTML files found.</li>';
-    }
+        async function init() {
+            const user = "simonlukas102030";
+            const repo = "Quick-share";
 
-    function filterFiles() {
-        const query = document.getElementById('search').value.toLowerCase();
-        const filtered = allFiles.filter(f => f.name.toLowerCase().includes(query));
-        renderList(filtered);
-    }
+            try {
+                // 1. Passwörter laden
+                const pRes = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/passwords.json`);
+                if(pRes.ok) passwords = await pRes.json();
 
-    fetchFiles();
-</script>
+                // 2. Dateien laden
+                const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/`);
+                const files = await res.json();
+                
+                const list = document.getElementById('file-list');
+                list.innerHTML = "";
 
+                files.forEach(file => {
+                    if (file.name.endsWith('.html') && file.name !== 'index.html') {
+                        const li = document.createElement('li');
+                        li.className = 'file-item';
+                        
+                        const isLocked = passwords[file.name] ? 'locked' : '';
+                        const a = document.createElement('a');
+                        a.textContent = file.name;
+                        a.className = isLocked;
+                        
+                        a.onclick = async () => {
+                            if (passwords[file.name]) {
+                                const pw = prompt("Dieses Projekt ist geschützt. Passwort:");
+                                const hashedInput = await sha256(pw);
+                                if (hashedInput === passwords[file.name]) {
+                                    window.location.href = file.name;
+                                } else {
+                                    alert("Falsches Passwort!");
+                                }
+                            } else {
+                                window.location.href = file.name;
+                            }
+                        };
+
+                        li.appendChild(a);
+                        list.appendChild(li);
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        init();
+    </script>
 </body>
 </html>
