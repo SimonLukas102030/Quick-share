@@ -7,18 +7,31 @@
         :root { --bg: #0d1117; --panel: #161b22; --border: #30363d; --accent: #58a6ff; --text: #c9d1d9; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 40px; margin: 0; }
         .wrapper { max-width: 800px; margin: 0 auto; }
-        h1 { font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         #file-list { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; padding: 0; list-style: none; overflow: hidden; }
         .file-item { background: var(--panel); }
-        .file-item a { display: block; padding: 16px; color: var(--accent); text-decoration: none; cursor: pointer; transition: background 0.1s; }
-        .file-item a:hover { background: #1f242c; }
-        .locked::after { content: " 🔒"; opacity: 0.5; font-size: 0.9rem; margin-left: 10px; }
+        .file-item a { display: block; padding: 16px; color: var(--accent); text-decoration: none; cursor: pointer; }
+        .locked::after { content: " 🔒"; opacity: 0.5; margin-left: 10px; }
+        
+        /* Box für den generierten Hash */
+        #hash-display { 
+            margin-top: 20px; padding: 15px; background: #21262d; 
+            border: 1px dashed var(--accent); border-radius: 6px; display: none;
+        }
+        code { background: #000; padding: 4px 8px; border-radius: 4px; color: #ff7b72; word-break: break-all; }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <h1>Quick Share Rep</h1>
-        <ul id="file-list"><li style="padding:20px">Loading System...</li></ul>
+        <ul id="file-list"><li>Lade Dateien...</li></ul>
+
+        <div id="hash-display">
+            <p style="margin-top:0"><strong>Hash-Tester:</strong></p>
+            <p>Eingabe: <span id="last-input" style="color:#79c0ff"></span></p>
+            <p>Generierter Hash für deine JSON:</p>
+            <code id="generated-hash"></code>
+            <p style="font-size: 0.8rem; color: #8b949e;">Kopiere diesen Hash in deine <code>passwords.json</code>.</p>
+        </div>
     </div>
 
     <script>
@@ -35,9 +48,11 @@
             const user = "simonlukas102030";
             const repo = "Quick-share";
             const list = document.getElementById('file-list');
+            const hashBox = document.getElementById('hash-display');
+            const hashOutput = document.getElementById('generated-hash');
+            const lastInputDisplay = document.getElementById('last-input');
 
             try {
-                // Cache-Busting: Wir hängen einen Zeitstempel an, damit GitHub nicht die alte Datei schickt
                 const pRes = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/passwords.json?t=${Date.now()}`);
                 if(pRes.ok) passwords = await pRes.json();
 
@@ -56,23 +71,22 @@
                         if(isLocked) a.classList.add('locked');
                         
                         a.onclick = async () => {
-                            if (isLocked) {
-                                const pw = prompt("Passwort erforderlich:");
-                                if (!pw) return;
-                                const hashedInput = await sha256(pw);
-                                
-                                // Debug Info für dich in der F12 Konsole
-                                console.log("Eingegebenes PW:", pw);
-                                console.log("Generierter Hash:", hashedInput);
-                                console.log("Erwarteter Hash aus JSON:", passwords[file.name]);
+                            const pw = prompt(isLocked ? "Passwort erforderlich:" : "Test-Modus: Passwort eingeben um Hash zu sehen");
+                            if (!pw) return;
+                            
+                            const hashedInput = await sha256(pw);
+                            
+                            // Zeige den Hash immer an, wenn etwas eingegeben wurde
+                            hashBox.style.display = "block";
+                            lastInputDisplay.textContent = pw;
+                            hashOutput.textContent = hashedInput;
 
+                            if (isLocked) {
                                 if (hashedInput === passwords[file.name].toLowerCase().trim()) {
                                     window.location.href = file.name;
                                 } else {
-                                    alert("Falsch! Check die Konsole (F12) für den richtigen Hash.");
+                                    alert("Falsches Passwort! Der generierte Hash wird unten angezeigt.");
                                 }
-                            } else {
-                                window.location.href = file.name;
                             }
                         };
                         li.appendChild(a);
@@ -80,7 +94,7 @@
                     }
                 });
             } catch (e) {
-                list.innerHTML = "<li>Fehler beim Laden. Repo öffentlich?</li>";
+                list.innerHTML = "<li>Fehler beim Laden.</li>";
             }
         }
         init();
