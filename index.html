@@ -1,54 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Quick Share Hub</title>
-    <style>
-        :root { --bg: #0d1117; --panel: #161b22; --border: #30363d; --accent: #58a6ff; --text: #c9d1d9; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 40px; margin: 0; }
-        .wrapper { max-width: 800px; margin: 0 auto; }
-        #file-list { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; padding: 0; list-style: none; overflow: hidden; }
-        .file-item { background: var(--panel); }
-        .file-item a { display: block; padding: 16px; color: var(--accent); text-decoration: none; cursor: pointer; }
-        .locked::after { content: " 🔒"; opacity: 0.5; margin-left: 10px; }
-        
-        /* Box für den generierten Hash */
-        #hash-display { 
-            margin-top: 20px; padding: 15px; background: #21262d; 
-            border: 1px dashed var(--accent); border-radius: 6px; display: none;
-        }
-        code { background: #000; padding: 4px 8px; border-radius: 4px; color: #ff7b72; word-break: break-all; }
-    </style>
-</head>
-<body>
-    <div class="wrapper">
-        <h1>Quick Share Rep</h1>
-        <ul id="file-list"><li>Lade Dateien...</li></ul>
-
-        <div id="hash-display">
-            <p style="margin-top:0"><strong>Hash-Tester:</strong></p>
-            <p>Eingabe: <span id="last-input" style="color:#79c0ff"></span></p>
-            <p>Generierter Hash für deine JSON:</p>
-            <code id="generated-hash"></code>
-            <p style="font-size: 0.8rem; color: #8b949e;">Kopiere diesen Hash in deine <code>passwords.json</code>.</p>
-        </div>
-    </div>
-
-    <script>
-        let passwords = {};
-
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
-        }
-
-        async function init() {
+async function init() {
             const user = "simonlukas102030";
             const repo = "Quick-share";
             const list = document.getElementById('file-list');
-            const hashBox = document.getElementById('hash-display');
             const hashOutput = document.getElementById('generated-hash');
             const lastInputDisplay = document.getElementById('last-input');
 
@@ -64,29 +17,34 @@
                     if (file.name.endsWith('.html') && file.name.toLowerCase() !== 'index.html') {
                         const li = document.createElement('li');
                         li.className = 'file-item';
-                        const isLocked = passwords[file.name];
+                        
+                        // Prüfen, ob für diese Datei ein Passwort existiert
+                        const hasPassword = passwords.hasOwnProperty(file.name);
                         
                         const a = document.createElement('a');
                         a.textContent = file.name;
-                        if(isLocked) a.classList.add('locked');
+                        if(hasPassword) a.classList.add('locked');
                         
                         a.onclick = async () => {
-                            const pw = prompt(isLocked ? "Passwort erforderlich:" : "Test-Modus: Passwort eingeben um Hash zu sehen");
-                            if (!pw) return;
-                            
-                            const hashedInput = await sha256(pw);
-                            
-                            // Zeige den Hash immer an, wenn etwas eingegeben wurde
-                            hashBox.style.display = "block";
-                            lastInputDisplay.textContent = pw;
-                            hashOutput.textContent = hashedInput;
+                            // NUR fragen, wenn ein Passwort hinterlegt ist
+                            if (hasPassword) {
+                                const pw = prompt("Passwort erforderlich für " + file.name + ":");
+                                if (!pw) return;
+                                
+                                const hashedInput = await sha256(pw);
+                                
+                                // Debug-Leiste unten aktualisieren
+                                lastInputDisplay.textContent = pw;
+                                hashOutput.textContent = hashedInput;
 
-                            if (isLocked) {
                                 if (hashedInput === passwords[file.name].toLowerCase().trim()) {
                                     window.location.href = file.name;
                                 } else {
-                                    alert("Falsches Passwort! Der generierte Hash wird unten angezeigt.");
+                                    alert("Falsch! Siehe Hash unten.");
                                 }
+                            } else {
+                                // Wenn kein Passwort da ist, sofort weiterleiten
+                                window.location.href = file.name;
                             }
                         };
                         li.appendChild(a);
@@ -97,7 +55,3 @@
                 list.innerHTML = "<li>Fehler beim Laden.</li>";
             }
         }
-        init();
-    </script>
-</body>
-</html>
