@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT-Bildung in Brandenburg – Ein Lösungsansatz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@700;900&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a472a;
+            --accent: #d94839;
+            --accent-light: #ff6b5b;
+            --background: #f9f5f0;
+            --text: #1a1a1a;
+            --text-muted: #666;
+            --card-bg: #ffffff;
+            --overlay: rgba(26, 71, 42, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 2rem;
+            background: 
+                linear-gradient(135deg, rgba(26, 71, 42, 0.05) 0%, rgba(217, 72, 57, 0.03) 100%),
+                repeating-linear-gradient(90deg, var(--overlay) 0px, transparent 1px, transparent 40px, var(--overlay) 41px),
+                repeating-linear-gradient(0deg, var(--overlay) 0px, transparent 1px, transparent 40px, var(--overlay) 41px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(217, 72, 57, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            z-index: 1;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Bitter', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+            display: inline-block;
+            animation: slideIn 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-weight: 500;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .scroll-indicator {
+            margin-top: 4rem;
+            animation: bounce 2s infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(15px); }
+        }
+
+        .scroll-indicator svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--primary);
+        }
+
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'Bitter', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60%;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s ease;
+        }
+
+        h2.in-view::after {
+            transform: scaleX(1);
+        }
+
+        .problem-section {
+            background: var(--card-bg);
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #2a5f3f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            color: white;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .stat-card.in-view {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .stat-number {
+            font-family: 'Bitter', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--accent-light);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .image-container {
+            margin: 3rem 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+
+        .image-container.in-view {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .solution-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e5a36 100%);
+            color: white;
+            padding: 6rem 2rem;
+            margin: 4rem -2rem;
+            position: relative;
+        }
+
+        .solution-section h2 {
+            color: white;
+        }
+
+        .solution-section h2::after {
+            background: var(--accent-light);
+        }
+
+        .solution-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .solution-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 2.5rem;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .solution-card.in-view {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-light);
+        }
+
+        .solution-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .solution-card h3 {
+            font-family: 'Bitter', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .solution-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .interactive-comparison {
+            margin: 4rem 0;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .comparison-toggle {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .toggle-btn {
+            padding: 1rem 2.5rem;
+            border: 3px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            font-family: 'Work Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .toggle-btn:hover:not(.active) {
+            background: var(--overlay);
+        }
+
+        .comparison-content {
+            display: none;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        .comparison-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .benefit-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefit-list li {
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, rgba(26, 71, 42, 0.08) 0%, transparent 100%);
+            border-left: 5px solid var(--accent);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-list li.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .benefit-list li::before {
+            content: '✓';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: 
+                linear-gradient(135deg, rgba(217, 72, 57, 0.05) 0%, rgba(26, 71, 42, 0.05) 100%);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.5rem 3.5rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(217, 72, 57, 0.3);
+            margin-top: 2rem;
+        }
+
+        .cta-button:hover {
+            background: var(--accent-light);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(217, 72, 57, 0.4);
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .solution-cards { grid-template-columns: 1fr; }
+            .toggle-btn { padding: 0.8rem 1.5rem; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>IT-Bildung in Brandenburg: <span>Zeit zu handeln</span></h1>
+            <p class="subtitle">Ein innovativer Lösungsansatz gegen den Lehrermangel und für moderne Bildung</p>
+        </div>
+        <div class="scroll-indicator">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+    </div>
+
+    <section>
+        <div class="problem-section">
+            <h2 class="observe">Das Problem</h2>
+            
+            <p style="font-size: 1.25rem; margin-bottom: 2rem; color: var(--text-muted);">
+                An Brandenburger Schulen fehlt IT-Unterricht im Lehrplan – obwohl digitale Kompetenzen wichtiger sind denn je.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-card observe">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Stunden IT-Unterricht an vielen Schulen</div>
+                </div>
+                <div class="stat-card observe" style="transition-delay: 0.2s;">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Digitale Welt von morgen</div>
+                </div>
+                <div class="stat-card observe" style="transition-delay: 0.4s;">
+                    <div class="stat-number">?</div>
+                    <div class="stat-label">Wo sind die IT-Lehrkräfte?</div>
+                </div>
+            </div>
+
+            <div class="image-container observe">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIOdYSCdwPuPSQOalB7I1ZNL0T3mDuLd1wX4cUcSy0VzP_zTXEdXR3Epc&s=10" alt="IT-Bildung" />
+            </div>
+
+            <p style="font-size: 1.15rem; margin-top: 2rem; line-height: 1.8;">
+                Der <strong>Lehrermangel</strong> verhindert, dass wichtige Fächer wie Informatik unterrichtet werden. 
+                Gleichzeitig besitzen viele Erwachsene fundiertes Fachwissen – doch ohne Lehramtsstudium dürfen sie nicht unterrichten.
+            </p>
+        </div>
+    </section>
+
+    <div class="solution-section">
+        <section>
+            <h2 class="observe">Die Lösung</h2>
+            
+            <p style="font-size: 1.3rem; margin-bottom: 3rem; opacity: 0.95;">
+                Qualifizierte Quereinsteiger mit Abiturnote und Eignungstest als Lehrkräfte zulassen
+            </p>
+
+            <div class="solution-cards">
+                <div class="solution-card observe">
+                    <div class="solution-icon">🎓</div>
+                    <h3>Gute Abiturnote</h3>
+                    <p>Wer im Abitur eine gute Note im jeweiligen Fach erreicht hat, beherrscht die Grundlagen bereits.</p>
+                </div>
+                <div class="solution-card observe" style="transition-delay: 0.2s;">
+                    <div class="solution-icon">✅</div>
+                    <h3>Eignungstest</h3>
+                    <p>Ein kleiner Test stellt sicher, dass didaktische und fachliche Kompetenzen vorhanden sind.</p>
+                </div>
+                <div class="solution-card observe" style="transition-delay: 0.4s;">
+                    <div class="solution-icon">💼</div>
+                    <h3>Praxiserfahrung</h3>
+                    <p>Erwachsene mit Berufserfahrung bringen wertvolles Wissen aus der echten Arbeitswelt mit.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section>
+        <div class="interactive-comparison">
+            <h2 class="observe" style="text-align: center; margin-bottom: 2rem;">Vergleich: Vorher vs. Nachher</h2>
+            
+            <div class="comparison-toggle">
+                <button class="toggle-btn active" onclick="switchComparison('vorher')">Aktuell</button>
+                <button class="toggle-btn" onclick="switchComparison('nachher')">Mit der Lösung</button>
+            </div>
+
+            <div id="vorher" class="comparison-content active">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--accent);">Aktuelle Situation</h3>
+                <ul class="benefit-list">
+                    <li>❌ Kein IT-Unterricht an vielen Schulen</li>
+                    <li>❌ Lehrermangel kann nicht behoben werden</li>
+                    <li>❌ Schüler:innen fehlen digitale Kompetenzen</li>
+                    <li>❌ Qualifizierte Fachleute dürfen nicht unterrichten</li>
+                    <li>❌ Neue wichtige Fächer können nicht eingeführt werden</li>
+                </ul>
+            </div>
+
+            <div id="nachher" class="comparison-content">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--primary);">Mit dem neuen System</h3>
+                <ul class="benefit-list" id="benefits">
+                    <li>IT-Unterricht wird flächendeckend möglich</li>
+                    <li>Lehrermangel wird durch Quereinsteiger gelindert</li>
+                    <li>Schüler:innen erhalten moderne, praxisnahe Bildung</li>
+                    <li>Fachleute mit echter Berufserfahrung unterrichten</li>
+                    <li>Neue Fächer wie KI, Robotik oder Wirtschaft werden möglich</li>
+                    <li>Flexibleres Bildungssystem für die Zukunft</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="cta-section">
+        <h2 class="observe">Gemeinsam für bessere Bildung</h2>
+        <p style="font-size: 1.3rem; max-width: 700px; margin: 0 auto; color: var(--text-muted);">
+            Brandenburg braucht ein modernes Bildungssystem. Mit qualifizierten Quereinsteigern können wir den 
+            Lehrermangel bekämpfen und Schüler:innen auf die digitale Zukunft vorbereiten.
+        </p>
+        <a href="#" class="cta-button">Mehr erfahren</a>
+    </div>
+
+    <footer>
+        <p>Eine Initiative für moderne Bildung in Brandenburg • 2026</p>
+    </footer>
+
+    <script>
+        // Intersection Observer für Scroll-Animationen
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, observerOptions);
+
+        // Alle Elemente mit der Klasse 'observe' beobachten
+        document.querySelectorAll('.observe').forEach(el => observer.observe(el));
+
+        // Vergleichs-Toggle Funktion
+        function switchComparison(type) {
+            // Toggle Buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Toggle Content
+            document.querySelectorAll('.comparison-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(type).classList.add('active');
+
+            // Animiere Benefits beim Nachher-Tab
+            if (type === 'nachher') {
+                const benefits = document.querySelectorAll('#benefits li');
+                benefits.forEach((benefit, index) => {
+                    setTimeout(() => {
+                        benefit.classList.add('show');
+                    }, index * 100);
+                });
+            }
+        }
+
+        // Initiale Animation der Vorher-Liste
+        document.querySelectorAll('#vorher li').forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('show');
+            }, index * 100);
+        });
+
+        // Smooth Scroll
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
