@@ -10,6 +10,17 @@
         alert("Zugriff verweigert. Bitte nutze den Hub.");
         window.location.href = "index.html";
       }
+
+      // RGB Easter Egg Logik
+      let inputBuffer = "";
+      window.addEventListener("keydown", (e) => {
+        inputBuffer += e.key.toLowerCase();
+        if (inputBuffer.includes("rgb")) {
+          document.body.classList.toggle("rgb-mode");
+          inputBuffer = ""; 
+        }
+        if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
+      });
     </script>
     <style>
         body {
@@ -74,6 +85,21 @@
         }
         strong {
             color: #2c3e50;
+        }
+
+        /* RGB Mode Styles */
+        @keyframes rgb-flow {
+            0% { border-color: #ff0000; color: #ff0000; }
+            33% { border-color: #00ff00; color: #00ff00; }
+            66% { border-color: #0000ff; color: #0000ff; }
+            100% { border-color: #ff0000; color: #ff0000; }
+        }
+
+        .rgb-mode h1 {
+            animation: rgb-flow 3s infinite linear;
+        }
+        .rgb-mode h2 {
+            animation: rgb-flow 3s infinite linear;
         }
     </style>
 </head>
