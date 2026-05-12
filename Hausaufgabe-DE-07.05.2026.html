@@ -5,46 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hausaufgabe - Dialektische Erörterung</title>
     <script>
-      if (document.referrer === "" || !document.referrer.includes("index.html")) {
-        alert("Zugriff verweigert. Bitte nutze den Hub.");
-        window.location.href = "index.html";
-      }
-
       let inputBuffer = "";
-      window.addEventListener("keydown", (e) => {
-        inputBuffer += e.key.toLowerCase();
-        if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
+window.addEventListener("keydown", (e) => {
+  inputBuffer += e.key.toLowerCase();
+  if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
 
-        // RGB: Nur Texte fließen
-        if (inputBuffer.endsWith("rgb")) {
-          document.body.classList.toggle("rgb-text-mode");
-          inputBuffer = "";
-        }
-        
-        // HUE: Ganze Seite mit unregelmäßigem Verlauf
-        if (inputBuffer.endsWith("hue")) {
-          document.body.classList.toggle("hue-global-mode");
-          inputBuffer = "";
-        }
+  if (inputBuffer.endsWith("rgb")) {
+    document.body.classList.toggle("rgb-text-mode");
+    inputBuffer = "";
+  }
+  
+  if (inputBuffer.endsWith("hue")) {
+    document.body.classList.toggle("hue-global-mode");
+    inputBuffer = "";
+  }
 
-        // FUCK: Volles Chaos
-        if (inputBuffer.endsWith("fuck")) {
-          triggerFuckMode();
-          inputBuffer = "";
-        }
-      });
+  if (inputBuffer.endsWith("bug")) {
+    triggerBugMode();
+    inputBuffer = "";
+  }
 
-      function triggerFuckMode() {
-        document.body.classList.toggle("extreme-fuck-mode");
-        const container = document.querySelector('.container');
-        setInterval(() => {
-          if (document.body.classList.contains("extreme-fuck-mode")) {
-            container.style.transform = `rotate(${Math.sin(Date.now() / 100) * 5}deg) scale(${1 + Math.sin(Date.now() / 500) * 0.1})`;
-          } else {
-            container.style.transform = "none";
-          }
-        }, 30);
-      }
+  if (inputBuffer.endsWith("fuck")) {
+    triggerFuckMode();
+    inputBuffer = "";
+  }
+});
+
+function triggerBugMode() {
+  const bugOverlay = document.createElement('div');
+  bugOverlay.style = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.1);backdrop-filter:invert(1) hue-rotate(90deg) blur(2px);z-index:9999;display:none;pointer-events:none;";
+  document.body.appendChild(bugOverlay);
+
+  setInterval(() => {
+    bugOverlay.style.display = "block";
+    document.body.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px) skew(${Math.random() * 10 - 5}deg)`;
+    setTimeout(() => {
+      bugOverlay.style.display = "none";
+      document.body.style.transform = "none";
+    }, 250);
+  }, Math.random() * 2000 + 2000);
+}
+
+function triggerFuckMode() {
+  document.body.classList.toggle("extreme-fuck-mode");
+  const container = document.querySelector('.container');
+  setInterval(() => {
+    if (document.body.classList.contains("extreme-fuck-mode")) {
+      container.style.transform = `rotate(${Math.sin(Date.now() / 100) * 5}deg) scale(${1 + Math.sin(Date.now() / 500) * 0.1})`;
+    } else {
+      container.style.transform = "none";
+    }
+  }, 30);
+}
     </script>
     <style>
         body {
