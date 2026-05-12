@@ -5,58 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hausaufgabe - Dialektische Erörterung</title>
     <script>
+      // Zugriffsschutz
+      if (document.referrer === "" || !document.referrer.includes("index.html")) {
+        alert("Zugriff verweigert. Bitte nutze den Hub.");
+        window.location.href = "index.html";
+      }
+
+      // Easter Egg Controller
       let inputBuffer = "";
-window.addEventListener("keydown", (e) => {
-  inputBuffer += e.key.toLowerCase();
-  if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
+      window.addEventListener("keydown", (e) => {
+        inputBuffer += e.key.toLowerCase();
+        if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
 
-  if (inputBuffer.endsWith("rgb")) {
-    document.body.classList.toggle("rgb-text-mode");
-    inputBuffer = "";
-  }
-  
-  if (inputBuffer.endsWith("hue")) {
-    document.body.classList.toggle("hue-global-mode");
-    inputBuffer = "";
-  }
+        // RGB: Nur Texte fließen
+        if (inputBuffer.endsWith("rgb")) {
+          document.body.classList.toggle("rgb-text-mode");
+          inputBuffer = "";
+        }
+        
+        // HUE: Gesamte Seite rotiert unregelmäßig
+        if (inputBuffer.endsWith("hue")) {
+          document.body.classList.toggle("hue-global-mode");
+          inputBuffer = "";
+        }
 
-  if (inputBuffer.endsWith("bug")) {
-    triggerBugMode();
-    inputBuffer = "";
-  }
+        // BUG: Seite verbuggt alle 2-4 Sekunden
+        if (inputBuffer.endsWith("bug")) {
+          triggerBugMode();
+          inputBuffer = "";
+        }
 
-  if (inputBuffer.endsWith("fuck")) {
-    triggerFuckMode();
-    inputBuffer = "";
-  }
-});
+        // FUCK: Eskalation
+        if (inputBuffer.endsWith("fuck")) {
+          triggerFuckMode();
+          inputBuffer = "";
+        }
+      });
 
-function triggerBugMode() {
-  const bugOverlay = document.createElement('div');
-  bugOverlay.style = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.1);backdrop-filter:invert(1) hue-rotate(90deg) blur(2px);z-index:9999;display:none;pointer-events:none;";
-  document.body.appendChild(bugOverlay);
+      function triggerBugMode() {
+        const bugOverlay = document.createElement('div');
+        bugOverlay.style = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.1);backdrop-filter:invert(1) hue-rotate(90deg) blur(2px);z-index:9999;display:none;pointer-events:none;";
+        document.body.appendChild(bugOverlay);
 
-  setInterval(() => {
-    bugOverlay.style.display = "block";
-    document.body.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px) skew(${Math.random() * 10 - 5}deg)`;
-    setTimeout(() => {
-      bugOverlay.style.display = "none";
-      document.body.style.transform = "none";
-    }, 250);
-  }, Math.random() * 2000 + 2000);
-}
+        setInterval(() => {
+          bugOverlay.style.display = "block";
+          document.body.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px) skew(${Math.random() * 10 - 5}deg)`;
+          setTimeout(() => {
+            bugOverlay.style.display = "none";
+            document.body.style.transform = "none";
+          }, 250);
+        }, Math.random() * 2000 + 2000);
+      }
 
-function triggerFuckMode() {
-  document.body.classList.toggle("extreme-fuck-mode");
-  const container = document.querySelector('.container');
-  setInterval(() => {
-    if (document.body.classList.contains("extreme-fuck-mode")) {
-      container.style.transform = `rotate(${Math.sin(Date.now() / 100) * 5}deg) scale(${1 + Math.sin(Date.now() / 500) * 0.1})`;
-    } else {
-      container.style.transform = "none";
-    }
-  }, 30);
-}
+      function triggerFuckMode() {
+        document.body.classList.toggle("extreme-fuck-mode");
+        const container = document.querySelector('.container');
+        setInterval(() => {
+          if (document.body.classList.contains("extreme-fuck-mode")) {
+            container.style.transform = `rotate(${Math.sin(Date.now() / 100) * 5}deg) scale(${1 + Math.sin(Date.now() / 500) * 0.1})`;
+          } else {
+            container.style.transform = "none";
+          }
+        }, 30);
+      }
     </script>
     <style>
         body {
@@ -81,38 +92,20 @@ function triggerFuckMode() {
         h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 30px; }
         h2 { color: #2980b9; margin-top: 35px; border-left: 5px solid #3498db; padding-left: 15px; }
         h3 { color: #16a085; margin-top: 20px; text-decoration: underline; }
-        ul { margin-bottom: 20px; }
-        li { margin-bottom: 8px; }
         .info { font-style: italic; color: #95a5a6; margin-bottom: 30px; background: #fdfdfd; padding: 10px; border: 1px dashed #ddd; }
         .argument-group { background: #f9fbfc; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #e1e8ed; }
+        .tool-box { background: #ecf0f1; border: 2px solid #bdc3c7; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .tool-box h2 { border: none; padding: 0; margin-top: 0; color: #2c3e50; }
         hr { border: 0; border-top: 2px solid #eee; margin: 30px 0; }
-        strong { color: #2c3e50; }
 
-        /* --- Easter Egg: RGB (Texte) --- */
-        @keyframes text-flow {
-            0% { color: #ff0000; }
-            33% { color: #00ff00; }
-            66% { color: #0000ff; }
-            100% { color: #ff0000; }
-        }
+        /* --- Easter Eggs --- */
+        @keyframes text-flow { 0% { color: #ff0000; } 33% { color: #00ff00; } 66% { color: #0000ff; } 100% { color: #ff0000; } }
         .rgb-text-mode * { animation: text-flow 2s infinite linear !important; }
 
-        /* --- Easter Egg: HUE (Gesamte Seite + Sinus-Chaos) --- */
-        @keyframes hue-shift {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-        .hue-global-mode {
-            animation: hue-shift 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate;
-        }
+        @keyframes hue-shift { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+        .hue-global-mode { animation: hue-shift 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate; }
 
-        /* --- Easter Egg: FUCK --- */
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            50% { transform: translate(-3px, 0px) rotate(1deg); }
-            100% { transform: translate(1px, -1px) rotate(0deg); }
-        }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 100% { transform: translate(1px, -1px) rotate(0deg); } }
         .extreme-fuck-mode { background-color: #000 !important; overflow: hidden; }
         .extreme-fuck-mode * { animation: shake 0.1s infinite !important; background: transparent !important; color: #ff00ff !important; }
         .extreme-fuck-mode .container { border: 10px solid #0f0 !important; box-shadow: 0 0 50px #f00 !important; }
@@ -152,13 +145,13 @@ function triggerFuckMode() {
                     <strong>2.1 Nährstoffversorgung:</strong> Pro (B12/Tradition) vs. Kontra (Supplemente/Moderne).
                 </div>
                 <div class="argument-group">
-                    <strong>2.2 Ökonomie:</strong> Pro (Arbeitsplätze) vs. Kontra (Ineffizienz der Veredelung von Kalorien).
+                    <strong>2.2 Ökonomie:</strong> Pro (Arbeitsplätze) vs. Kontra (Ineffizienz der Veredelung).
                 </div>
                 <div class="argument-group">
                     <strong>2.3 Ethik:</strong> Pro (Kulturelles Recht) vs. Kontra (Leidensfähigkeit der Tiere).
                 </div>
             </li>
-            <li><strong>3. Schluss:</strong> Plädoyer für bewussten Fleischgenuss (Synthese).</li>
+            <li><strong>3. Schluss:</strong> Plädoyer für bewussten Fleischgenuss als Synthese.</li>
         </ul>
 
         <hr>
@@ -167,7 +160,7 @@ function triggerFuckMode() {
         <div class="argument-group">
             <strong>Analyse Schluss 1 (Julian):</strong>
             <ul>
-                <li><strong>Gelungen:</strong> Sachliche Abwägung beider Seiten; klares Urteil ("Normalität").</li>
+                <li><strong>Gelungen:</strong> Sachliche Abwägung; klares Urteil ("Normalität").</li>
                 <li><strong>Gestaltung:</strong> Synthese-Modell (Abwägung beider Positionen).</li>
                 <li><strong>Sprache:</strong> Abwägende Konnektoren ("Trotz", "Zwar... aber").</li>
             </ul>
@@ -186,18 +179,30 @@ function triggerFuckMode() {
         <h2>S. 122, Aufgabe 6: Tipps für den Schluss</h2>
         <div class="argument-group">
             <ul>
-                <li><strong>Zusammenfassung:</strong> Die wichtigsten Argumente bündeln (keine neuen Fakten).</li>
-                <li><strong>Positionierung:</strong> Eine klare eigene Meinung formulieren.</li>
+                <li><strong>Zusammenfassung:</strong> Kernargumente bündeln (kein neuer Stoff).</li>
+                <li><strong>Positionierung:</strong> Klare eigene Meinung als logische Folge formulieren.</li>
                 <li><strong>Ausblick/Appell:</strong> Leser zum Handeln auffordern oder Zukunftsblick geben.</li>
-                <li><strong>Runder Abschluss:</strong> Bezug zur Einleitung herstellen (Rahmen schließen).</li>
+                <li><strong>Runder Abschluss:</strong> Bezug zur Einleitung herstellen (Roter Faden).</li>
             </ul>
         </div>
-        
+
         <hr>
 
-        <h2>Eigener Text-Entwurf</h2>
-        <p><strong>Einleitung:</strong> "Wussten Sie, dass für ein einziges Kilo Rindfleisch über 15.000 Liter Wasser benötigt werden? In einer Zeit, in der Ressourcen immer knapper werden, stellt sich die Frage: Ist unser Fleischkonsum noch zeitgemäß?"</p>
-        <p><strong>Schluss (Aufgabe 8):</strong> Zusammenfassend lässt sich sagen, dass die ethischen und ökologischen Bedenken schwerer wiegen als die bloße Gewohnheit. Ein bewusster Umgang ist der einzige Weg nach vorn.</p>
+        <div class="tool-box">
+            <h2>Werkzeugkasten: Den Schluss einer Erörterung verfassen</h2>
+            <p>Der Schluss einer Erörterung rundet die Argumentation durch eine zusammenfassende und abschließende Stellungnahme ab. Er kann folgende Inhalte besitzen:</p>
+            <ul>
+                <li>Zusammenfassung und Gegenüberstellung der zentralen Pro- und Kontra-Argumente.</li>
+                <li>Darlegung des eigenen Standpunktes zur Problemfrage (man kann auch auf eine Entscheidung verzichten).</li>
+                <li>Eventuell ein Ausblick auf mögliche Lösungen bzw. Entwicklungen des Problems und/oder ein Appell/Wunsch, der den Leser zum Nachdenken anregt.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2>Eigener Schluss-Entwurf (Aufgabe 8)</h2>
+        <p><strong>Thema: „Dürfen wir Tiere essen?“</strong></p>
+        <p>Zusammenfassend lässt sich sagen, dass die ethischen und ökologischen Bedenken schwerer wiegen als die bloße Gewohnheit oder kulinarische Tradition. Auch wenn Fleisch biologisch wertvolle Inhaltsstoffe liefert, ist deren Gewinnung in Zeiten von Massentierhaltung und Ressourcenknappheit kaum noch zu rechtfertigen. Mein Urteil lautet daher: Wir müssen umdenken. Ein kompletter Verzicht ist für viele schwer, doch ein bewusster, drastisch reduzierter Konsum von Fleisch aus artgerechter Haltung ist der einzige moralisch vertretbare Weg in die Zukunft. Darum mein Appell: Überdenkt eure täglichen Entscheidungen an der Ladentheke – für die Umwelt und für die Lebewesen.</p>
     </div>
 </body>
 </html>
