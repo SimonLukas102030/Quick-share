@@ -5,22 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hausaufgabe - Dialektische Erörterung</title>
     <script>
-      // Prüft, ob der Nutzer von der Index-Seite kommt
       if (document.referrer === "" || !document.referrer.includes("index.html")) {
         alert("Zugriff verweigert. Bitte nutze den Hub.");
         window.location.href = "index.html";
       }
 
-      // RGB Easter Egg Logik
       let inputBuffer = "";
       window.addEventListener("keydown", (e) => {
         inputBuffer += e.key.toLowerCase();
-        if (inputBuffer.includes("rgb")) {
-          document.body.classList.toggle("rgb-mode");
-          inputBuffer = ""; 
-        }
         if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
+
+        if (inputBuffer.endsWith("rgb")) {
+          document.body.classList.toggle("rgb-mode");
+        }
+        
+        if (inputBuffer.endsWith("hue")) {
+          document.body.classList.toggle("hue-chaos");
+        }
+
+        if (inputBuffer.endsWith("fuck")) {
+          triggerFuckMode();
+        }
       });
+
+      function triggerFuckMode() {
+        document.body.classList.toggle("extreme-fuck-mode");
+        const container = document.querySelector('.container');
+        setInterval(() => {
+          if (document.body.classList.contains("extreme-fuck-mode")) {
+            container.style.transform = `rotate(${Math.sin(Date.now() / 100) * 5}deg) scale(${1 + Math.sin(Date.now() / 500) * 0.1})`;
+          } else {
+            container.style.transform = "none";
+          }
+        }, 30);
+      }
     </script>
     <style>
         body {
@@ -31,6 +49,7 @@
             padding: 40px 20px;
             color: #2c3e50;
             line-height: 1.6;
+            transition: filter 0.1s linear;
         }
         .container {
             background-color: white;
@@ -39,6 +58,7 @@
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.05s ease-in-out;
         }
         h1 { 
             color: #2c3e50; 
@@ -57,56 +77,52 @@
             margin-top: 20px;
             text-decoration: underline;
         }
-        ul { 
-            margin-bottom: 20px;
-        }
-        li {
-            margin-bottom: 8px;
-        }
+        ul { margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
         .info { 
-            font-style: italic; 
-            color: #95a5a6; 
-            margin-bottom: 30px; 
-            background: #fdfdfd;
-            padding: 10px;
-            border: 1px dashed #ddd;
+            font-style: italic; color: #95a5a6; margin-bottom: 30px; 
+            background: #fdfdfd; padding: 10px; border: 1px dashed #ddd;
         }
         .argument-group {
-            background: #f9fbfc;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #e1e8ed;
+            background: #f9fbfc; padding: 15px; border-radius: 8px;
+            margin: 15px 0; border: 1px solid #e1e8ed;
         }
-        hr { 
-            border: 0; 
-            border-top: 2px solid #eee; 
-            margin: 30px 0; 
-        }
-        strong {
-            color: #2c3e50;
-        }
+        hr { border: 0; border-top: 2px solid #eee; margin: 30px 0; }
+        strong { color: #2c3e50; }
 
-        /* RGB Mode Styles */
+        /* --- Easter Egg Styles --- */
         @keyframes rgb-flow {
             0% { border-color: #ff0000; color: #ff0000; }
             33% { border-color: #00ff00; color: #00ff00; }
             66% { border-color: #0000ff; color: #0000ff; }
             100% { border-color: #ff0000; color: #ff0000; }
         }
+        .rgb-mode h1, .rgb-mode h2 { animation: rgb-flow 3s infinite linear; }
 
-        .rgb-mode h1 {
-            animation: rgb-flow 3s infinite linear;
+        @keyframes hue-sinus {
+            0% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(180deg); }
+            100% { filter: hue-rotate(360deg); }
         }
-        .rgb-mode h2 {
-            animation: rgb-flow 3s infinite linear;
+        .hue-chaos {
+            animation: hue-sinus 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
         }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            50% { transform: translate(-3px, 0px) rotate(1deg); }
+            100% { transform: translate(1px, -1px) rotate(0deg); }
+        }
+        .extreme-fuck-mode { background-color: #000 !important; overflow: hidden; }
+        .extreme-fuck-mode * { animation: shake 0.1s infinite !important; background: transparent !important; color: #ff00ff !important; }
+        .extreme-fuck-mode .container { border: 10px solid #0f0 !important; box-shadow: 0 0 50px #f00 !important; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Hausaufgabe: Dialektische Erörterung</h1>
-        <p class="info">Name: Simon | Datum: 07.05.2026 | Deutsch LB. S. 119–121</p>
+        <p class="info">Name: Simon | Datum: 07.05.2026 | Deutsch LB. S. 119–122</p>
 
         <h2>S. 119, Aufgabe 1: Gestaltung des Artikels</h2>
         <ul>
@@ -119,93 +135,70 @@
 
         <h2>S. 120, Aufgabe 2 & 3: Aufbaustruktur</h2>
         <p><strong>Gewählte Struktur:</strong> Möglichkeit 2 (Ping-Pong-Prinzip).</p>
-        <p><em>Begründung:</em> Dieses Verfahren wirkt lebendiger und erlaubt es, jedes Argument der Gegenseite sofort durch ein stärkeres eigenes Argument zu entkräften, was die Überzeugungskraft steigert.</p>
+        <p><em>Begründung:</em> Dieses Verfahren wirkt lebendiger und erlaubt es, jedes Argument der Gegenseite sofort durch ein stärkeres eigenes Argument zu entkräften.</p>
 
         <hr>
 
         <h2>S. 121, Aufgabe 4: Riekes Gliederung</h2>
-        <p>Rieke verwendet das <strong>Sanduhr-Prinzip</strong>. Sie ordnet ihre Argumente blockweise: Zuerst kommen alle Argumente der Gegenseite (Antithese) und danach ihre eigenen Argumente (These), die sie zum Schluss steigert.</p>
+        <p>Rieke verwendet das <strong>Sanduhr-Prinzip</strong>. Sie ordnet ihre Argumente blockweise: Zuerst kommen alle Argumente der Gegenseite (Antithese) und danach ihre eigenen (These).</p>
 
         <hr>
 
         <h2>S. 121, Aufgabe 5: Eigene Gliederung</h2>
         <h3>Thema: Fleischkonsum – Kulinarisches Erbe oder ökologische Last?</h3>
-        
         <ul>
-            <li><strong>1. Einleitung:</strong> 
-                <ul>
-                    <li>Aufhänger: Der enorme ökologische Fußabdruck der Fleischproduktion (Beispiel: 15.000 Liter Wasser pro kg Rindfleisch).</li>
-                    <li>Hinführung zur Problemfrage: Ist Fleischverzehr heute noch ethisch und ökologisch vertretbar?</li>
-                </ul>
-            </li>
-            
-            <li><strong>2. Hauptteil (Argumentation nach dem Ping-Pong-Prinzip):</strong>
+            <li><strong>1. Einleitung:</strong> Fokus auf Wasserverbrauch (15.000l/kg) und Problemfrage.</li>
+            <li><strong>2. Hauptteil (Ping-Pong-Prinzip):</strong>
                 <div class="argument-group">
-                    <strong>2.1 Aspekt: Gesundheitliche Versorgung</strong>
-                    <ul>
-                        <li><em>Antithese:</em> Fleisch als wichtiger Lieferant für Proteine, Eisen und Vitamin B12.</li>
-                        <li><em>These:</em> Gesundheitsrisiken durch zu hohen Konsum (z.B. Cholesterin, WHO-Warnung vor verarbeitetem Fleisch).</li>
-                    </ul>
+                    <strong>2.1 Nährstoffversorgung:</strong> Pro (B12/Tradition) vs. Kontra (Supplemente/Moderne).
                 </div>
-
                 <div class="argument-group">
-                    <strong>2.2 Aspekt: Ethik und Tierwohl</strong>
-                    <ul>
-                        <li><em>Antithese:</em> Der Mensch steht am Ende der Nahrungskette; Fleischkonsum als Teil der Evolution.</li>
-                        <li><em>These:</em> Unwürdige Bedingungen in der Massentierhaltung und die moralische Pflicht, empfindungsfähige Wesen zu schützen.</li>
-                    </ul>
+                    <strong>2.2 Ökonomie:</strong> Pro (Arbeitsplätze) vs. Kontra (Ineffizienz der Veredelung).
                 </div>
-
                 <div class="argument-group">
-                    <strong>2.3 Aspekt: Umwelt und Ressourcen</strong>
-                    <ul>
-                        <li><em>Antithese:</em> Wirtschaftliche Bedeutung der Fleischindustrie und Sicherung von Arbeitsplätzen.</li>
-                        <li><em>These:</em> Massive Umweltbelastung durch Methanausstoß und Regenwaldabholzung für Soja-Futtermittel.</li>
-                    </ul>
+                    <strong>2.3 Ethik:</strong> Pro (Freiheitsrecht) vs. Kontra (Leidensfähigkeit der Tiere).
                 </div>
             </li>
-
-            <li><strong>3. Schluss:</strong> 
-                <ul>
-                    <li>Zusammenfassung der wichtigsten Punkte.</li>
-                    <li>Synthese/Eigene Meinung: Plädoyer für den "bewussten Fleischgenuss" (Qualität statt Quantität) als Kompromiss.</li>
-                </ul>
-            </li>
+            <li><strong>3. Schluss:</strong> Plädoyer für bewussten Fleischgenuss als Synthese.</li>
         </ul>
 
         <hr>
 
-        <h2>S. 121, Aufgabe 1 & 2 (Einleitung): Analyse & Entwurf</h2>
-        <p><strong>Analyse:</strong> Riekes Einleitung ist sehr emotional. Sie setzt auf das Mitleid des Lesers, um das Thema zu eröffnen.</p>
-        <p><strong>Eigener Entwurf (Faktenorientiert):</strong> "Wussten Sie, dass für ein einziges Kilo Rindfleisch über 15.000 Liter Wasser benötigt werden? Das entspricht fast 100 vollgefüllten Badewannen. In Zeiten zunehmender Wasserknappheit und globaler Erwärmung stellt sich die dringende Frage: Können wir uns diesen Luxus auf Kosten unseres Planeten weiterhin erlauben?"</p>
-
-        <h2>Aufgabe: Eigende Argumentation erstellen</h2>
+        <h2>S. 122, Aufgabe 5: Vergleich der Schlüsse</h2>
         <div class="argument-group">
-    <strong>2.1 Aspekt: Nährstoffversorgung</strong>
-    <ul>
-        <li><em>Antithese (Pro Fleisch):</em> Fleisch bietet eine hohe Nährstoffdichte und ist ein traditioneller Lieferant für essenzielle Vitamine wie B12.</li>
-        <li><em>These (Kontra Fleisch):</em> Moderne Supplemente und angereicherte Lebensmittel ermöglichen eine gesunde Entwicklung auch ohne tierische Produkte.</li>
-    </ul>
-</div>
+            <strong>Analyse Schluss 1 (Julian):</strong>
+            <ul>
+                <li><strong>Gelungen:</strong> Sachliche Abwägung; klares Urteil ("Normalität").</li>
+                <li><strong>Gestaltung:</strong> Synthese-Modell (Abwägung beider Positionen).</li>
+                <li><strong>Sprache:</strong> Abwägende Konnektoren ("Trotz", "Zwar... aber").</li>
+            </ul>
+        </div>
+        <div class="argument-group">
+            <strong>Analyse Schluss 2 (Rieke):</strong>
+            <ul>
+                <li><strong>Gelungen:</strong> Emotionaler Appell ("Verzichtet auf den Burger!").</li>
+                <li><strong>Gestaltung:</strong> Forderungs-Modell (Fokus auf Konsequenz).</li>
+                <li><strong>Sprache:</strong> Appellative Sprache ("Ich fordere euch auf").</li>
+            </ul>
+        </div>
 
-<div class="argument-group">
-    <strong>2.2 Aspekt: Ökonomie und Ressourcen</strong>
-    <ul>
-        <li><em>Antithese (Pro Fleisch):</em> Die Fleischindustrie ist ein bedeutender Wirtschaftszweig, der Millionen Arbeitsplätze sichert.</li>
-        <li><em>These (Kontra Fleisch):</em> Die Veredelung von Pflanzen zu Fleisch ist ineffizient; die direkte Nutzung von Ackerland für menschliche Nahrung könnte den Welthunger effektiver bekämpfen.</li>
-    </ul>
-</div>
+        <hr>
 
-<div class="argument-group">
-    <strong>2.3 Aspekt: Ethik</strong>
-    <ul>
-        <li><em>Antithese (Pro Fleisch):</em> Fleischkonsum wird als kulturelles Gut und persönliches Freiheitsrecht wahrgenommen.</li>
-        <li><em>These (Kontra Fleisch):</em> Das Recht auf Leben und die Leidensfähigkeit von Tieren wiegen schwerer als kurzfristiger Genuss.</li>
-    </ul>
-</div>
-        <p><strong> </strong> </p>
-        <p><strong>Einleitung:</strong> Wie Sie bereits wissen, stellt sich heutzutage immer häufiger die Frage, ob Fleischkonsum und das Schlachten von Tieren für den eigenen Genuss erlaubt oder verboten sein sollten. Da hierzu vermehrt Proteste stattfinden, habe ich es mir zur Aufgabe gemacht, Ihnen mit diesem Text die Hintergründe zu erläutern und Ihnen einen Einblick in meine eigene Meinung zu diesem Thema zu geben.</p>
-        <p><strong>Hauptteil:</strong> </p>
+        <h2>S. 122, Aufgabe 6: Tipps für den Schluss</h2>
+        <div class="argument-group">
+            <ul>
+                <li><strong>Zusammenfassung:</strong> Wichtigste Argumente bündeln (kein neuer Stoff).</li>
+                <li><strong>Positionierung:</strong> Klare eigene Meinung als logische Folge formulieren.</li>
+                <li><strong>Ausblick/Appell:</strong> Leser zum Handeln auffordern oder Zukunftsblick geben.</li>
+                <li><strong>Runder Abschluss:</strong> Bezug zur Einleitung herstellen (Roter Faden).</li>
+            </ul>
+        </div>
+        
+        <hr>
+
+        <h2>Eigene Argumentation (Entwurf)</h2>
+        <p><strong>Einleitung:</strong> Wie Sie bereits wissen, stellt sich heutzutage immer häufiger die Frage, ob Fleischkonsum und das Schlachten von Tieren für den eigenen Genuss erlaubt oder verboten sein sollten...</p>
+        <p><strong>Hauptteil:</strong> [Hier folgt die detaillierte Ausarbeitung gemäß Gliederung]</p>
     </div>
 </body>
 </html>
