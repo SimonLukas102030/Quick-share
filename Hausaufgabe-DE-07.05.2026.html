@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hausaufgabe - Dialektische Erörterung</title>
     <script>
-      // Zugriffsschutz
       if (document.referrer === "" || !document.referrer.includes("index.html")) {
         alert("Zugriff verweigert. Bitte nutze den Hub.");
         window.location.href = "index.html";
       }
 
-      // Easter Egg Controller
       let inputBuffer = "";
       window.addEventListener("keydown", (e) => {
         inputBuffer += e.key.toLowerCase();
@@ -20,16 +18,19 @@
         // RGB: Nur Texte fließen
         if (inputBuffer.endsWith("rgb")) {
           document.body.classList.toggle("rgb-text-mode");
+          inputBuffer = "";
         }
         
-        // HUE: Gesamte Seite rotiert unregelmäßig
+        // HUE: Ganze Seite mit unregelmäßigem Verlauf
         if (inputBuffer.endsWith("hue")) {
           document.body.classList.toggle("hue-global-mode");
+          inputBuffer = "";
         }
 
-        // FUCK: Eskalation
+        // FUCK: Volles Chaos
         if (inputBuffer.endsWith("fuck")) {
           triggerFuckMode();
+          inputBuffer = "";
         }
       });
 
@@ -68,9 +69,12 @@
         h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 30px; }
         h2 { color: #2980b9; margin-top: 35px; border-left: 5px solid #3498db; padding-left: 15px; }
         h3 { color: #16a085; margin-top: 20px; text-decoration: underline; }
+        ul { margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
         .info { font-style: italic; color: #95a5a6; margin-bottom: 30px; background: #fdfdfd; padding: 10px; border: 1px dashed #ddd; }
         .argument-group { background: #f9fbfc; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #e1e8ed; }
         hr { border: 0; border-top: 2px solid #eee; margin: 30px 0; }
+        strong { color: #2c3e50; }
 
         /* --- Easter Egg: RGB (Texte) --- */
         @keyframes text-flow {
@@ -81,7 +85,7 @@
         }
         .rgb-text-mode * { animation: text-flow 2s infinite linear !important; }
 
-        /* --- Easter Egg: HUE (Ganze Seite + Sinus-Chaos) --- */
+        /* --- Easter Egg: HUE (Gesamte Seite + Sinus-Chaos) --- */
         @keyframes hue-shift {
             0% { filter: hue-rotate(0deg); }
             100% { filter: hue-rotate(360deg); }
@@ -90,7 +94,7 @@
             animation: hue-shift 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate;
         }
 
-        /* --- Easter Egg: FUCK (Eskalation) --- */
+        /* --- Easter Egg: FUCK --- */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -105,28 +109,45 @@
 <body>
     <div class="container">
         <h1>Hausaufgabe: Dialektische Erörterung</h1>
-        <p class="info">Name: Simon | Datum: 07.05.2026 | Deutsch LB. S. 119–122</p>
+        <p class="info">Name: Simon | Datum: 12.05.2026 | Deutsch LB. S. 119–122</p>
 
         <h2>S. 119, Aufgabe 1: Gestaltung des Artikels</h2>
         <ul>
-            <li><strong>Vorgehen:</strong> Antithetisch/Dialektisch, um kontroverse Ansichten abzubilden.</li>
-            <li><strong>Aufbau:</strong> Dynamisches Ping-Pong-Verfahren für direkte Gegenüberstellung.</li>
-            <li><strong>Sprache:</strong> Sachlich-argumentativ mit präzisen Konnektoren.</li>
+            <li><strong>Vorgehen:</strong> Antithetisch/Dialektisch, um die kontroversen Ansichten zum Fleischkonsum abzubilden.</li>
+            <li><strong>Aufbau:</strong> Dynamisches Ping-Pong-Verfahren für eine direkte Gegenüberstellung der Argumente.</li>
+            <li><strong>Sprache:</strong> Sachlich-argumentativ, Nutzung von präzisen Konnektoren (z. B. "Dessen ungeachtet", "Ein entscheidender Einwand ist...").</li>
         </ul>
+
+        <hr>
+
+        <h2>S. 120, Aufgabe 2 & 3: Aufbaustruktur</h2>
+        <p><strong>Gewählte Struktur:</strong> Möglichkeit 2 (Ping-Pong-Prinzip).</p>
+        <p><em>Begründung:</em> Dieses Verfahren wirkt lebendiger und erlaubt es, jedes Argument der Gegenseite sofort durch ein stärkeres eigenes Argument zu entkräften.</p>
+
+        <hr>
+
+        <h2>S. 121, Aufgabe 4: Riekes Gliederung</h2>
+        <p>Rieke verwendet das <strong>Sanduhr-Prinzip</strong>. Sie ordnet ihre Argumente blockweise: Zuerst kommen alle Argumente der Gegenseite (Antithese) und danach ihre eigenen (These).</p>
 
         <hr>
 
         <h2>S. 121, Aufgabe 5: Eigene Gliederung</h2>
         <h3>Thema: Fleischkonsum – Kulinarisches Erbe oder ökologische Last?</h3>
-        <div class="argument-group">
-            <strong>2.1 Nährstoffversorgung:</strong> Fleisch als B12-Lieferant vs. moderne Supplementierung.
-        </div>
-        <div class="argument-group">
-            <strong>2.2 Ökonomie:</strong> Sicherung von Arbeitsplätzen vs. ineffiziente Ressourcennutzung (Veredelung).
-        </div>
-        <div class="argument-group">
-            <strong>2.3 Ethik:</strong> Kulturelles Gut/Freiheit vs. Leidensfähigkeit und Rechte der Tiere.
-        </div>
+        <ul>
+            <li><strong>1. Einleitung:</strong> Fokus auf Wasserverbrauch (15.000l/kg) und die ethische Problemfrage.</li>
+            <li><strong>2. Hauptteil (Ping-Pong-Prinzip):</strong>
+                <div class="argument-group">
+                    <strong>2.1 Nährstoffversorgung:</strong> Pro (B12/Tradition) vs. Kontra (Supplemente/Moderne).
+                </div>
+                <div class="argument-group">
+                    <strong>2.2 Ökonomie:</strong> Pro (Arbeitsplätze) vs. Kontra (Ineffizienz der Veredelung von Kalorien).
+                </div>
+                <div class="argument-group">
+                    <strong>2.3 Ethik:</strong> Pro (Kulturelles Recht) vs. Kontra (Leidensfähigkeit der Tiere).
+                </div>
+            </li>
+            <li><strong>3. Schluss:</strong> Plädoyer für bewussten Fleischgenuss (Synthese).</li>
+        </ul>
 
         <hr>
 
@@ -134,32 +155,37 @@
         <div class="argument-group">
             <strong>Analyse Schluss 1 (Julian):</strong>
             <ul>
-                <li>Gelungen: Sachliche Abwägung; Urteil basiert auf anthropologischer Sicht ("Jäger").</li>
-                <li>Gestaltung: Synthese-Modell (Abwägung beider Seiten).</li>
+                <li><strong>Gelungen:</strong> Sachliche Abwägung beider Seiten; klares Urteil ("Normalität").</li>
+                <li><strong>Gestaltung:</strong> Synthese-Modell (Abwägung beider Positionen).</li>
+                <li><strong>Sprache:</strong> Abwägende Konnektoren ("Trotz", "Zwar... aber").</li>
             </ul>
         </div>
         <div class="argument-group">
             <strong>Analyse Schluss 2 (Rieke):</strong>
             <ul>
-                <li>Gelungen: Starker emotionaler Appell; klare moralische Positionierung.</li>
-                <li>Gestaltung: Forderungs-Modell (Appell an den Leser).</li>
+                <li><strong>Gelungen:</strong> Emotionaler Appell ("Verzichtet auf den Burger!").</li>
+                <li><strong>Gestaltung:</strong> Forderungs-Modell (Fokus auf Konsequenz).</li>
+                <li><strong>Sprache:</strong> Appellative Sprache ("Ich fordere euch auf").</li>
             </ul>
         </div>
 
         <hr>
 
         <h2>S. 122, Aufgabe 6: Tipps für den Schluss</h2>
-        <ul>
-            <li><strong>Zusammenfassung:</strong> Kernargumente bündeln (kein neues Material).</li>
-            <li><strong>Positionierung:</strong> Eigenen Standpunkt abschließend festlegen.</li>
-            <li><strong>Ausblick:</strong> Appell oder Blick auf zukünftige Entwicklungen.</li>
-            <li><strong>Rückbezug:</strong> Den Bogen zur Einleitung spannen.</li>
-        </ul>
+        <div class="argument-group">
+            <ul>
+                <li><strong>Zusammenfassung:</strong> Die wichtigsten Argumente bündeln (keine neuen Fakten).</li>
+                <li><strong>Positionierung:</strong> Eine klare eigene Meinung formulieren.</li>
+                <li><strong>Ausblick/Appell:</strong> Leser zum Handeln auffordern oder Zukunftsblick geben.</li>
+                <li><strong>Runder Abschluss:</strong> Bezug zur Einleitung herstellen (Rahmen schließen).</li>
+            </ul>
+        </div>
         
         <hr>
-        <h2>Text-Entwurf</h2>
-        <p><strong>Einleitung:</strong> Wie Sie bereits wissen, stellt sich heutzutage immer häufiger die Frage, ob Fleischkonsum und das Schlachten von Tieren für den eigenen Genuss erlaubt sein sollten...</p>
-        <p><strong>Hauptteil:</strong> [Hier erfolgt die Ausarbeitung nach dem Ping-Pong-Prinzip]</p>
+
+        <h2>Eigener Text-Entwurf</h2>
+        <p><strong>Einleitung:</strong> "Wussten Sie, dass für ein einziges Kilo Rindfleisch über 15.000 Liter Wasser benötigt werden? In einer Zeit, in der Ressourcen immer knapper werden, stellt sich die Frage: Ist unser Fleischkonsum noch zeitgemäß?"</p>
+        <p><strong>Schluss (Aufgabe 8):</strong> Zusammenfassend lässt sich sagen, dass die ethischen und ökologischen Bedenken schwerer wiegen als die bloße Gewohnheit. Ein bewusster Umgang ist der einzige Weg nach vorn.</p>
     </div>
 </body>
 </html>
