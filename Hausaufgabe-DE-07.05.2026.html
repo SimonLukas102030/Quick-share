@@ -20,19 +20,16 @@
         // RGB: Nur Texte fließen
         if (inputBuffer.endsWith("rgb")) {
           document.body.classList.toggle("rgb-text-mode");
-          inputBuffer = "";
         }
         
         // HUE: Gesamte Seite rotiert unregelmäßig
         if (inputBuffer.endsWith("hue")) {
           document.body.classList.toggle("hue-global-mode");
-          inputBuffer = "";
         }
 
         // FUCK: Eskalation
         if (inputBuffer.endsWith("fuck")) {
           triggerFuckMode();
-          inputBuffer = "";
         }
       });
 
@@ -71,14 +68,11 @@
         h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 30px; }
         h2 { color: #2980b9; margin-top: 35px; border-left: 5px solid #3498db; padding-left: 15px; }
         h3 { color: #16a085; margin-top: 20px; text-decoration: underline; }
-        ul { margin-bottom: 20px; }
-        li { margin-bottom: 8px; }
         .info { font-style: italic; color: #95a5a6; margin-bottom: 30px; background: #fdfdfd; padding: 10px; border: 1px dashed #ddd; }
         .argument-group { background: #f9fbfc; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #e1e8ed; }
         hr { border: 0; border-top: 2px solid #eee; margin: 30px 0; }
-        strong { color: #2c3e50; }
 
-        /* --- Easter Eggs --- */
+        /* --- Easter Egg: RGB (Texte) --- */
         @keyframes text-flow {
             0% { color: #ff0000; }
             33% { color: #00ff00; }
@@ -87,12 +81,16 @@
         }
         .rgb-text-mode * { animation: text-flow 2s infinite linear !important; }
 
+        /* --- Easter Egg: HUE (Ganze Seite + Sinus-Chaos) --- */
         @keyframes hue-shift {
             0% { filter: hue-rotate(0deg); }
             100% { filter: hue-rotate(360deg); }
         }
-        .hue-global-mode { animation: hue-shift 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate; }
+        .hue-global-mode {
+            animation: hue-shift 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate;
+        }
 
+        /* --- Easter Egg: FUCK (Eskalation) --- */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -107,75 +105,44 @@
 <body>
     <div class="container">
         <h1>Hausaufgabe: Dialektische Erörterung</h1>
-        <p class="info">Name: Simon | Datum: 12.05.2026 | Deutsch LB. S. 119–122</p>
+        <p class="info">Name: Simon | Datum: 07.05.2026 | Deutsch LB. S. 119–122</p>
 
         <h2>S. 119, Aufgabe 1: Gestaltung des Artikels</h2>
         <ul>
-            <li><strong>Vorgehen:</strong> Antithetisch/Dialektisch, um die kontroversen Ansichten zum Fleischkonsum abzubilden.</li>
-            <li><strong>Aufbau:</strong> Dynamisches Ping-Pong-Verfahren für eine direkte Gegenüberstellung der Argumente.</li>
-            <li><strong>Sprache:</strong> Sachlich-argumentativ, Nutzung von präzisen Konnektoren (z. B. "Dessen ungeachtet", "Ein entscheidender Einwand ist...").</li>
+            <li><strong>Vorgehen:</strong> Antithetisch/Dialektisch, um kontroverse Ansichten abzubilden.</li>
+            <li><strong>Aufbau:</strong> Dynamisches Ping-Pong-Verfahren für direkte Gegenüberstellung.</li>
+            <li><strong>Sprache:</strong> Sachlich-argumentativ mit präzisen Konnektoren.</li>
         </ul>
-
-        <hr>
-
-        <h2>S. 120, Aufgabe 2 & 3: Aufbaustruktur</h2>
-        <p><strong>Gewählte Struktur:</strong> Möglichkeit 2 (Ping-Pong-Prinzip).</p>
-        <p><em>Begründung:</em> Dieses Verfahren wirkt lebendiger und erlaubt es, jedes Argument der Gegenseite sofort durch ein stärkeres eigenes Argument zu entkräften, was die Überzeugungskraft steigert.</p>
-
-        <hr>
-
-        <h2>S. 121, Aufgabe 4: Riekes Gliederung</h2>
-        <p>Rieke verwendet das <strong>Sanduhr-Prinzip</strong>. Sie ordnet ihre Argumente blockweise: Zuerst kommen alle Argumente der Gegenseite (Antithese) und danach ihre eigenen Argumente (These), die sie zum Schluss steigert.</p>
 
         <hr>
 
         <h2>S. 121, Aufgabe 5: Eigene Gliederung</h2>
         <h3>Thema: Fleischkonsum – Kulinarisches Erbe oder ökologische Last?</h3>
-        <ul>
-            <li><strong>1. Einleitung:</strong> Aufhänger: Der enorme ökologische Fußabdruck der Fleischproduktion (15.000l Wasser/kg). Problemfrage: Ist Fleischverzehr heute noch ethisch vertretbar?</li>
-            <li><strong>2. Hauptteil (Ping-Pong-Prinzip):</strong>
-                <div class="argument-group">
-                    <strong>2.1 Aspekt: Nährstoffversorgung</strong>
-                    <ul>
-                        <li><em>Antithese:</em> Fleisch als wichtiger Lieferant für B12 und Proteine.</li>
-                        <li><em>These:</em> Moderne Supplemente und pflanzliche Alternativen machen Fleisch verzichtbar.</li>
-                    </ul>
-                </div>
-                <div class="argument-group">
-                    <strong>2.2 Aspekt: Ökonomie</strong>
-                    <ul>
-                        <li><em>Antithese:</em> Fleischindustrie sichert Millionen Arbeitsplätze weltweit.</li>
-                        <li><em>These:</em> Ineffizienz der Ressourcen (Veredelung von Pflanzen zu Fleisch) belastet die Welternährung.</li>
-                    </ul>
-                </div>
-                <div class="argument-group">
-                    <strong>2.3 Aspekt: Ethik</strong>
-                    <ul>
-                        <li><em>Antithese:</em> Fleischkonsum als Teil der menschlichen Evolution und Kultur.</li>
-                        <li><em>These:</em> Leidensfähigkeit der Tiere und Massentierhaltung verbieten moralisch den Genuss.</li>
-                    </ul>
-                </div>
-            </li>
-            <li><strong>3. Schluss:</strong> Zusammenfassung und Synthese: Plädoyer für "bewussten Fleischgenuss" (Qualität statt Quantität).</li>
-        </ul>
+        <div class="argument-group">
+            <strong>2.1 Nährstoffversorgung:</strong> Fleisch als B12-Lieferant vs. moderne Supplementierung.
+        </div>
+        <div class="argument-group">
+            <strong>2.2 Ökonomie:</strong> Sicherung von Arbeitsplätzen vs. ineffiziente Ressourcennutzung (Veredelung).
+        </div>
+        <div class="argument-group">
+            <strong>2.3 Ethik:</strong> Kulturelles Gut/Freiheit vs. Leidensfähigkeit und Rechte der Tiere.
+        </div>
 
         <hr>
 
         <h2>S. 122, Aufgabe 5: Vergleich der Schlüsse</h2>
         <div class="argument-group">
-            <strong>Schluss 1 (Julian):</strong>
+            <strong>Analyse Schluss 1 (Julian):</strong>
             <ul>
-                <li><strong>Gelungen:</strong> Sachliche Abwägung beider Positionen; begründetes Urteil ("Tiere zu essen ist normal").</li>
-                <li><strong>Mittel:</strong> Nutzt abwägende Konnektoren ("Trotz", "Zwar", "insgesamt").</li>
-                <li><strong>Modell:</strong> Synthese-Modell.</li>
+                <li>Gelungen: Sachliche Abwägung; Urteil basiert auf anthropologischer Sicht ("Jäger").</li>
+                <li>Gestaltung: Synthese-Modell (Abwägung beider Seiten).</li>
             </ul>
         </div>
         <div class="argument-group">
-            <strong>Schluss 2 (Rieke):</strong>
+            <strong>Analyse Schluss 2 (Rieke):</strong>
             <ul>
-                <li><strong>Gelungen:</strong> Sehr emotional; appellative Wirkung ("Verzichtet auf den Burger!").</li>
-                <li><strong>Mittel:</strong> Wertende Sprache ("unwürdig", "Unrecht") und direkte Aufforderung.</li>
-                <li><strong>Modell:</strong> Forderungs-Modell.</li>
+                <li>Gelungen: Starker emotionaler Appell; klare moralische Positionierung.</li>
+                <li>Gestaltung: Forderungs-Modell (Appell an den Leser).</li>
             </ul>
         </div>
 
@@ -183,17 +150,16 @@
 
         <h2>S. 122, Aufgabe 6: Tipps für den Schluss</h2>
         <ul>
-            <li><strong>Zusammenfassung:</strong> Keine neuen Fakten, nur Bündelung der Hauptpunkte.</li>
-            <li><strong>Positionierung:</strong> Den eigenen Standpunkt unmissverständlich klar machen.</li>
-            <li><strong>Appell/Ausblick:</strong> Den Leser mit einem Gedanken oder einer Handlungsaufforderung entlassen.</li>
-            <li><strong>Runder Abschluss:</strong> Verbindung zur Einleitung herstellen (Rahmen schließen).</li>
+            <li><strong>Zusammenfassung:</strong> Kernargumente bündeln (kein neues Material).</li>
+            <li><strong>Positionierung:</strong> Eigenen Standpunkt abschließend festlegen.</li>
+            <li><strong>Ausblick:</strong> Appell oder Blick auf zukünftige Entwicklungen.</li>
+            <li><strong>Rückbezug:</strong> Den Bogen zur Einleitung spannen.</li>
         </ul>
-
+        
         <hr>
-
-        <h2>Eigener Text-Entwurf</h2>
-        <p><strong>Einleitung:</strong> "Wussten Sie, dass für ein einziges Kilo Rindfleisch über 15.000 Liter Wasser benötigt werden? Das entspricht fast 100 vollgefüllten Badewannen. In Zeiten zunehmender Wasserknappheit stellt sich die dringende Frage: Können wir uns diesen Luxus auf Kosten unseres Planeten weiterhin erlauben?"</p>
-        <p><strong>Hauptteil:</strong> [Ausarbeitung folgt dem Ping-Pong-Schema aus der Gliederung...]</p>
+        <h2>Text-Entwurf</h2>
+        <p><strong>Einleitung:</strong> Wie Sie bereits wissen, stellt sich heutzutage immer häufiger die Frage, ob Fleischkonsum und das Schlachten von Tieren für den eigenen Genuss erlaubt sein sollten...</p>
+        <p><strong>Hauptteil:</strong> [Hier erfolgt die Ausarbeitung nach dem Ping-Pong-Prinzip]</p>
     </div>
 </body>
 </html>
