@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hausaufgabe - Dialektische Erörterung</title>
+    <title>Hausaufgabe - Dialektische Erörterung | Simon</title>
     <script>
       // Zugriffsschutz
       if (document.referrer === "" || !document.referrer.includes("index.html")) {
@@ -15,7 +15,7 @@
       let inputBuffer = "";
       window.addEventListener("keydown", (e) => {
         inputBuffer += e.key.toLowerCase();
-        if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
+        if (inputBuffer.length > 15) inputBuffer = inputBuffer.substring(1);
 
         // RGB: Nur Texte fließen
         if (inputBuffer.endsWith("rgb")) {
@@ -23,7 +23,7 @@
           inputBuffer = "";
         }
         
-        // HUE: Gesamte Seite rotiert unregelmäßig
+        // HUE: Gesamte Seite rotiert extrem
         if (inputBuffer.endsWith("hue")) {
           document.body.classList.toggle("hue-global-mode");
           inputBuffer = "";
@@ -49,7 +49,7 @@
 
         setInterval(() => {
           bugOverlay.style.display = "block";
-          document.body.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px) skew(${Math.random() * 10 - 5}deg)`;
+          document.body.style.transform = `translate(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px) skew(${Math.random() * 20 - 10}deg)`;
           setTimeout(() => {
             bugOverlay.style.display = "none";
             document.body.style.transform = "none";
@@ -62,7 +62,7 @@
         const container = document.querySelector('.container');
         setInterval(() => {
           if (document.body.classList.contains("extreme-fuck-mode")) {
-            container.style.transform = `rotate(${Math.sin(Date.now() / 100) * 5}deg) scale(${1 + Math.sin(Date.now() / 500) * 0.1})`;
+            container.style.transform = `rotate(${Math.sin(Date.now() / 100) * 10}deg) scale(${1 + Math.sin(Date.now() / 500) * 0.2})`;
           } else {
             container.style.transform = "none";
           }
@@ -70,139 +70,215 @@
       }
     </script>
     <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2980b9;
+            --accent: #16a085;
+            --bg: #f4f7f6;
+            --text: #2c3e50;
+            --border: #e1e8ed;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background-color: var(--bg);
             display: flex;
             justify-content: center;
             padding: 40px 20px;
-            color: #2c3e50;
-            line-height: 1.6;
+            color: var(--text);
+            line-height: 1.7;
             transition: filter 0.1s linear;
         }
+
         .container {
             background-color: white;
-            max-width: 850px;
+            max-width: 900px;
             width: 100%;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: transform 0.05s ease-in-out;
         }
-        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 30px; }
-        h2 { color: #2980b9; margin-top: 35px; border-left: 5px solid #3498db; padding-left: 15px; }
-        h3 { color: #16a085; margin-top: 20px; text-decoration: underline; }
-        .info { font-style: italic; color: #95a5a6; margin-bottom: 30px; background: #fdfdfd; padding: 10px; border: 1px dashed #ddd; }
-        .argument-group { background: #f9fbfc; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #e1e8ed; }
-        .tool-box { background: #ecf0f1; border: 2px solid #bdc3c7; padding: 20px; border-radius: 8px; margin-top: 30px; }
-        .tool-box h2 { border: none; padding: 0; margin-top: 0; color: #2c3e50; }
-        hr { border: 0; border-top: 2px solid #eee; margin: 30px 0; }
+
+        /* Header & Info */
+        header {
+            border-bottom: 4px solid var(--primary);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 2.2em; }
+        .info-box {
+            font-style: italic; color: #7f8c8d; background: #fafafa;
+            padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+            margin-top: 15px; display: flex; justify-content: space-between;
+        }
+
+        /* Inhaltsverzeichnis */
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 40px;
+        }
+        .toc h3 { margin-top: 0; color: var(--text); }
+        .toc ul { list-style: none; padding: 0; }
+        .toc li { margin: 8px 0; }
+        .toc a { text-decoration: none; color: var(--secondary); font-weight: 500; transition: color 0.2s; }
+        .toc a:hover { color: var(--primary); text-decoration: underline; }
+
+        /* Sektionen */
+        section { margin-bottom: 50px; }
+        h2 { 
+            color: var(--secondary); 
+            border-left: 6px solid var(--primary);
+            padding-left: 15px;
+            margin-bottom: 25px;
+            background: rgba(52, 152, 219, 0.05);
+            padding-top: 5px; padding-bottom: 5px;
+        }
+        h3 { color: var(--accent); margin-top: 30px; }
+
+        .argument-group {
+            background: #ffffff; padding: 20px; border-radius: 10px;
+            margin: 20px 0; border: 1px solid var(--border);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.02);
+        }
+        .ping-pong { border-left: 4px solid var(--accent); }
+
+        .tool-box {
+            background: #2c3e50; color: white; padding: 25px;
+            border-radius: 12px; margin-top: 40px;
+        }
+        .tool-box h2 { border: none; color: white; background: none; padding: 0; }
+        .tool-box ul { padding-left: 20px; }
+        .tool-box li { margin-bottom: 10px; }
+
+        hr { border: 0; border-top: 2px solid var(--border); margin: 40px 0; }
 
         /* --- Easter Eggs --- */
         @keyframes text-flow { 0% { color: #ff0000; } 33% { color: #00ff00; } 66% { color: #0000ff; } 100% { color: #ff0000; } }
-        .rgb-text-mode * { animation: text-flow 2s infinite linear !important; }
+        .rgb-text-mode * { animation: text-flow 1.5s infinite linear !important; }
 
         @keyframes hue-shift { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-        .hue-global-mode { animation: hue-shift 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate; }
+        .hue-global-mode { animation: hue-shift 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate; }
 
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 100% { transform: translate(1px, -1px) rotate(0deg); } }
+        @keyframes shake { 0% { transform: translate(2px, 2px) rotate(0deg); } 50% { transform: translate(-3px, -1px) rotate(2deg); } 100% { transform: translate(2px, 2px) rotate(0deg); } }
         .extreme-fuck-mode { background-color: #000 !important; overflow: hidden; }
-        .extreme-fuck-mode * { animation: shake 0.1s infinite !important; background: transparent !important; color: #ff00ff !important; }
-        .extreme-fuck-mode .container { border: 10px solid #0f0 !important; box-shadow: 0 0 50px #f00 !important; }
+        .extreme-fuck-mode * { animation: shake 0.05s infinite !important; background: transparent !important; color: #0f0 !important; border-color: #f0f !important; }
+        .extreme-fuck-mode .container { border: 15px solid #f00 !important; box-shadow: 0 0 100px #f0f !important; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Hausaufgabe: Dialektische Erörterung</h1>
-        <p class="info">Name: Simon | Datum: 12.05.2026 | Deutsch LB. S. 119–122</p>
+        <header>
+            <h1>Dialektische Erörterung: Fleischkonsum</h1>
+            <div class="info-box">
+                <span><strong>Autor:</strong> Simon</span>
+                <span><strong>Datum:</strong> 12.05.2026</span>
+                <span><strong>Quelle:</strong> LB S. 119–122</span>
+            </div>
+        </header>
 
-        <h2>S. 119, Aufgabe 1: Gestaltung des Artikels</h2>
-        <ul>
-            <li><strong>Vorgehen:</strong> Antithetisch/Dialektisch, um die kontroversen Ansichten zum Fleischkonsum abzubilden.</li>
-            <li><strong>Aufbau:</strong> Dynamisches Ping-Pong-Verfahren für eine direkte Gegenüberstellung der Argumente.</li>
-            <li><strong>Sprache:</strong> Sachlich-argumentativ, Nutzung von präzisen Konnektoren (z. B. "Dessen ungeachtet", "Ein entscheidender Einwand ist...").</li>
-        </ul>
-
-        <hr>
-
-        <h2>S. 120, Aufgabe 2 & 3: Aufbaustruktur</h2>
-        <p><strong>Gewählte Struktur:</strong> Möglichkeit 2 (Ping-Pong-Prinzip).</p>
-        <p><em>Begründung:</em> Dieses Verfahren wirkt lebendiger und erlaubt es, jedes Argument der Gegenseite sofort durch ein stärkeres eigenes Argument zu entkräften.</p>
-
-        <hr>
-
-        <h2>S. 121, Aufgabe 4: Riekes Gliederung</h2>
-        <p>Rieke verwendet das <strong>Sanduhr-Prinzip</strong>. Sie ordnet ihre Argumente blockweise: Zuerst kommen alle Argumente der Gegenseite (Antithese) und danach ihre eigenen (These).</p>
-
-        <hr>
-
-        <h2>S. 121, Aufgabe 5: Eigene Gliederung</h2>
-        <h3>Thema: Fleischkonsum – Kulinarisches Erbe oder ökologische Last?</h3>
-        <ul>
-            <li><strong>1. Einleitung:</strong> Fokus auf Wasserverbrauch (15.000l/kg) und die ethische Problemfrage.</li>
-            <li><strong>2. Hauptteil (Ping-Pong-Prinzip):</strong>
-                <div class="argument-group">
-                    <strong>2.1 Nährstoffversorgung:</strong> Pro (B12/Tradition) vs. Kontra (Supplemente/Moderne).
-                </div>
-                <div class="argument-group">
-                    <strong>2.2 Ökonomie:</strong> Pro (Arbeitsplätze) vs. Kontra (Ineffizienz der Veredelung).
-                </div>
-                <div class="argument-group">
-                    <strong>2.3 Ethik:</strong> Pro (Kulturelles Recht) vs. Kontra (Leidensfähigkeit der Tiere).
-                </div>
-            </li>
-            <li><strong>3. Schluss:</strong> Plädoyer für bewussten Fleischgenuss als Synthese.</li>
-        </ul>
-
-        <hr>
-
-        <h2>S. 122, Aufgabe 5: Vergleich der Schlüsse</h2>
-        <div class="argument-group">
-            <strong>Analyse Schluss 1 (Julian):</strong>
+        <nav class="toc">
+            <h3>Inhaltsverzeichnis</h3>
             <ul>
-                <li><strong>Gelungen:</strong> Sachliche Abwägung; klares Urteil ("Normalität").</li>
-                <li><strong>Gestaltung:</strong> Synthese-Modell (Abwägung beider Positionen).</li>
-                <li><strong>Sprache:</strong> Abwägende Konnektoren ("Trotz", "Zwar... aber").</li>
+                <li><a href="#s119">1. Analyse der Gestaltung (S. 119)</a></li>
+                <li><a href="#s120">2. Strukturmodelle & Wahl (S. 120)</a></li>
+                <li><a href="#s121">3. Gliederungsprinzipien (S. 121)</a></li>
+                <li><a href="#s122a">4. Analyse der Schluss-Varianten (S. 122)</a></li>
+                <li><a href="#s122b">5. Werkzeugkasten: Der perfekte Schluss</a></li>
+                <li><a href="#final">6. Eigener Textentwurf</a></li>
             </ul>
-        </div>
-        <div class="argument-group">
-            <strong>Analyse Schluss 2 (Rieke):</strong>
-            <ul>
-                <li><strong>Gelungen:</strong> Emotionaler Appell ("Verzichtet auf den Burger!").</li>
-                <li><strong>Gestaltung:</strong> Forderungs-Modell (Fokus auf Konsequenz).</li>
-                <li><strong>Sprache:</strong> Appellative Sprache ("Ich fordere euch auf").</li>
-            </ul>
-        </div>
+        </nav>
 
-        <hr>
+        <section id="s119">
+            <h2 id="s119">1. Analyse der Gestaltung (S. 119)</h2>
+            <div class="argument-group">
+                <p><strong>Aufgabe 1:</strong> Die Gestaltung des Artikels folgt einem klaren dialektischen Vorgehen.</p>
+                <ul>
+                    <li><strong>Vorgehen:</strong> Antithetische Gegenüberstellung zur Abbildung der gesellschaftlichen Kontroverse.</li>
+                    <li><strong>Aufbau:</strong> Nutzung des Ping-Pong-Verfahrens für unmittelbare Reaktionen auf Gegenargumente.</li>
+                    <li><strong>Sprache:</strong> Distanzierte, sachliche Argumentation durch Konnektoren wie <em>"Einerseits... andererseits"</em> oder <em>"Dessen ungeachtet"</em>.</li>
+                </ul>
+            </div>
+        </section>
 
-        <h2>S. 122, Aufgabe 6: Tipps für den Schluss</h2>
-        <div class="argument-group">
-            <ul>
-                <li><strong>Zusammenfassung:</strong> Kernargumente bündeln (kein neuer Stoff).</li>
-                <li><strong>Positionierung:</strong> Klare eigene Meinung als logische Folge formulieren.</li>
-                <li><strong>Ausblick/Appell:</strong> Leser zum Handeln auffordern oder Zukunftsblick geben.</li>
-                <li><strong>Runder Abschluss:</strong> Bezug zur Einleitung herstellen (Roter Faden).</li>
-            </ul>
-        </div>
+        <section id="s120">
+            <h2 id="s120">2. Strukturmodelle & Wahl (S. 120)</h2>
+            <p><strong>Aufgabe 2 & 3:</strong> Entscheidung für das Strukturmodell.</p>
+            <div class="argument-group ping-pong">
+                <strong>Gewählte Struktur: Möglichkeit 2 (Ping-Pong-Prinzip)</strong>
+                <p><em>Begründung:</em> Dieses Modell ist deutlich dynamischer. Es erlaubt dem Autor, die Argumente der Gegenseite nicht nur aufzuzählen, sondern direkt im Anschluss mit einem stärkeren eigenen Argument zu entkräften ("zu schlagen"). Dies führt zu einer höheren Überzeugungskraft beim Leser.</p>
+            </div>
+        </section>
 
-        <hr>
+        <section id="s121">
+            <h2 id="s121">3. Gliederungsprinzipien (S. 121)</h2>
+            <p><strong>Aufgabe 4:</strong> Analyse von Riekes Gliederung.</p>
+            <p>Rieke verwendet das <strong>Sanduhr-Prinzip (Blockmodell)</strong>. Hierbei werden erst alle Kontra-Argumente (Antithese) gesammelt und dann die Pro-Argumente (These) in einer steigenden Linie präsentiert.</p>
 
-        <div class="tool-box">
-            <h2>Werkzeugkasten: Den Schluss einer Erörterung verfassen</h2>
-            <p>Der Schluss einer Erörterung rundet die Argumentation durch eine zusammenfassende und abschließende Stellungnahme ab. Er kann folgende Inhalte besitzen:</p>
-            <ul>
-                <li>Zusammenfassung und Gegenüberstellung der zentralen Pro- und Kontra-Argumente.</li>
-                <li>Darlegung des eigenen Standpunktes zur Problemfrage (man kann auch auf eine Entscheidung verzichten).</li>
-                <li>Eventuell ein Ausblick auf mögliche Lösungen bzw. Entwicklungen des Problems und/oder ein Appell/Wunsch, der den Leser zum Nachdenken anregt.</li>
-            </ul>
-        </div>
+            <hr>
 
-        <hr>
+            <h3>Eigene Gliederung (Aufgabe 5)</h3>
+            <div class="argument-group">
+                <strong>Thema: Fleischkonsum – Kulinarisches Erbe oder ökologische Last?</strong>
+                <ul>
+                    <li><strong>1. Einleitung:</strong> Fokus auf Wasserverbrauch (15.000l/kg) | Problemfrage: Ist Fleischverzehr ethisch noch vertretbar?</li>
+                    <li><strong>2. Hauptteil (Ping-Pong):</strong>
+                        <ul>
+                            <li><strong>2.1 Nährstoffe:</strong> B12-Bedarf vs. Moderne Supplementierung.</li>
+                            <li><strong>2.2 Ökonomie:</strong> Arbeitsplätze vs. Ressourcenverschwendung.</li>
+                            <li><strong>2.3 Ethik:</strong> Kulturelles Recht vs. Tierleid/Massentierhaltung.</li>
+                        </ul>
+                    </li>
+                    <li><strong>3. Schluss:</strong> Synthese und Appell für bewussten Konsum.</li>
+                </ul>
+            </div>
+        </section>
 
-        <h2>Eigener Schluss-Entwurf (Aufgabe 8)</h2>
-        <p><strong>Thema: „Dürfen wir Tiere essen?“</strong></p>
-        <p>Zusammenfassend lässt sich sagen, dass die ethischen und ökologischen Bedenken schwerer wiegen als die bloße Gewohnheit oder kulinarische Tradition. Auch wenn Fleisch biologisch wertvolle Inhaltsstoffe liefert, ist deren Gewinnung in Zeiten von Massentierhaltung und Ressourcenknappheit kaum noch zu rechtfertigen. Mein Urteil lautet daher: Wir müssen umdenken. Ein kompletter Verzicht ist für viele schwer, doch ein bewusster, drastisch reduzierter Konsum von Fleisch aus artgerechter Haltung ist der einzige moralisch vertretbare Weg in die Zukunft. Darum mein Appell: Überdenkt eure täglichen Entscheidungen an der Ladentheke – für die Umwelt und für die Lebewesen.</p>
+        <section id="s122a">
+            <h2 id="s122a">4. Analyse der Schluss-Varianten (S. 122)</h2>
+            <p><strong>Aufgabe 5: Vergleich von Julian und Rieke.</strong></p>
+            <div class="argument-group">
+                <strong>Variante 1: Julian (Synthese-Modell)</strong>
+                <ul>
+                    <li><em>Stil:</em> Sehr sachlich, abwägend und distanziert.</li>
+                    <li><em>Urteil:</em> Kommt zu einem moderaten Schluss ("Fleisch essen ist normal").</li>
+                    <li><em>Sprache:</em> Logische Verknüpfungen (z.B. "Trotz", "insgesamt").</li>
+                </ul>
+            </div>
+            <div class="argument-group">
+                <strong>Variante 2: Rieke (Forderungs-Modell)</strong>
+                <ul>
+                    <li><em>Stil:</em> Hochgradig emotional, subjektiv und mitreißend.</li>
+                    <li><em>Urteil:</em> Radikale Ablehnung ("Verzichtet auf den Burger!").</li>
+                    <li><em>Sprache:</em> Appellativ, Nutzung von Wertungen ("Unrecht", "unwürdig").</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="s122b">
+            <div class="tool-box">
+                <h2 id="s122b">5. Werkzeugkasten: Der perfekte Schluss</h2>
+                <p>Ein gelungener Schluss rundet die Erörterung ab. Er sollte folgende Elemente enthalten:</p>
+                <ul>
+                    <li><strong>Zusammenfassung:</strong> Bündelung der zentralen Argumente (keine neuen Infos!).</li>
+                    <li><strong>Stellungnahme:</strong> Darlegung des eigenen Standpunktes zur Problemfrage.</li>
+                    <li><strong>Ausblick/Appell:</strong> Blick auf zukünftige Entwicklungen oder direkter Wunsch an den Leser.</li>
+                    <li><strong>Rahmung:</strong> Rückbezug zur Einleitung, um den roten Faden zu schließen.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="final">
+            <h2 id="final">6. Eigener Textentwurf (Aufgabe 8)</h2>
+            <div class="argument-group">
+                <p><strong>Einleitung:</strong> "Wussten Sie, dass für ein einziges Kilo Rindfleisch über 15.000 Liter Wasser benötigt werden? In einer Zeit globaler Krisen stellt sich die Frage: Ist unser Hunger auf Fleisch noch zeitgemäß?"</p>
+                <p><strong>Schlussplädoyer:</strong> Zusammenfassend lässt sich sagen, dass die ethischen und ökologischen Kosten den kurzfristigen Genuss heute oft übersteigen. Dennoch ist Fleisch ein tief verwurzeltes Kulturgut. Mein Fazit lautet daher: Wir brauchen keine Verbote, sondern ein neues Bewusstsein. Qualität muss vor Quantität gehen. Nur ein drastisch reduzierter und wertschätzender Konsum kann die Brücke zwischen Tradition und Verantwortung schlagen."</p>
+            </div>
+        </section>
     </div>
 </body>
 </html>
