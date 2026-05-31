@@ -563,11 +563,357 @@
 
   <div class="gruppe-note">Alle 5 Personen teilen diese Kosten zu gleichen Teilen. Jeder zahlt <strong id="gc-per-person-note">—</strong> €.</div>
 
-  <!-- GRUPPE: WIRD GLEICH GELADEN -->
-  <div id="gruppe-items-placeholder" style="text-align:center;padding:3rem 1rem;color:var(--dim)">
-    <div style="font-size:1.5rem;margin-bottom:.5rem">⏳</div>
-    <div style="font-size:.85rem">Gruppenartikel werden gerade recherchiert…</div>
-    <div style="font-size:.75rem;margin-top:.3rem;color:#374151">Kommt gleich</div>
+  <!-- ── ANHÄNGER & KUPPLUNG ── -->
+  <div class="cat-wrap" id="wrap-ganhang">
+    <div class="cat-header" onclick="toggleCat('ganhang')">
+      <span class="cat-icon">🚛</span><h2>Anhänger &amp; Kupplung</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-ganhang"></span><span class="cat-progress" id="prog-ganhang"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-ganhang">
+      <div class="info-note">Das Forte Ultra 508 hat einen <strong>Schnellspanner</strong> (QR) an der Hinterachse. Der Burley COHO XC braucht die extra QR-Achse (g2) — ohne die montiert er nicht!</div>
+      <div class="item" data-price="450" data-cat="ganhang" data-id="g1" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Burley COHO XC Cargo Trailer — Einrad</div>
+          <div class="item-model">32 kg Zuladung, gefedert, 126–197 mm Nabenbreite</div>
+          <div class="item-note">Einradanhänger — kompakter als Zweirad, besser auf Radwegen. Für Kocher, Töpfe, Zelte der Gruppe. Explizit für Bikepacking/Touring gebaut. QR-Achse (g2) separat mitbestellen!</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0CSZ2XW2D" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~450 €</div><div class="badge badge-pflicht">Pflicht</div><div class="item-state-label" id="sl-g1"></div></div>
+      </div>
+      <div class="item" data-price="22" data-cat="ganhang" data-id="g2" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Burley QR-Schnellspanner-Achse</div>
+          <div class="item-model">Pflicht-Zubehör für Schnellspanner-Achse</div>
+          <div class="item-note">Ohne diese Achse passt der COHO XC-Arm nicht an einen Schnellspanner. Immer zusammen mit dem Trailer bestellen.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07ND8LS1N" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~22 €</div><div class="badge badge-pflicht">Pflicht</div><div class="item-state-label" id="sl-g2"></div></div>
+      </div>
+      <div class="item" data-price="18" data-cat="ganhang" data-id="g3" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Weber Kupplung Typ E — Backup</div>
+          <div class="item-model">Universal, passt auf 95 % aller Fahrräder</div>
+          <div class="item-note">Nur nötig falls jemand in der Gruppe bereits einen anderen Anhänger mit Weber-Deichsel hat. Beim COHO XC ist die Kupplung integriert.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0026IZL1C" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~18 €</div><div class="badge badge-opt">Optional</div><div class="item-state-label" id="sl-g3"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KOCHEN & ESSEN ── -->
+  <div class="cat-wrap" id="wrap-gkochen">
+    <div class="cat-header" onclick="toggleCat('gkochen')">
+      <span class="cat-icon">🍳</span><h2>Kochen &amp; Essen</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-gkochen"></span><span class="cat-progress" id="prog-gkochen"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-gkochen">
+      <div class="item" data-price="70" data-cat="gkochen" data-id="g4" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Campingaz Camping Cook CV — 2-flammig</div>
+          <div class="item-model">2 × 1.800 W, CV-Kartuschenanschluss, Klappgehäuse</div>
+          <div class="item-note">2 Brenner parallel → Wasser kochen + Essen gleichzeitig. CV-Kartusche selbstdichtend, auch halb leer abnehmbar. Für 5 Personen genau richtig.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B08QN2BF5M" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~70 €</div><div class="item-state-label" id="sl-g4"></div></div>
+      </div>
+      <div class="item" data-price="65" data-cat="gkochen" data-id="g5" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Campingaz CV470 Plus Gaskartusche — 12 Stück (3× 4er-Pack)</div>
+          <div class="item-model">450 g Kartusche = ca. 4,5 h Brennzeit · selbstdichtend</div>
+          <div class="item-note">Für 5 Personen über 7 Tage: mindestens 12 Kartuschen. 3 Packs à 4 = 12 Stück. CV-Format passt zum Campingaz Cook CV.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07218LTG5" target="_blank" onclick="event.stopPropagation()">→ Amazon (3× bestellen)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~65 €</div><div class="item-state-label" id="sl-g5"></div></div>
+      </div>
+      <div class="item" data-price="40" data-cat="gkochen" data-id="g6" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Camping Topfset — 2 Töpfe + Pfanne</div>
+          <div class="item-model">Aluminium, mind. 1,5 L + 3 L, für 5 Personen</div>
+          <div class="item-note">Keine Beschichtung — Alu oder Edelstahl. Beschichtung geht beim Camping kaputt. 2 Töpfe (Pasta/Suppe + Soße parallel) + 1 Pfanne.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=camping+topfset+aluminium+5+personen" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~40 €</div><div class="item-state-label" id="sl-g6"></div></div>
+      </div>
+      <div class="item" data-price="20" data-cat="gkochen" data-id="g7" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Kochutensilien-Set Silikon</div>
+          <div class="item-model">Kelle, Pfannenwender, Schöpflöffel, Dosenöffner</div>
+          <div class="item-note">Silikon schont Alu-Töpfe. Mindest: Kelle + Pfannenwender + Schöpflöffel.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=camping+kochutensilien+set+silikon" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~20 €</div><div class="item-state-label" id="sl-g7"></div></div>
+      </div>
+      <div class="item" data-price="10" data-cat="gkochen" data-id="g8" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Schneidebrett faltbar Silikon</div>
+          <div class="item-model">Faltbares Camping-Schneidebrett</div>
+          <div class="item-note">Für Brot, Gemüse, Käse. Ohne Brett ist Kochen im Camp umständlich.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=schneidebrett+faltbar+silikon+camping" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~10 €</div><div class="item-state-label" id="sl-g8"></div></div>
+      </div>
+      <div class="item" data-price="5" data-cat="gkochen" data-id="g9" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Stabanzünder / Feuerzeug ×2</div>
+          <div class="item-model">Campingaz Cook CV ohne Piezo-Zündung</div>
+          <div class="item-note">Der Cook CV hat keine eingebaute Zündung. 2 Feuerzeuge oder Stabanzünder als Backup.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=stabanzünder+camping" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~5 €</div><div class="item-state-label" id="sl-g9"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WASSER & HYGIENE ── -->
+  <div class="cat-wrap" id="wrap-gwasser">
+    <div class="cat-header" onclick="toggleCat('gwasser')">
+      <span class="cat-icon">💧</span><h2>Wasser &amp; Hygiene</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-gwasser"></span><span class="cat-progress" id="prog-gwasser"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-gwasser">
+      <div class="item" data-price="90" data-cat="gwasser" data-id="g10" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Sawyer Squeeze Wasserfilter × 2</div>
+          <div class="item-model">0,1 Mikron absolut — 99,99999 % Bakterien, lebenslang rückspülbar</div>
+          <div class="item-note">Für 5 Personen: 2 Filter (einer als Backup + Geschwindigkeit). Campingplätze haben Trinkwasser, aber bei Naturstopps essenziell. ~45 € pro Stück.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=sawyer+squeeze+wasserfilter" target="_blank" onclick="event.stopPropagation()">→ Amazon (2× kaufen)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~90 €</div><div class="item-state-label" id="sl-g10"></div></div>
+      </div>
+      <div class="item" data-price="25" data-cat="gwasser" data-id="g11" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Faltschüsseln 10 L Silikon × 2</div>
+          <div class="item-model">Abwaschbecken für Geschirr</div>
+          <div class="item-note">2 Stück: eine zum Waschen, eine zum Ausspülen. Faltbar, platzsparend.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=faltschüssel+10l+silikon+camping" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~25 €</div><div class="item-state-label" id="sl-g11"></div></div>
+      </div>
+      <div class="item" data-price="12" data-cat="gwasser" data-id="g12" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">TWO PLANTS Bio-Campingseife (Spülen + Waschen)</div>
+          <div class="item-model">Biologisch abbaubar — Spülmittel + Waschmittel 2-in-1</div>
+          <div class="item-note">An der Ostsee kein normales Spülmittel in Gewässernähe! Diese ist biologisch vollständig abbaubar. Reicht für die ganze Gruppe.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0BFFY87XV" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~12 €</div><div class="item-state-label" id="sl-g12"></div></div>
+      </div>
+      <div class="item" data-price="15" data-cat="gwasser" data-id="g13" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Dr. Bronner's Castile Soap 240 ml</div>
+          <div class="item-model">All-in-One: Haare, Körper, Notfall-Wäsche — biologisch abbaubar</div>
+          <div class="item-note">Der Camping-Klassiker. Ultra-konzentriert (sehr ergiebig), biologisch abbaubar, 1 Flasche für alle 5 Personen. Spart Platz.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=dr+bronners+castile+soap" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~15 €</div><div class="item-state-label" id="sl-g13"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LAGER & KOMFORT ── -->
+  <div class="cat-wrap" id="wrap-glager">
+    <div class="cat-header" onclick="toggleCat('glager')">
+      <span class="cat-icon">🏕️</span><h2>Lager &amp; Komfort</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-glager"></span><span class="cat-progress" id="prog-glager"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-glager">
+      <div class="item" data-price="70" data-cat="glager" data-id="g14" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">BioLite AlpenGlow 500 — Campinglaterne</div>
+          <div class="item-model">500 lm · 9 Modi · 6.400 mAh Powerbank · USB-C · aufhängbar</div>
+          <div class="item-note">Für Gemeinschaftsbereich. Abends am Tisch. Auch als Powerbank für Handys nutzbar. 1 Stück reicht für die Gruppe.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B08Z6294Y5" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~70 €</div><div class="item-state-label" id="sl-g14"></div></div>
+      </div>
+      <div class="item" data-price="35" data-cat="glager" data-id="g15" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Deuba Campingtisch 80×60 cm — höhenverstellbar</div>
+          <div class="item-model">Alu-Klapptisch, leicht, passt in den Anhänger</div>
+          <div class="item-note">Für 5 Personen zum Kochen/Essen. 1 Tisch reicht.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B00J01VD74" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~35 €</div><div class="item-state-label" id="sl-g15"></div></div>
+      </div>
+      <div class="item" data-price="125" data-cat="glager" data-id="g16" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Campingstühle × 5 — jeder einen</div>
+          <div class="item-model">Budget: ~25 € je Stück · Premium: Helinox Chair One ~100 € je</div>
+          <div class="item-note">Budget-Option (~25 €/Stück = 125 € gesamt): Suche "Camping Klappstuhl leicht" auf Amazon. Premium-Option: Helinox Chair One (890 g, 14 cm Packmaß, jahrelange Nutzung). Preis hier gilt für Budget-Variante.</div>
+          <div class="item-links">
+            <a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=camping+klappstuhl+leicht+kompakt" target="_blank" onclick="event.stopPropagation()">→ Budget suchen</a>
+            <a class="item-link lnk-alt" href="https://www.amazon.de/dp/B007ZGOWZQ" target="_blank" onclick="event.stopPropagation()">→ Helinox (~100 €/Stk)</a>
+          </div>
+        </div>
+        <div class="item-right"><div class="item-price">~125 €</div><div class="item-state-label" id="sl-g16"></div></div>
+      </div>
+      <div class="item" data-price="10" data-cat="glager" data-id="g17" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Wäscheleine ausziehbar + 20 Klammern</div>
+          <div class="item-model">10 Schnallen, direkt zwischen Bäume/Zeltstangen</div>
+          <div class="item-note">Sport-T-Shirts täglich trocknen. 1 Stück für alle.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0C7Q48TJ4" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~10 €</div><div class="item-state-label" id="sl-g17"></div></div>
+      </div>
+      <div class="item" data-price="5" data-cat="glager" data-id="g18" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Mülltüten 30 L × 20 Stück</div>
+          <div class="item-model">Supermarkt kaufen — Standard Küchenmülltüten</div>
+          <div class="item-note">Campingplatzmüll + als Notfall-Regenschutz für Packtaschen-Inhalt. Vor Abfahrt im Supermarkt kaufen.</div>
+        </div>
+        <div class="item-right"><div class="item-price">~5 €</div><div class="item-state-label" id="sl-g18"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ERSTE HILFE GRUPPE ── -->
+  <div class="cat-wrap" id="wrap-gehilfe">
+    <div class="cat-header" onclick="toggleCat('gehilfe')">
+      <span class="cat-icon">🏥</span><h2>Erste Hilfe — Gruppe</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-gehilfe"></span><span class="cat-progress" id="prog-gehilfe"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-gehilfe">
+      <div class="item" data-price="30" data-cat="gehilfe" data-id="g19" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Lifesystems Camping First Aid Kit — 44-teilig</div>
+          <div class="item-model">CE-zertifiziert, wasserfester Beutel</div>
+          <div class="item-note">Blasenpflaster, Wundversorgung, Verbände, Dreieckstuch, Schere. Für 5 Personen deutlich umfangreicher als persönliche Mini-Sets. Ergänzt nicht — ersetzt nicht — die persönlichen Sets.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B00M4V2CY0" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~30 €</div><div class="item-state-label" id="sl-g19"></div></div>
+      </div>
+      <div class="item" data-price="10" data-cat="gehilfe" data-id="g20" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Compeed Blasenpflaster Sortiment</div>
+          <div class="item-model">Verschiedene Größen — häufigste Verletzung auf Radtour</div>
+          <div class="item-note">Bei 5 Radfahrern die #1 Verletzung. Compeed bleibt besser kleben als normale Pflaster.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=compeed+blasenpflaster+sortiment" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~10 €</div><div class="item-state-label" id="sl-g20"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FAHRRAD-GRUPPE ── -->
+  <div class="cat-wrap" id="wrap-gfahrrad">
+    <div class="cat-header" onclick="toggleCat('gfahrrad')">
+      <span class="cat-icon">🔩</span><h2>Fahrrad — Gruppenersatzteile</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-gfahrrad"></span><span class="cat-progress" id="prog-gfahrrad"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-gfahrrad">
+      <div class="item" data-price="55" data-cat="gfahrrad" data-id="g21" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Topeak Alien X Multitool — 38 Funktionen</div>
+          <div class="item-model">Alle Inbus/Torx/Schraubendreher inkl. für Bosch-Antrieb</div>
+          <div class="item-note">Umfassenderes Gruppenswerkzeug als die persönlichen Hexus II. 1 Stück für die Gruppe — für alles was der Hexus II nicht kann.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B082VFVH4Y" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~55 €</div><div class="item-state-label" id="sl-g21"></div></div>
+      </div>
+      <div class="item" data-price="45" data-cat="gfahrrad" data-id="g22" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Topeak Joe Blow Sport III — Standpumpe</div>
+          <div class="item-model">TwinHead SV+AV+DV, großes Manometer, bis 160 psi</div>
+          <div class="item-note">Kommt in den Anhänger. Für VeeTyre 42-622 braucht man ~4–6 bar — Joe Blow schafft das problemlos. Für Unterwegs hat jeder seine Mini-Pumpe.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07D8GBFKL" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~45 €</div><div class="item-state-label" id="sl-g22"></div></div>
+      </div>
+      <div class="item" data-price="33" data-cat="gfahrrad" data-id="g23" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Schwalbe SV17 Ersatzschläuche × 6</div>
+          <div class="item-model">3× 2er-Pack — 28/47-622, Sclaverand (SV)</div>
+          <div class="item-note">Gruppenreserve: 6 Schläuche für 5 Bikes über 7+ Tage. Jeder hat schon 2 eigene → diese sind der Puffer. SV17 falls alle Sclaverand-Ventil haben.</div>
+          <div class="item-links">
+            <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B00DUCKM1W" target="_blank" onclick="event.stopPropagation()">→ Amazon SV17 (3× bestellen)</a>
+            <a class="item-link lnk-alt" href="https://www.amazon.de/dp/B01GV0TR7O" target="_blank" onclick="event.stopPropagation()">→ AV17 Schrader</a>
+          </div>
+        </div>
+        <div class="item-right"><div class="item-price">~33 €</div><div class="item-state-label" id="sl-g23"></div></div>
+      </div>
+      <div class="item" data-price="25" data-cat="gfahrrad" data-id="g24" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Shimano CN-HG71 Kette 8-fach + KMC Missing Link</div>
+          <div class="item-model">Passend für Shimano Altus 8-fach (Forte Ultra 508)</div>
+          <div class="item-note">1 Ersatzkette für die Gruppe. Kettenriss ist selten, aber der Alptraum auf Tour. Missing Link zum werkzeuglosen Verbinden.</div>
+          <div class="item-links">
+            <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B00JJWR12U" target="_blank" onclick="event.stopPropagation()">→ Amazon Kette</a>
+            <a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=kmc+missing+link+8+fach" target="_blank" onclick="event.stopPropagation()">→ Missing Link</a>
+          </div>
+        </div>
+        <div class="item-right"><div class="item-price">~25 €</div><div class="item-state-label" id="sl-g24"></div></div>
+      </div>
+      <div class="item" data-price="20" data-cat="gfahrrad" data-id="g25" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Schaltauge × 2 — Dynamics Forte Ultra 508</div>
+          <div class="item-model">Rahmenpezifisch! Beim Fachhändler kaufen</div>
+          <div class="item-note">⚠️ Schaltaugen sind rahmenpezifisch — nicht ohne genaue Typenangabe online bestellen. Vor der Tour bei Zweirad Stadler (0941 3788-147) anfragen und 2 Stück kaufen. Häufigstes Bruchstück bei Sturz.</div>
+        </div>
+        <div class="item-right"><div class="item-price">~20 €</div><div class="badge badge-pflicht">Händler!</div><div class="item-state-label" id="sl-g25"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ORGANISATION ── -->
+  <div class="cat-wrap" id="wrap-gorg">
+    <div class="cat-header" onclick="toggleCat('gorg')">
+      <span class="cat-icon">📦</span><h2>Organisation &amp; Packen</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-gorg"></span><span class="cat-progress" id="prog-gorg"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-gorg">
+      <div class="item" data-price="36" data-cat="gorg" data-id="g26" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Packsäcke / Drybags 10 L × 3</div>
+          <div class="item-model">Sea to Summit o.ä. — für Anhänger-Inhalt</div>
+          <div class="item-note">Für Lebensmittel, Kocher, Elektronik im Anhänger wasserdicht verpacken. 3 Stück à ~12 €.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=drybag+10l+packsack+wasserdicht" target="_blank" onclick="event.stopPropagation()">→ Amazon (3× kaufen)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~36 €</div><div class="item-state-label" id="sl-g26"></div></div>
+      </div>
+      <div class="item" data-price="10" data-cat="gorg" data-id="g27" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Schloss für den Anhänger</div>
+          <div class="item-model">Einfaches Zahlen-Spiralschloss</div>
+          <div class="item-note">Anhänger nachts auf dem Campingplatz absichern.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=zahlenschloss+spiralkabel+fahrrad" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~10 €</div><div class="item-state-label" id="sl-g27"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider" style="margin-top:1.2rem"></div>
+  <div style="text-align:right;padding:.6rem .2rem;font-size:.8rem;color:var(--muted)">
+    Gesamt Gruppe: <strong style="color:var(--text)" id="gruppe-total-bottom"></strong> · Pro Person: <strong style="color:#c4b5fd" id="gruppe-pp-bottom"></strong>
   </div>
 
 </div><!-- /tab-gruppe -->
@@ -617,7 +963,22 @@ var TABS = {
     ]
   },
   gruppe: {
-    amazonUrls: [],
+    amazonUrls: [
+      'https://www.amazon.de/dp/B0CSZ2XW2D',
+      'https://www.amazon.de/dp/B07ND8LS1N',
+      'https://www.amazon.de/dp/B0026IZL1C',
+      'https://www.amazon.de/dp/B08QN2BF5M',
+      'https://www.amazon.de/dp/B07218LTG5',
+      'https://www.amazon.de/dp/B0BFFY87XV',
+      'https://www.amazon.de/dp/B08Z6294Y5',
+      'https://www.amazon.de/dp/B00J01VD74',
+      'https://www.amazon.de/dp/B0C7Q48TJ4',
+      'https://www.amazon.de/dp/B00M4V2CY0',
+      'https://www.amazon.de/dp/B082VFVH4Y',
+      'https://www.amazon.de/dp/B07D8GBFKL',
+      'https://www.amazon.de/dp/B00DUCKM1W',
+      'https://www.amazon.de/dp/B00JJWR12U'
+    ],
     decathlonUrls: []
   }
 };
@@ -796,6 +1157,8 @@ function updateGruppeBox() {
   setText('gc-per-person', pp + ' €');
   setText('gc-paid-pp', donepp + ' €');
   setText('gc-per-person-note', pp);
+  setText('gruppe-total-bottom', total + ' €');
+  setText('gruppe-pp-bottom', pp + ' €');
 }
 
 // ── OPEN URLS ─────────────────────────────────────────
