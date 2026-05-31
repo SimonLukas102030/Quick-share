@@ -9,539 +9,847 @@
   :root {
     --bg: #0f1117; --surface: #1a1f2e; --card: #1e293b; --border: #2d3748;
     --text: #e2e8f0; --muted: #94a3b8; --dim: #4a5568;
-    --green: #34d399; --yellow: #fbbf24; --blue: #60a5fa; --orange: #fb923c;
-    --red: #f87171;
+    --green: #34d399; --yellow: #fbbf24; --blue: #60a5fa; --orange: #fb923c; --red: #f87171;
+    --ordered-bg: #0d1a30; --ordered-border: #1e4080; --ordered-text: #93c5fd;
   }
   body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
 
-  header { background: var(--surface); border-bottom: 2px solid #2563eb; padding: 1.2rem 2rem; }
-  header h1 { font-size: 1.35rem; color: var(--blue); }
-  header p { color: var(--muted); font-size: .82rem; margin-top: .2rem; }
+  /* ── HEADER + TABS ── */
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.4rem .6rem; position: sticky; top: 0; z-index: 90; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap; margin-bottom: .8rem; }
+  header h1 { font-size: 1.2rem; color: var(--blue); }
+  header p { color: var(--muted); font-size: .78rem; margin-top: .15rem; }
+  .tabs { display: flex; gap: .4rem; }
+  .tab-btn { padding: .4rem .9rem; border-radius: 7px; border: 1px solid var(--border); background: none; color: var(--muted); font-size: .82rem; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .tab-btn.active { background: #2563eb; border-color: #2563eb; color: #fff; }
+  .tab-btn:not(.active):hover { border-color: #4a90d9; color: var(--text); }
 
-  .container { max-width: 740px; margin: 0 auto; padding: 1.5rem 1rem 8rem; }
+  /* ── FILTER BAR ── */
+  .filter-bar { display: flex; gap: .4rem; padding: .55rem 1.4rem; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .filter-btn { padding: .28rem .7rem; border-radius: 20px; border: 1px solid var(--border); background: none; color: var(--dim); font-size: .75rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all .15s; flex-shrink: 0; }
+  .filter-btn.active { background: #374151; border-color: #6b7280; color: var(--text); }
+  .filter-btn.f-offen.active  { background: #1e3a5f44; border-color: var(--blue); color: var(--blue); }
+  .filter-btn.f-bestellt.active { background: #1a2e5044; border-color: #818cf8; color: #818cf8; }
+  .filter-btn.f-gekauft.active { background: #14532d44; border-color: var(--green); color: var(--green); }
+  .filter-count { font-size: .65rem; background: #374151; border-radius: 10px; padding: .05rem .35rem; margin-left: .25rem; }
+
+  .container { max-width: 740px; margin: 0 auto; padding: 1.2rem 1rem 8rem; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
 
   /* ── SCHNELLKAUF ── */
-  .schnellkauf { background: #0d1a2e; border: 1px solid #1e3a5f; border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.8rem; }
-  .schnellkauf h2 { font-size: .82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .9rem; }
-  .sq-mega { display: block; width: 100%; text-align: center; padding: .7rem 1rem; border-radius: 9px; font-size: .95rem; font-weight: 700; background: linear-gradient(135deg,#ff9900,#0082c3); color: #fff; border: none; cursor: pointer; margin-bottom: 1rem; transition: opacity .15s; }
+  .schnellkauf { background: #0d1a2e; border: 1px solid #1e3a5f; border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1.4rem; }
+  .schnellkauf summary { font-size: .82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; cursor: pointer; list-style: none; display: flex; align-items: center; gap: .4rem; }
+  .schnellkauf summary::after { content: '▾'; font-size: .7rem; margin-left: auto; color: var(--dim); }
+  details.schnellkauf[open] summary::after { content: '▴'; }
+  .sq-body { margin-top: .9rem; }
+  .sq-mega { display: block; width: 100%; text-align: center; padding: .6rem 1rem; border-radius: 8px; font-size: .9rem; font-weight: 700; background: linear-gradient(135deg,#ff9900,#2563eb); color: #fff; border: none; cursor: pointer; margin-bottom: .8rem; transition: opacity .15s; }
   .sq-mega:hover { opacity: .88; }
-  .sq-row { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; margin-bottom: .6rem; }
-  .sq-label { font-size: .78rem; color: var(--dim); width: 80px; flex-shrink: 0; }
-  .sq-btn {
-    display: inline-flex; align-items: center; gap: .45rem;
-    padding: .45rem .9rem; border-radius: 7px; font-size: .82rem; font-weight: 600;
-    text-decoration: none; border: none; cursor: pointer; transition: opacity .15s;
-  }
+  .sq-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .55rem; }
+  .sq-label { font-size: .75rem; color: var(--dim); width: 72px; flex-shrink: 0; }
+  .sq-btn { display: inline-flex; align-items: center; gap: .35rem; padding: .38rem .8rem; border-radius: 6px; font-size: .78rem; font-weight: 600; border: none; cursor: pointer; transition: opacity .15s; text-decoration: none; }
   .sq-btn:hover { opacity: .85; }
-  .sq-amazon { background: #ff9900; color: #111; }
-  .sq-decathlon { background: #0082c3; color: #fff; }
-  .sq-pearl { background: #cc3333; color: #fff; }
-  .sq-note { font-size: .72rem; color: var(--dim); margin-top: .35rem; line-height: 1.4; }
+  .sq-amazon { background: #b36a00; color: #fff; }
+  .sq-decathlon { background: #005f8e; color: #fff; }
+  .sq-note { font-size: .7rem; color: var(--dim); margin-top: .3rem; line-height: 1.4; }
 
   /* ── PROGRESS ── */
-  .progress { background: var(--surface); border-radius: 10px; padding: .9rem 1.2rem; margin-bottom: 1.8rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-  .prog-text { font-size: .82rem; color: var(--muted); white-space: nowrap; }
-  .prog-bar { flex: 1; min-width: 120px; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
-  .prog-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width .3s; }
-  .prog-total { font-weight: 700; font-size: .95rem; color: var(--green); white-space: nowrap; }
-  .prog-count { font-size: .78rem; color: var(--dim); }
+  .progress { background: var(--surface); border-radius: 9px; padding: .8rem 1.1rem; margin-bottom: 1.4rem; display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+  .prog-label { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+  .prog-bar-wrap { flex: 1; min-width: 100px; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+  .prog-ordered { background: #818cf8; }
+  .prog-done { background: var(--green); }
+  .prog-stats { display: flex; gap: .7rem; flex-wrap: wrap; }
+  .prog-stat { font-size: .78rem; }
+  .ps-label { color: var(--dim); }
+  .ps-val { font-weight: 700; }
 
   /* ── CATEGORY ── */
-  .cat-header { display: flex; align-items: center; gap: .55rem; margin: 1.8rem 0 .6rem; }
-  .cat-header h2 { font-size: .95rem; font-weight: 700; color: var(--blue); }
-  .cat-icon { font-size: 1.1rem; }
-  .cat-sum { margin-left: auto; font-size: .78rem; color: var(--dim); font-weight: 600; }
+  .cat-wrap { margin-bottom: .2rem; }
+  .cat-header { display: flex; align-items: center; gap: .5rem; margin: 1.5rem 0 .5rem; cursor: pointer; user-select: none; }
+  .cat-header:hover h2 { color: #93c5fd; }
+  .cat-icon { font-size: 1rem; flex-shrink: 0; }
+  .cat-header h2 { font-size: .92rem; font-weight: 700; color: var(--blue); transition: color .15s; }
+  .cat-stats { margin-left: auto; display: flex; gap: .5rem; align-items: center; }
+  .cat-sum { font-size: .75rem; color: var(--dim); font-weight: 600; }
+  .cat-progress { font-size: .7rem; color: var(--dim); }
+  .cat-toggle { font-size: .65rem; color: var(--dim); transition: transform .2s; }
+  .cat-wrap.collapsed .cat-toggle { transform: rotate(-90deg); }
+  .cat-body { }
+  .cat-wrap.collapsed .cat-body { display: none; }
 
   /* ── ITEM ── */
   .item {
-    display: grid; grid-template-columns: 1.8rem 1fr auto;
-    align-items: start; gap: .75rem;
-    padding: .8rem .95rem; background: var(--card);
+    display: grid; grid-template-columns: auto 1fr auto;
+    align-items: start; gap: .7rem;
+    padding: .75rem .9rem; background: var(--card);
     border: 1px solid var(--border); border-radius: 8px;
-    margin-bottom: .4rem; cursor: pointer;
+    margin-bottom: .35rem; cursor: pointer;
     transition: background .15s, border-color .15s; user-select: none;
   }
-  .item:hover { border-color: #4a90d9; }
-  .item.done { background: #0d1a0d; border-color: #14532d; }
-  .item.done .item-name { text-decoration: line-through; color: var(--dim); }
-  .item.done .item-note, .item.done .item-model { color: #1e4a1e; }
+  .item:hover { border-color: #4a5568; }
+  .item.hidden-filter { display: none; }
 
-  .cb { width: 1.2rem; height: 1.2rem; border: 2px solid var(--dim); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: .15rem; transition: background .15s, border-color .15s; }
-  .item.done .cb { background: #166534; border-color: #166534; }
-  .cb-check { display: none; color: #fff; font-size: .7rem; font-weight: 900; }
-  .item.done .cb-check { display: block; }
+  /* State: ordered */
+  .item[data-state="1"] { background: var(--ordered-bg); border-color: var(--ordered-border); }
+  .item[data-state="1"] .item-name { color: var(--ordered-text); }
 
+  /* State: done */
+  .item[data-state="2"] { background: #0a1a0a; border-color: #14532d; }
+  .item[data-state="2"] .item-name { text-decoration: line-through; color: var(--dim); }
+  .item[data-state="2"] .item-note, .item[data-state="2"] .item-model { color: #1e3a1e; }
+
+  /* Checkbox */
+  .cb { width: 1.25rem; height: 1.25rem; border: 2px solid var(--dim); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: .12rem; transition: all .15s; }
+  .item[data-state="1"] .cb { border-color: #818cf8; background: #1a1f4a; }
+  .item[data-state="2"] .cb { background: #166534; border-color: #166534; }
+  .cb-icon { font-size: .68rem; font-weight: 900; display: none; }
+  .item[data-state="1"] .cb-icon { display: block; color: #818cf8; content: "⏳"; }
+  .item[data-state="2"] .cb-icon { display: block; color: #fff; }
+
+  /* Body */
   .item-body { min-width: 0; }
-  .item-name { font-weight: 700; font-size: .92rem; }
-  .item-model { font-size: .76rem; color: var(--blue); margin-top: .08rem; font-weight: 600; }
-  .item-note { font-size: .73rem; color: var(--muted); margin-top: .22rem; line-height: 1.4; }
-  .item-links { margin-top: .4rem; display: flex; flex-wrap: wrap; gap: .28rem; }
-  .item-link {
-    display: inline-flex; align-items: center; gap: .25rem;
-    font-size: .71rem; color: #fff; text-decoration: none;
-    border-radius: 4px; padding: .15rem .5rem; font-weight: 600;
-  }
+  .item-name { font-weight: 700; font-size: .9rem; }
+  .item-model { font-size: .74rem; color: var(--blue); margin-top: .06rem; font-weight: 600; }
+  .item-note { font-size: .72rem; color: var(--muted); margin-top: .2rem; line-height: 1.4; }
+  .item-links { margin-top: .35rem; display: flex; flex-wrap: wrap; gap: .25rem; }
+  .item-link { display: inline-flex; align-items: center; font-size: .7rem; color: #fff; text-decoration: none; border-radius: 4px; padding: .13rem .45rem; font-weight: 600; }
   .item-link:hover { opacity: .8; }
-  .lnk-amazon  { background: #b36a00; }
+  .lnk-amazon    { background: #b36a00; }
   .lnk-decathlon { background: #005f8e; }
-  .lnk-pearl    { background: #8b1a1a; }
   .lnk-alt { background: #2d3748; color: var(--muted) !important; }
+  .lnk-green { background: #14532d; }
 
+  /* Right */
   .item-right { text-align: right; flex-shrink: 0; }
-  .item-price { font-size: 1rem; font-weight: 700; color: var(--green); }
-  .badge { font-size: .63rem; border-radius: 3px; padding: .1rem .38rem; margin-top: .28rem; display: inline-block; }
+  .item-price { font-size: .95rem; font-weight: 700; color: var(--green); }
+  .item-state-label { font-size: .62rem; border-radius: 3px; padding: .08rem .35rem; margin-top: .22rem; display: inline-block; }
+  .item[data-state="0"] .item-state-label { display: none; }
+  .item[data-state="1"] .item-state-label { background: #1a1f4a; color: #818cf8; }
+  .item[data-state="2"] .item-state-label { background: #14532d; color: var(--green); }
+  .badge { font-size: .62rem; border-radius: 3px; padding: .08rem .35rem; margin-top: .22rem; display: inline-block; }
   .badge-pflicht { background: #7c2d12; color: #fed7aa; }
-  .badge-app    { background: #1e3a5f; color: #93c5fd; }
   .badge-erg    { background: #1a2e1a; color: #86efac; }
   .badge-opt    { background: #2d2a0f; color: #fde68a; }
+  .badge-gruppe { background: #2d1a4a; color: #c4b5fd; }
 
-  /* ── INFO / PFLICHT BANNERS ── */
-  .pflicht-note { background: #1a2e1a; border: 1px solid #166534; border-radius: 8px; padding: .65rem .95rem; margin-bottom: .6rem; font-size: .77rem; color: #86efac; line-height: 1.4; }
-  .info-note    { background: #1a2233; border: 1px solid #2d3f5e; border-radius: 8px; padding: .65rem .95rem; margin-bottom: .6rem; font-size: .77rem; color: var(--muted); line-height: 1.4; }
+  /* Banners */
+  .pflicht-note { background: #1a2e1a; border: 1px solid #166534; border-radius: 8px; padding: .6rem .9rem; margin-bottom: .55rem; font-size: .76rem; color: #86efac; line-height: 1.4; }
+  .info-note    { background: #1a2233; border: 1px solid #2d3f5e; border-radius: 8px; padding: .6rem .9rem; margin-bottom: .55rem; font-size: .76rem; color: var(--muted); line-height: 1.4; }
+  .gruppe-note  { background: #1a1a2e; border: 1px solid #3730a3; border-radius: 8px; padding: .6rem .9rem; margin-bottom: .55rem; font-size: .76rem; color: #c4b5fd; line-height: 1.4; }
 
-  /* ── BEREITS VORHANDEN ── */
-  .have-item { display: flex; align-items: center; gap: .6rem; padding: .48rem .85rem; background: #131820; border: 1px solid #1e2535; border-radius: 7px; margin-bottom: .3rem; opacity: .65; }
-  .have-icon { color: var(--green); font-size: .8rem; flex-shrink: 0; }
-  .have-name { font-size: .82rem; color: var(--muted); }
+  /* Already have */
+  .have-item { display: flex; align-items: center; gap: .5rem; padding: .42rem .8rem; background: #131820; border: 1px solid #1e2535; border-radius: 7px; margin-bottom: .28rem; opacity: .6; }
+  .have-icon { color: var(--green); font-size: .78rem; flex-shrink: 0; }
+  .have-name { font-size: .8rem; color: var(--muted); }
 
-  /* ── DIVIDER / TOTAL ── */
+  /* Gruppe cost box */
+  .gruppe-cost { background: #1a1a2e; border: 1px solid #3730a3; border-radius: 10px; padding: .9rem 1.1rem; margin-bottom: 1.2rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .gc-item { display: flex; flex-direction: column; }
+  .gc-label { font-size: .72rem; color: var(--muted); }
+  .gc-val { font-size: 1.3rem; font-weight: 700; color: #c4b5fd; }
+  .gc-sub { font-size: .68rem; color: var(--dim); }
+
+  /* Divider */
   .divider { height: 1px; background: var(--border); margin: .5rem 0; }
 
-  /* ── FOOTER ── */
+  /* FOOTER */
   .footer-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: #0d1117f2; backdrop-filter: blur(12px);
     border-top: 1px solid var(--border);
-    padding: .75rem 2rem;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    padding: .6rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap;
     z-index: 100;
   }
   .footer-left { display: flex; flex-direction: column; }
-  .footer-label { font-size: .75rem; color: var(--muted); }
-  .footer-amount { font-size: 1.35rem; font-weight: 700; color: var(--green); }
-  .footer-sub { font-size: .72rem; color: var(--dim); }
-  .clear-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: .32rem .9rem; border-radius: 6px; cursor: pointer; font-size: .78rem; }
+  .footer-label { font-size: .72rem; color: var(--muted); }
+  .footer-amount { font-size: 1.25rem; font-weight: 700; color: var(--green); line-height: 1.1; }
+  .footer-sub { font-size: .7rem; color: var(--dim); }
+  .footer-mid { display: flex; flex-direction: column; gap: .2rem; flex: 1; min-width: 100px; max-width: 180px; }
+  .footer-prog-row { display: flex; gap: .2rem; height: 5px; border-radius: 4px; overflow: hidden; background: var(--border); }
+  .fp-ordered { background: #818cf8; transition: width .3s; }
+  .fp-done { background: var(--green); transition: width .3s; }
+  .footer-counts { font-size: .68rem; color: var(--dim); text-align: center; }
+  .clear-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: .28rem .8rem; border-radius: 5px; cursor: pointer; font-size: .75rem; }
   .clear-btn:hover { border-color: #ef4444; color: var(--red); }
+
+  /* Mobile tweaks */
+  @media (max-width: 500px) {
+    .header-top { flex-direction: column; align-items: flex-start; }
+    .tabs { width: 100%; }
+    .tab-btn { flex: 1; text-align: center; font-size: .75rem; }
+    .footer-bar { padding: .55rem 1rem; }
+    .sq-label { width: 56px; }
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🚲 Ostsee-Campingtour — Einkaufsliste</h1>
-  <p>Dynamics Forte Ultra 508 · Samsung S20 · Haken = gekauft</p>
+  <div class="header-top">
+    <div>
+      <h1>🚲 Ostsee-Campingtour</h1>
+      <p>Dynamics Forte Ultra 508 · 5 Personen · Klick = Bestellt → Angekommen</p>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tbtn-mein" onclick="switchTab('mein')">🚲 Meine Sachen</button>
+      <button class="tab-btn" id="tbtn-gruppe" onclick="switchTab('gruppe')">👥 Für alle ÷5</button>
+    </div>
+  </div>
 </header>
+
+<div class="filter-bar" id="filter-bar">
+  <button class="filter-btn active" onclick="setFilter('all')">Alle <span class="filter-count" id="fc-all"></span></button>
+  <button class="filter-btn f-offen" onclick="setFilter('offen')">Offen <span class="filter-count" id="fc-offen"></span></button>
+  <button class="filter-btn f-bestellt" onclick="setFilter('bestellt')">📦 Bestellt <span class="filter-count" id="fc-bestellt"></span></button>
+  <button class="filter-btn f-gekauft" onclick="setFilter('gekauft')">✓ Angekommen <span class="filter-count" id="fc-gekauft"></span></button>
+</div>
 
 <div class="container">
 
-  <!-- ═══════════════ SCHNELLKAUF ═══════════════ -->
-  <div class="schnellkauf">
-    <h2>⚡ Schnellkauf — Versand nach 16259 Hohenwutzen</h2>
+<!-- ════════════════════════════════════════════════
+     TAB: MEINE SACHEN
+════════════════════════════════════════════════ -->
+<div id="tab-mein" class="tab-content active">
 
-    <button class="sq-mega" onclick="openAll()">
-      🚀 Alle 15 Seiten öffnen — günstigster Preis je Artikel
-    </button>
-    <div class="sq-note" style="margin-bottom:1rem">Öffnet jede Produktseite in eigenem Tab (Amazon frei ab 29€ · Decathlon frei ab 29€ · Pearl ~3€). Pop-up-Blocker für diese Seite kurz deaktivieren.</div>
-
-    <div class="sq-row">
-      <span class="sq-label">Amazon</span>
-      <button class="sq-btn sq-amazon" onclick="openAmazon()">
-        📦 13 Amazon-Tabs öffnen
-      </button>
+  <!-- SCHNELLKAUF -->
+  <details class="schnellkauf">
+    <summary>⚡ Schnellkauf — Versand nach 16259 Hohenwutzen</summary>
+    <div class="sq-body">
+      <button class="sq-mega" onclick="openAll('mein')">🚀 Alle 15 Tabs öffnen — günstigster Preis je Artikel</button>
+      <div class="sq-note" style="margin-bottom:.8rem">Pop-up-Blocker kurz deaktivieren · Amazon frei ab 29 € · Decathlon frei ab 29 €</div>
+      <div class="sq-row">
+        <span class="sq-label">Amazon</span>
+        <button class="sq-btn sq-amazon" onclick="openAmazon('mein')">📦 12 Tabs</button>
+      </div>
+      <div class="sq-note" style="margin-bottom:.6rem">Schlauch · TipTop · Omni RideCase · Spanngurte · Brille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller · Radunterhose · Faltschloss</div>
+      <div class="sq-row">
+        <span class="sq-label">Decathlon</span>
+        <button class="sq-btn sq-decathlon" onclick="openDecathlon('mein')">🏬 3 Tabs</button>
+      </div>
+      <div class="sq-note">Riverside 500 Paar · Regenjacke MH150 · Regenhose MH500</div>
     </div>
-    <div class="sq-note" style="margin-bottom:.75rem">Schlauch+Reifenheber · TipTop · Omni RideCase · Spanngurte · Sportbrille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller · Radunterhose · Faltschloss</div>
+  </details>
 
-    <div class="sq-row">
-      <span class="sq-label">Decathlon</span>
-      <button class="sq-btn sq-decathlon" onclick="openDecathlon()">
-        🏬 3 Decathlon-Tabs öffnen
-      </button>
-    </div>
-    <div class="sq-note" style="margin-bottom:.75rem">Riverside 500 Paar · Regenjacke MH150 · Regenhose MH500</div>
-
-  </div>
-
-  <!-- ═══════════════ PROGRESS ═══════════════ -->
-  <div class="progress">
-    <span class="prog-text">Fortschritt</span>
-    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-    <span class="prog-count" id="prog-count">0 / 0</span>
-    <span class="prog-total" id="prog-total">0 €</span>
-  </div>
-
-  <!-- ═══════════════ BEREITS VORHANDEN ═══════════════ -->
-  <div class="cat-header">
-    <span class="cat-icon">✅</span>
-    <h2>Bereits vorhanden — nicht kaufen</h2>
-  </div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Fahrradhelm — Uvex Trekking (Blau-Weiß)</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Luftpumpe</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichtes Trekking-Zelt (~1 kg)</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichter Schlafsack (~1 kg)</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Rucksack</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Sporthose (Trekking)</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Sport-T-Shirts × 2</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Powerbank</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Bosch eBike Lock — kostenlos, in Flow App aktivieren (Motorsperre, kein echter Diebstahlschutz)</span></div>
-
-  <!-- ═══════════════ PANNENSCHUTZ ═══════════════ -->
-  <div class="cat-header">
-    <span class="cat-icon">⚠️</span>
-    <h2>Pannenschutz</h2>
-    <span class="cat-sum" id="sum-pannen"></span>
-  </div>
-  <div class="pflicht-note"><strong>⚠️ Ventil VOR dem Kauf prüfen — sonst falscher Schlauch!</strong> Das Forte Ultra 508 hat VeeTyre 42-622 Reifen — Schlauchgröße passt. Aber der Ventiltyp ist im Datenblatt nicht dokumentiert. Am Bike schauen: Sclaverand (dünner Stift, 6mm) → SV17 kaufen · Schrader (breit, 8mm, wie Auto) → AV17 kaufen.</div>
-
-  <div class="item" data-price="12" data-cat="pannen" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Ersatzschlauch + Reifenheber</div>
-      <div class="item-model">Schwalbe SV17 2er-Pack + 3 Reifenheber — Reifengröße 42-622 ✓ passt</div>
-      <div class="item-note">Schlauchbreite passt (42mm liegt in SV17-Bereich 28–47mm). Ventiltyp erst am Bike prüfen — dann bestellen.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0BRCZ5ZJR" target="_blank" onclick="event.stopPropagation()">→ Amazon (SV17 Kombi)</a>
-        <a class="item-link lnk-alt" href="https://www.amazon.de/dp/B01GV0TR7O" target="_blank" onclick="event.stopPropagation()">→ Amazon (AV17 Schrader)</a>
+  <!-- PROGRESS MEIN -->
+  <div class="progress" id="prog-mein">
+    <span class="prog-label">Fortschritt</span>
+    <div class="prog-bar-wrap">
+      <div style="display:flex;height:100%">
+        <div class="fp-ordered" id="pm-ordered" style="width:0%"></div>
+        <div class="fp-done"    id="pm-done"    style="width:0%"></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~12 €</div><div class="badge badge-pflicht">Pflicht</div></div>
+    <div class="prog-stats">
+      <span class="prog-stat"><span class="ps-label">Bestellt </span><span class="ps-val" id="pm-spent-ord" style="color:#818cf8">0 €</span></span>
+      <span class="prog-stat"><span class="ps-label">Gekauft </span><span class="ps-val" id="pm-spent-done">0 €</span></span>
+      <span class="prog-stat"><span class="ps-val" id="pm-count" style="color:var(--dim);font-weight:400;font-size:.72rem">0 / 0</span></span>
+    </div>
   </div>
 
-  <div class="item" data-price="4" data-cat="pannen" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Flickzeug</div>
-      <div class="item-model">Rema TipTop TT04 — 6 Patches + Vulkanisierlösung</div>
-      <div class="item-note">Backup wenn beide Schläuche schon verbraucht sind. 28 g, passt immer rein.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B006JMF99K" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+  <!-- BEREITS VORHANDEN -->
+  <div class="cat-wrap" id="wrap-have">
+    <div class="cat-header" onclick="toggleCat('have')">
+      <span class="cat-icon">✅</span><h2>Bereits vorhanden</h2>
+      <div class="cat-stats"><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-have">
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Fahrradhelm — Uvex Trekking (Blau-Weiß)</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Luftpumpe</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichtes Trekking-Zelt (~1 kg)</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichter Schlafsack (~1 kg)</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Rucksack</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Sporthose (Trekking)</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Sport-T-Shirts × 2</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Powerbank</span></div>
+      <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Bosch eBike Lock — kostenlos in Flow App aktivieren</span></div>
+    </div>
+  </div>
+
+  <!-- PANNENSCHUTZ -->
+  <div class="cat-wrap" id="wrap-pannen">
+    <div class="cat-header" onclick="toggleCat('pannen')">
+      <span class="cat-icon">⚠️</span><h2>Pannenschutz</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-pannen"></span><span class="cat-progress" id="prog-pannen"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-pannen">
+      <div class="pflicht-note"><strong>Ventil am Bike prüfen bevor du bestellst!</strong> Sclaverand (dünner 6mm Stift) → SV17 · Schrader (breiter 8mm Stift wie Auto) → AV17. Schlauchgröße 42-622 passt in beiden Fällen.</div>
+      <div class="item" data-price="12" data-cat="pannen" data-id="m1" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Ersatzschlauch + Reifenheber</div>
+          <div class="item-model">Schwalbe SV17 2er-Pack + 3 Reifenheber — passt 42-622 ✓</div>
+          <div class="item-note">2 Schläuche ideal für Mehrtagestouren. Ventiltyp erst am Bike prüfen!</div>
+          <div class="item-links">
+            <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0BRCZ5ZJR" target="_blank" onclick="event.stopPropagation()">→ Amazon SV17</a>
+            <a class="item-link lnk-alt" href="https://www.amazon.de/dp/B01GV0TR7O" target="_blank" onclick="event.stopPropagation()">→ Amazon AV17</a>
+          </div>
+        </div>
+        <div class="item-right"><div class="item-price">~12 €</div><div class="badge badge-pflicht">Pflicht</div><div class="item-state-label" id="sl-m1"></div></div>
+      </div>
+      <div class="item" data-price="4" data-cat="pannen" data-id="m2" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Flickzeug</div>
+          <div class="item-model">Rema TipTop TT04 — 6 Patches + Vulkanisierlösung</div>
+          <div class="item-note">Backup wenn beide Schläuche schon verbraucht. 28 g.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B006JMF99K" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~4 €</div><div class="badge badge-pflicht">Pflicht</div><div class="item-state-label" id="sl-m2"></div></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~4 €</div><div class="badge badge-pflicht">Pflicht</div></div>
   </div>
 
-  <!-- ═══════════════ FAHRRAD-ZUBEHÖR ═══════════════ -->
-  <div class="cat-header">
-    <span class="cat-icon">🚲</span>
-    <h2>Fahrrad-Zubehör</h2>
-    <span class="cat-sum" id="sum-bike"></span>
-  </div>
-
-  <div class="item" data-price="35" data-cat="bike" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Topeak Omni RideCase II — Handyhalter</div>
-      <div class="item-model">Universal bis 6,9" — Gummi-Klemmarme, kein Extra-Case nötig</div>
-      <div class="item-note">Hält das S20 direkt per Gummibänder. Schraube am Trekking-Lenker 22–35 mm, 360° drehbar. Nicht das normale RideCase (das braucht passendes Handy-Case!).</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0D2LMB7YD" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+  <!-- FAHRRAD-ZUBEHÖR -->
+  <div class="cat-wrap" id="wrap-bike">
+    <div class="cat-header" onclick="toggleCat('bike')">
+      <span class="cat-icon">🚲</span><h2>Fahrrad-Zubehör</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-bike"></span><span class="cat-progress" id="prog-bike"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-bike">
+      <div class="item" data-price="35" data-cat="bike" data-id="m3" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Topeak Omni RideCase II — Handyhalter</div>
+          <div class="item-model">Universal bis 6,9" — Gummi-Klemmarme, kein Extra-Case</div>
+          <div class="item-note">Hält S20 direkt. Schraube am Trekking-Lenker 22–35 mm, 360° drehbar. Nicht normales RideCase (braucht Handy-Case).</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0D2LMB7YD" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~35 €</div><div class="item-state-label" id="sl-m3"></div></div>
+      </div>
+      <div class="item" data-price="18" data-cat="bike" data-id="m4" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Faltschloss mit Zahlencode + Rahmenhalterung</div>
+          <div class="item-model">REKALRO — 4-stellig, 85 cm, 8 Gelenke</div>
+          <div class="item-note">Kein Schlüssel, kein Handy — Code eintippen. Halterung inkl., immer am Rahmen.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09VBQQM7D" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~18 €</div><div class="item-state-label" id="sl-m4"></div></div>
+      </div>
+      <div class="item" data-price="45" data-cat="bike" data-id="m5" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Decathlon Riverside 500 — 2 × 20 L, wasserdicht</div>
+          <div class="item-model">Seitentaschen — Standard-Seitenrohre, unabhängig vom MonkeyLoad-Snap</div>
+          <div class="item-note">MonkeyLoad-Snap ist für oben, Seitentaschen hängen seitlich an normalen Trägerrohren. Falls inkompatibel: 30 Tage Rückgabe Decathlon. 40 L gesamt, wirklich dicht.</div>
+          <div class="item-links"><a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380" target="_blank" onclick="event.stopPropagation()">→ Decathlon Paar</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~45 €</div><div class="badge badge-opt">30T Rückgabe</div><div class="item-state-label" id="sl-m5"></div></div>
+      </div>
+      <div class="item" data-price="18" data-cat="bike" data-id="m6" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Fidlock TWIST Flasche 600 ml</div>
+          <div class="item-model">Fidlock TWIST — magnetisch, passt auf vorhandenen Halter am Bike</div>
+          <div class="item-note">Forte Ultra 508 hat ab Werk Fidlock-Magnethalter — normaler Alu-Halter passt nicht! Falls eine Flasche beim Kauf dabei war: überspringen.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=fidlock+twist+flasche+600ml" target="_blank" onclick="event.stopPropagation()">→ Amazon (~15–20 €)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~18 €</div><div class="badge badge-opt">Prüfen</div><div class="item-state-label" id="sl-m6"></div></div>
+      </div>
+      <div class="item" data-price="8" data-cat="bike" data-id="m7" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Spanngurte × 2 — Drybag auf Träger</div>
+          <div class="item-model">URAQT elastisch, 60–105 cm, Stahlhaken</div>
+          <div class="item-note">Zum Festzurren von Drybag + Zelt oben auf den Träger.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09FPYY3BH" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~8 €</div><div class="badge badge-erg">Ergänzt</div><div class="item-state-label" id="sl-m7"></div></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~35 €</div></div>
   </div>
 
-  <div class="item" data-price="18" data-cat="bike" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Faltschloss mit Zahlencode + Rahmenhalterung</div>
-      <div class="item-model">REKALRO — 4-stellig, 85 cm, 8 Gelenke, Halterung am Rahmen</div>
-      <div class="item-note">Kein Schlüssel, kein Handy nötig — Code eintippen, fertig. Rahmenhalterung inkl. → immer dabei, nie verlieren. Da Versicherung greift: mehr braucht's nicht.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09VBQQM7D" target="_blank" onclick="event.stopPropagation()">→ Amazon (~15–20 €)</a>
+  <!-- BEKLEIDUNG -->
+  <div class="cat-wrap" id="wrap-kleidung">
+    <div class="cat-header" onclick="toggleCat('kleidung')">
+      <span class="cat-icon">👕</span><h2>Bekleidung</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-kleidung"></span><span class="cat-progress" id="prog-kleidung"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-kleidung">
+      <div class="item" data-price="18" data-cat="kleidung" data-id="m8" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Radunterhose mit Sitzpolster</div>
+          <div class="item-model">X-TIGER 5D Gel — Größe L (185 cm schlank)</div>
+          <div class="item-note">Direkt auf Haut tragen, keine normale Unterhose drunter! Verhindert Wundscheuern ab Tag 1.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09KNGQTXJ" target="_blank" onclick="event.stopPropagation()">→ Amazon — Größe L wählen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~18 €</div><div class="item-state-label" id="sl-m8"></div></div>
+      </div>
+      <div class="item" data-price="12" data-cat="kleidung" data-id="m9" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Fahrradbrille — Windschutz, orange</div>
+          <div class="item-model">Xiyalai Wraparound — UV400, TR90</div>
+          <div class="item-note">Wraparound schließt seitlich ab → kein Fahrtwind. Orange Farboption auf Produktseite wählen.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09ZB7L6JH" target="_blank" onclick="event.stopPropagation()">→ Amazon (orange wählen)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~12 €</div><div class="item-state-label" id="sl-m9"></div></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~18 €</div></div>
   </div>
 
-  <div class="item" data-price="45" data-cat="bike" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Decathlon Riverside 500 — 2 × 20 L, vollständig wasserdicht</div>
-      <div class="item-model">Seitentaschen — hängen an Standard-Seitenrohren, unabhängig vom MonkeyLoad-Snap</div>
-      <div class="item-note">Der MonkeyLoad-Snap ist für Körbe/Taschen auf der Trägerplattform (oben). Seitentaschen wie diese hängen seitlich an den normalen Trägerrohren — das ist ein anderer Befestigungspunkt, der auf jedem Rack funktioniert. Falls sie doch nicht passen: Decathlon hat 30 Tage Rückgabe. 40 L gesamt, wirklich dicht (kein Regendeckel nötig).</div>
-      <div class="item-links">
-        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380" target="_blank" onclick="event.stopPropagation()">→ Decathlon Paar (Farbe wählbar)</a>
+  <!-- WETTERSCHUTZ -->
+  <div class="cat-wrap" id="wrap-wetter">
+    <div class="cat-header" onclick="toggleCat('wetter')">
+      <span class="cat-icon">🌧️</span><h2>Wetterschutz</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-wetter"></span><span class="cat-progress" id="prog-wetter"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-wetter">
+      <div class="info-note">Ostsee im Sommer = Regen ist realistisch. Ohne Regenklamotten bist du nach 30 min durch.</div>
+      <div class="item" data-price="45" data-cat="wetter" data-id="m10" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Regenjacke — MH150</div>
+          <div class="item-model">Decathlon Quechua MH150 — 15.000 mm, RET 10 (wirklich atmungsaktiv)</div>
+          <div class="item-note">Raincut hat kaum Atmungsaktivität → beim Radfahren sofort durchgeschwitzt. MH150 = 15.000 mm + RET 10, packbar auf Faustgröße.</div>
+          <div class="item-links"><a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-wandern-mh150-dunkelblau/309604/c43c188m8585162" target="_blank" onclick="event.stopPropagation()">→ Decathlon (Farbe wählbar)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~45 €</div><div class="item-state-label" id="sl-m10"></div></div>
+      </div>
+      <div class="item" data-price="50" data-cat="wetter" data-id="m11" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Regenhose — MH500 Überziehhose</div>
+          <div class="item-model">Decathlon Quechua MH500 — 15.000 mm, kompakt rollbar</div>
+          <div class="item-note">Zieht man über die Shorts. Rollt auf Faustgröße, 300 g.</div>
+          <div class="item-links"><a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~50 €</div><div class="item-state-label" id="sl-m11"></div></div>
+      </div>
+      <div class="item" data-price="12" data-cat="wetter" data-id="m12" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Drybag 40 L</div>
+          <div class="item-model">iOutdoor — 100 % wasserdicht, Rollverschluss, ultraleicht</div>
+          <div class="item-note">Zelt + Schlafsack rein, mit Spanngurten oben auf den Träger.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07ZPWHDHR" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~12 €</div><div class="item-state-label" id="sl-m12"></div></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~45 €</div><div class="badge badge-opt">30T Rückgabe</div></div>
   </div>
 
-  <div class="item" data-price="18" data-cat="bike" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Fidlock TWIST Flasche 600ml</div>
-      <div class="item-model">Fidlock TWIST — passt auf den vorhandenen Fidlock-Halter am Bike</div>
-      <div class="item-note">Das Forte Ultra 508 hat ab Werk einen Fidlock-Magnethalter — kein Standard-Schraubhalter! Ein normaler Alu-Halter passt dort nicht. Falls eine Fidlock-Flasche bereits dabei war: diesen Punkt überspringen.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=fidlock+twist+flasche+600ml" target="_blank" onclick="event.stopPropagation()">→ Amazon (~15–20 €)</a>
+  <!-- KOMFORT & WERKZEUG -->
+  <div class="cat-wrap" id="wrap-tools">
+    <div class="cat-header" onclick="toggleCat('tools')">
+      <span class="cat-icon">🔧</span><h2>Komfort &amp; Werkzeug</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-tools"></span><span class="cat-progress" id="prog-tools"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-tools">
+      <div class="item" data-price="12" data-cat="tools" data-id="m13" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Topeak Hexus II Multitool</div>
+          <div class="item-model">Inbus 2–8 mm · Kreuz · Kettennieter · 11 Funktionen</div>
+          <div class="item-note">Sattel, Lenker, Kette — alles unterwegs einstellbar.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B00320OJA2" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~12 €</div><div class="badge badge-erg">Ergänzt</div><div class="item-state-label" id="sl-m13"></div></div>
+      </div>
+      <div class="item" data-price="8" data-cat="tools" data-id="m14" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Chamois-Crème</div>
+          <div class="item-model">SURPASS 170 ml — auf die Haut, nicht den Sattel</div>
+          <div class="item-note">Verhindert Wundscheuern. Ab Tag 2 auf der Tour bist du froh drum.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0B78BVZV6" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~8 €</div><div class="badge badge-erg">Ergänzt</div><div class="item-state-label" id="sl-m14"></div></div>
+      </div>
+      <div class="item" data-price="10" data-cat="tools" data-id="m15" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Erste-Hilfe Mini-Set</div>
+          <div class="item-model">ALPENWERT Outdoor — Pflaster, Binde, Rettungsfolie, Zeckenzange</div>
+          <div class="item-note">Stürze passieren. 150 g, in die Seitentasche.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0CM7HBHGJ" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~10 €</div><div class="badge badge-erg">Ergänzt</div><div class="item-state-label" id="sl-m15"></div></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~18 €</div><div class="badge badge-opt">Prüfen</div></div>
   </div>
 
-  <div class="item" data-price="8" data-cat="bike" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Spanngurte × 2 — Drybag auf Träger</div>
-      <div class="item-model">URAQT elastische Gepäckspanner mit Haken, 60–105 cm</div>
-      <div class="item-note">Zum Festzurren von Drybag + Zelt oben auf den MonkeyLoad. Verstellbar, Stahlhaken. 2 Stück reichen.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09FPYY3BH" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+  <!-- CAMP-KÜCHE PERSÖNLICH -->
+  <div class="cat-wrap" id="wrap-kueche">
+    <div class="cat-header" onclick="toggleCat('kueche')">
+      <span class="cat-icon">🍽️</span><h2>Persönliches Camping-Geschirr</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-kueche"></span><span class="cat-progress" id="prog-kueche"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-kueche">
+      <div class="item" data-price="8" data-cat="kueche" data-id="m16" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Bundeswehr Essbesteck</div>
+          <div class="item-model">normani 4-teilig — Messer, Gabel, Löffel, Dosenöffner</div>
+          <div class="item-note">Edelstahl, kompakt steckbar, am Karabiner hängbar.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B01N6NXBCR" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~8 €</div><div class="item-state-label" id="sl-m16"></div></div>
+      </div>
+      <div class="item" data-price="6" data-cat="kueche" data-id="m17" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Camping-Teller tief</div>
+          <div class="item-model">Mil-Tec Edelstahl — unzerbrechlich, 22 cm</div>
+          <div class="item-note">Edelstahl, kein Plastik. Geht auch als Schüssel.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B005MYBBB6" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~6 €</div><div class="item-state-label" id="sl-m17"></div></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~8 €</div><div class="badge badge-erg">Ergänzt</div></div>
   </div>
 
-  <!-- ═══════════════ BEKLEIDUNG ═══════════════ -->
-  <div class="cat-header">
-    <span class="cat-icon">👕</span>
-    <h2>Bekleidung</h2>
-    <span class="cat-sum" id="sum-kleidung"></span>
+  <div class="divider" style="margin-top:1.2rem"></div>
+  <div style="text-align:right;padding:.6rem .2rem;font-size:.8rem;color:var(--muted)">
+    Gesamt: <strong style="color:var(--text)" id="mein-total"></strong>
   </div>
 
-  <div class="item" data-price="18" data-cat="kleidung" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Radunterhose mit Sitzpolster</div>
-      <div class="item-model">X-TIGER 5D Gel-Polster — Größe L (185 cm schlank)</div>
-      <div class="item-note">Bei 185 cm schlank → Größe <strong>L</strong> bestellen. Direkt auf der Haut tragen, keine normale Unterhose drunter! Verhindert Wundscheuern ab Tag 1.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09KNGQTXJ" target="_blank" onclick="event.stopPropagation()">→ Amazon — Größe L wählen</a>
+</div><!-- /tab-mein -->
+
+
+<!-- ════════════════════════════════════════════════
+     TAB: FÜR ALLE ÷5
+════════════════════════════════════════════════ -->
+<div id="tab-gruppe" class="tab-content">
+
+  <!-- SCHNELLKAUF GRUPPE -->
+  <details class="schnellkauf">
+    <summary>⚡ Schnellkauf — Gruppenartikel</summary>
+    <div class="sq-body">
+      <button class="sq-mega" onclick="openAll('gruppe')">🚀 Alle Gruppen-Tabs öffnen</button>
+      <div class="sq-row">
+        <span class="sq-label">Amazon</span>
+        <button class="sq-btn sq-amazon" onclick="openAmazon('gruppe')">📦 Amazon-Tabs</button>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~18 €</div></div>
-  </div>
+  </details>
 
-  <div class="item" data-price="12" data-cat="kleidung" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Fahrradbrille — Windschutz, orange</div>
-      <div class="item-model">Xiyalai Wraparound — UV400, TR90, Windschutz-Design</div>
-      <div class="item-note">Wraparound schließt seitlich ab → kein Fahrtwind in die Augen bei 25 km/h. Auf der Produktseite <strong>orange Farboption</strong> auswählen. UV400, polarisiert.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09ZB7L6JH" target="_blank" onclick="event.stopPropagation()">→ Amazon (orange Farbe wählen)</a>
+  <!-- PROGRESS GRUPPE -->
+  <div class="progress" id="prog-gruppe">
+    <span class="prog-label">Fortschritt</span>
+    <div class="prog-bar-wrap">
+      <div style="display:flex;height:100%">
+        <div class="fp-ordered" id="pg-ordered" style="width:0%"></div>
+        <div class="fp-done"    id="pg-done"    style="width:0%"></div>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~12 €</div></div>
-  </div>
-
-  <!-- ═══════════════ WETTERSCHUTZ ═══════════════ -->
-  <div class="cat-header">
-    <span class="cat-icon">🌧️</span>
-    <h2>Wetterschutz</h2>
-    <span class="cat-sum" id="sum-wetter"></span>
-  </div>
-  <div class="info-note">Ostsee im Sommer = Regen ist realistisch. Ohne Regenklamotten bist du nach 30 min durch und frierst den Rest des Tages.</div>
-
-  <div class="item" data-price="45" data-cat="wetter" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Regenjacke — MH150</div>
-      <div class="item-model">Decathlon Quechua MH150 — 15.000mm, RET 10 (wirklich atmungsaktiv)</div>
-      <div class="item-note">Raincut = 5.000mm, kaum atmungsaktiv → beim Radfahren schwitzt man sofort rein. MH150: 15.000mm Wassersäule + RET 10 (gut für Sport mit Anstrengung). Packmaß Faustgröße, Kapuze mit Visier.</div>
-      <div class="item-links">
-        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-wandern-mh150-dunkelblau/309604/c43c188m8585162" target="_blank" onclick="event.stopPropagation()">→ Decathlon (Farbe wählbar)</a>
-      </div>
+    <div class="prog-stats">
+      <span class="prog-stat"><span class="ps-label">Bestellt </span><span class="ps-val" id="pg-spent-ord" style="color:#818cf8">0 €</span></span>
+      <span class="prog-stat"><span class="ps-label">Gekauft </span><span class="ps-val" id="pg-spent-done">0 €</span></span>
+      <span class="prog-stat"><span class="ps-val" id="pg-count" style="color:var(--dim);font-weight:400;font-size:.72rem">0 / 0</span></span>
     </div>
-    <div class="item-right"><div class="item-price">~45 €</div></div>
   </div>
 
-  <div class="item" data-price="50" data-cat="wetter" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Regenhose — Überziehhose MH500</div>
-      <div class="item-model">Decathlon Quechua MH500 — 15000mm, leicht, kompakt rollbar</div>
-      <div class="item-note">Zieht man über die Shorts drüber wenn es anfängt. Rollt auf Faustgröße. Ja, 50€ ist viel für eine Überziehhose — günstigere Alternativen gibt's kaum wasserdicht genug.</div>
-      <div class="item-links">
-        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
-      </div>
+  <!-- KOSTEN PRO PERSON -->
+  <div class="gruppe-cost" id="gruppe-cost-box">
+    <div class="gc-item">
+      <span class="gc-label">Gesamt Gruppe</span>
+      <span class="gc-val" id="gc-total">— €</span>
     </div>
-    <div class="item-right"><div class="item-price">~50 €</div></div>
-  </div>
-
-  <div class="item" data-price="12" data-cat="wetter" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Drybag 40 L</div>
-      <div class="item-model">iOutdoor Rollverschluss — 100% wasserdicht, ultraleicht</div>
-      <div class="item-note">Zelt + Schlafsack rein, mit Spanngurten oben auf den Träger. Rollverschluss 3× einrollen = immer dicht.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07ZPWHDHR" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
-      </div>
+    <div class="gc-item">
+      <span class="gc-label">Pro Person ÷ 5</span>
+      <span class="gc-val" id="gc-per-person">— €</span>
+      <span class="gc-sub">Jeder zahlt gleich viel</span>
     </div>
-    <div class="item-right"><div class="item-price">~12 €</div></div>
-  </div>
-
-  <!-- ═══════════════ KOMFORT & WERKZEUG ═══════════════ -->
-  <div class="cat-header">
-    <span class="cat-icon">🔧</span>
-    <h2>Komfort &amp; Werkzeug</h2>
-    <span class="cat-sum" id="sum-tools"></span>
-  </div>
-
-  <div class="item" data-price="12" data-cat="tools" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Topeak Hexus II Multitool</div>
-      <div class="item-model">Inbus 2–8 mm · Kreuz · Kettennieter · 11 Funktionen</div>
-      <div class="item-note">Sattel nach 50 km höhenverstellen, Lenker nachziehen, Kette einfädeln — alles unterwegs.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B00320OJA2" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
-      </div>
+    <div class="gc-item">
+      <span class="gc-label">Bereits gekauft pro Person</span>
+      <span class="gc-val" id="gc-paid-pp">0 €</span>
     </div>
-    <div class="item-right"><div class="item-price">~12 €</div><div class="badge badge-erg">Ergänzt</div></div>
   </div>
 
-  <div class="item" data-price="8" data-cat="tools" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Chamois-Crème</div>
-      <div class="item-model">SURPASS 170ml — auf die Haut, nicht den Sattel</div>
-      <div class="item-note">Auf den Sitzbereich auftragen (nicht auf den Sattel!). Ab Tag 2 auf einer Mehrtages-Tour bist du froh drum.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0B78BVZV6" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~8 €</div><div class="badge badge-erg">Ergänzt</div></div>
+  <div class="gruppe-note">Alle 5 Personen teilen diese Kosten zu gleichen Teilen. Jeder zahlt <strong id="gc-per-person-note">—</strong> €.</div>
+
+  <!-- GRUPPE: WIRD GLEICH GELADEN -->
+  <div id="gruppe-items-placeholder" style="text-align:center;padding:3rem 1rem;color:var(--dim)">
+    <div style="font-size:1.5rem;margin-bottom:.5rem">⏳</div>
+    <div style="font-size:.85rem">Gruppenartikel werden gerade recherchiert…</div>
+    <div style="font-size:.75rem;margin-top:.3rem;color:#374151">Kommt gleich</div>
   </div>
 
-  <div class="item" data-price="10" data-cat="tools" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Erste-Hilfe Mini-Set</div>
-      <div class="item-model">ALPENWERT Outdoor — Pflaster, Binde, Rettungsfolie, Zeckenzange</div>
-      <div class="item-note">Stürze passieren. 150g, in die Seitentasche. CE-zertifiziert.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0CM7HBHGJ" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~10 €</div><div class="badge badge-erg">Ergänzt</div></div>
-  </div>
-
-  <!-- ═══════════════ CAMP-KÜCHE ═══════════════ -->
-  <div class="cat-header">
-    <span class="cat-icon">🍽️</span>
-    <h2>Camp-Küche</h2>
-    <span class="cat-sum" id="sum-kueche"></span>
-  </div>
-
-  <div class="item" data-price="8" data-cat="kueche" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Bundeswehr Essbesteck</div>
-      <div class="item-model">normani 4-teilig — Messer, Gabel, Löffel, Dosenöffner, steckbar</div>
-      <div class="item-note">Unkaputtbares Edelstahl-Militärbesteck, kompakt steckbar, am Karabiner hängbar.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B01N6NXBCR" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~8 €</div></div>
-  </div>
-
-  <div class="item" data-price="6" data-cat="kueche" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Camping-Teller tief</div>
-      <div class="item-model">Mil-Tec Edelstahl tief — unzerbrechlich, spülbar</div>
-      <div class="item-note">Edelstahl, kein Plastik-Müll, geht auch als Schüssel. 22 cm, passt in die Seitentasche.</div>
-      <div class="item-links">
-        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B005MYBBB6" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~6 €</div></div>
-  </div>
-
-  <!-- GESAMT -->
-  <div class="divider" style="margin-top:1.4rem"></div>
-  <div style="text-align:right; padding:.7rem .2rem; font-size:.83rem; color:var(--muted);">
-    Gesamt (alles gekauft): <strong style="color:var(--text)" id="all-total"></strong>
-  </div>
+</div><!-- /tab-gruppe -->
 
 </div><!-- /container -->
 
 <!-- STICKY FOOTER -->
 <div class="footer-bar">
   <div class="footer-left">
-    <span class="footer-label">Bereits gekauft</span>
-    <span class="footer-amount" id="footer-spent">0 €</span>
-    <span class="footer-sub" id="footer-remaining"></span>
+    <span class="footer-label" id="footer-label">Bestellt / Gekauft</span>
+    <span class="footer-amount" id="footer-amount">0 € / 0 €</span>
+    <span class="footer-sub" id="footer-sub"></span>
   </div>
-  <div style="flex:1; min-width:100px; max-width:220px;">
-    <div class="prog-bar"><div class="prog-fill" id="footer-bar" style="width:0%"></div></div>
+  <div class="footer-mid">
+    <div class="footer-prog-row">
+      <div class="fp-ordered" id="footer-ord-bar" style="width:0%"></div>
+      <div class="fp-done"    id="footer-done-bar" style="width:0%"></div>
+    </div>
+    <div class="footer-counts" id="footer-counts">0 / 0</div>
   </div>
-  <span id="footer-count" style="font-size:.78rem;color:var(--dim)">0 / 0</span>
-  <button class="clear-btn" onclick="clearAll()">↺ Reset</button>
+  <button class="clear-btn" onclick="clearCurrent()">↺ Reset</button>
 </div>
 
 <script>
-  var amazonUrls = [
-    'https://www.amazon.de/dp/B0BRCZ5ZJR',
-    'https://www.amazon.de/dp/B006JMF99K',
-    'https://www.amazon.de/dp/B0D2LMB7YD',
-    'https://www.amazon.de/dp/B09FPYY3BH',
-    'https://www.amazon.de/dp/B09ZB7L6JH',
-    'https://www.amazon.de/dp/B07ZPWHDHR',
-    'https://www.amazon.de/dp/B00320OJA2',
-    'https://www.amazon.de/dp/B0B78BVZV6',
-    'https://www.amazon.de/dp/B0CM7HBHGJ',
-    'https://www.amazon.de/dp/B01N6NXBCR',
-    'https://www.amazon.de/dp/B005MYBBB6',
-    'https://www.amazon.de/dp/B09KNGQTXJ',
-    'https://www.amazon.de/dp/B09VBQQM7D'
-  ];
-
-  var decathlonUrls = [
-    'https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380',
-    'https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-wandern-mh150-dunkelblau/309604/c43c188m8585162',
-    'https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324'
-  ];
-
-  function openUrls(urls) {
-    urls.forEach(function(url, i) {
-      setTimeout(function() { window.open(url, '_blank'); }, i * 220);
-    });
+// ── DATA ──────────────────────────────────────────────
+var TABS = {
+  mein: {
+    amazonUrls: [
+      'https://www.amazon.de/dp/B0BRCZ5ZJR',
+      'https://www.amazon.de/dp/B006JMF99K',
+      'https://www.amazon.de/dp/B0D2LMB7YD',
+      'https://www.amazon.de/dp/B09VBQQM7D',
+      'https://www.amazon.de/dp/B09FPYY3BH',
+      'https://www.amazon.de/dp/B09ZB7L6JH',
+      'https://www.amazon.de/dp/B07ZPWHDHR',
+      'https://www.amazon.de/dp/B00320OJA2',
+      'https://www.amazon.de/dp/B0B78BVZV6',
+      'https://www.amazon.de/dp/B0CM7HBHGJ',
+      'https://www.amazon.de/dp/B01N6NXBCR',
+      'https://www.amazon.de/dp/B005MYBBB6',
+      'https://www.amazon.de/dp/B09KNGQTXJ'
+    ],
+    decathlonUrls: [
+      'https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380',
+      'https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-wandern-mh150-dunkelblau/309604/c43c188m8585162',
+      'https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324'
+    ]
+  },
+  gruppe: {
+    amazonUrls: [],
+    decathlonUrls: []
   }
-  function openAmazon()   { openUrls(amazonUrls); }
-  function openDecathlon(){ openUrls(decathlonUrls); }
-  function openAll()      { openUrls(amazonUrls.concat(decathlonUrls)); }
+};
 
-  // Checklist logic
-  var items = document.querySelectorAll('.item[data-price]');
-  var TOTAL = 0;
-  items.forEach(function(el) { TOTAL += parseInt(el.dataset.price); });
-  document.getElementById('all-total').textContent = TOTAL + ' €';
+var currentTab = 'mein';
+var currentFilter = 'all';
 
-  // Per-category sums
-  ['pannen','bike','kleidung','wetter','tools','kueche'].forEach(function(cat) {
-    var s = 0;
-    document.querySelectorAll('.item[data-cat="' + cat + '"]').forEach(function(el) {
-      s += parseInt(el.dataset.price);
-    });
-    var el = document.getElementById('sum-' + cat);
-    if (el) el.textContent = s + ' €';
+// ── TABS ──────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tbtn-' + tab).classList.add('active');
+  setFilter('all');
+  updateAll();
+}
+
+// ── FILTER ────────────────────────────────────────────
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(el) { el.classList.remove('active'); });
+  event && event.currentTarget && event.currentTarget.classList.add('active');
+  // find the right button
+  document.querySelectorAll('.filter-btn').forEach(function(el) {
+    if (el.getAttribute('onclick') && el.getAttribute('onclick').indexOf("'" + f + "'") !== -1) {
+      el.classList.add('active');
+    }
   });
+  applyFilter();
+}
 
-  function toggle(el) { el.classList.toggle('done'); update(); }
+function applyFilter() {
+  var items = getTabItems();
+  items.forEach(function(el) {
+    var s = parseInt(el.dataset.state || '0');
+    var show = true;
+    if (currentFilter === 'offen') show = s === 0;
+    else if (currentFilter === 'bestellt') show = s === 1;
+    else if (currentFilter === 'gekauft') show = s === 2;
+    el.classList.toggle('hidden-filter', !show);
+  });
+  // hide empty categories
+  document.querySelectorAll('.cat-wrap').forEach(function(wrap) {
+    if (!wrap.closest('#tab-' + currentTab)) return;
+    var visible = wrap.querySelectorAll('.item:not(.hidden-filter)').length;
+    wrap.style.display = visible === 0 ? 'none' : '';
+  });
+  updateFilterCounts();
+}
 
-  function update() {
-    var spent = 0, count = 0;
+function updateFilterCounts() {
+  var items = getTabItems();
+  var offen = 0, bestellt = 0, gekauft = 0;
+  items.forEach(function(el) {
+    var s = parseInt(el.dataset.state || '0');
+    if (s === 0) offen++;
+    else if (s === 1) bestellt++;
+    else if (s === 2) gekauft++;
+  });
+  document.getElementById('fc-all').textContent = items.length;
+  document.getElementById('fc-offen').textContent = offen;
+  document.getElementById('fc-bestellt').textContent = bestellt;
+  document.getElementById('fc-gekauft').textContent = gekauft;
+}
+
+function getTabItems() {
+  return Array.from(document.querySelectorAll('#tab-' + currentTab + ' .item[data-price]'));
+}
+
+// ── STATE CYCLE ───────────────────────────────────────
+function cycleState(el) {
+  var s = parseInt(el.dataset.state || '0');
+  s = (s + 1) % 3;
+  el.dataset.state = s;
+  var sl = document.getElementById('sl-' + el.dataset.id);
+  if (sl) sl.textContent = s === 1 ? '📦 Bestellt' : s === 2 ? '✓ Angekommen' : '';
+  var icon = el.querySelector('.cb-icon');
+  if (icon) icon.textContent = s === 1 ? '📦' : '✓';
+  localStorage.setItem('ostsee_' + el.dataset.id, s);
+  updateAll();
+  applyFilter();
+}
+
+// ── CATEGORY COLLAPSE ─────────────────────────────────
+function toggleCat(cat) {
+  var wrap = document.getElementById('wrap-' + cat);
+  if (!wrap) return;
+  wrap.classList.toggle('collapsed');
+  localStorage.setItem('ostsee_cat_' + cat, wrap.classList.contains('collapsed') ? '1' : '0');
+}
+
+// ── UPDATE ────────────────────────────────────────────
+function updateAll() {
+  updateTab('mein');
+  updateTab('gruppe');
+  updateFooter();
+  updateCatStats();
+  updateFilterCounts();
+  updateGruppeBox();
+}
+
+function updateTab(tab) {
+  var items = Array.from(document.querySelectorAll('#tab-' + tab + ' .item[data-price]'));
+  var total = 0, spentOrd = 0, spentDone = 0, cntOrd = 0, cntDone = 0;
+  items.forEach(function(el) {
+    var p = parseInt(el.dataset.price);
+    var s = parseInt(el.dataset.state || '0');
+    total += p;
+    if (s === 1) { spentOrd += p; cntOrd++; }
+    if (s === 2) { spentDone += p; cntDone++; }
+  });
+  var pctOrd  = total ? Math.round(spentOrd / total * 100) : 0;
+  var pctDone = total ? Math.round(spentDone / total * 100) : 0;
+  var prefix = tab === 'mein' ? 'pm' : 'pg';
+  set(prefix + '-ordered', 'width', pctOrd + '%');
+  set(prefix + '-done', 'width', pctDone + '%');
+  setText(prefix + '-spent-ord', spentOrd + ' €');
+  setText(prefix + '-spent-done', spentDone + ' €');
+  setText(prefix + '-count', (cntOrd + cntDone) + ' / ' + items.length);
+  if (tab === 'mein') setText('mein-total', total + ' €');
+}
+
+function updateFooter() {
+  var items = getTabItems();
+  var total = 0, spentOrd = 0, spentDone = 0, cntOrd = 0, cntDone = 0;
+  items.forEach(function(el) {
+    var p = parseInt(el.dataset.price);
+    var s = parseInt(el.dataset.state || '0');
+    total += p;
+    if (s === 1) { spentOrd += p; cntOrd++; }
+    if (s === 2) { spentDone += p; cntDone++; }
+  });
+  var pctOrd  = total ? Math.round(spentOrd / total * 100) : 0;
+  var pctDone = total ? Math.round(spentDone / total * 100) : 0;
+  set('footer-ord-bar', 'width', pctOrd + '%');
+  set('footer-done-bar', 'width', pctDone + '%');
+  setText('footer-amount', spentOrd + ' € / ' + spentDone + ' €');
+  setText('footer-label', '📦 Bestellt / ✓ Gekauft');
+  var rem = total - spentOrd - spentDone;
+  setText('footer-sub', rem > 0 ? rem + ' € noch offen' : total > 0 ? '✓ Alles erledigt!' : '');
+  document.getElementById('footer-sub').style.color = rem === 0 && total > 0 ? 'var(--green)' : 'var(--dim)';
+  setText('footer-counts', (cntOrd + cntDone) + ' / ' + items.length);
+}
+
+function updateCatStats() {
+  var cats = ['pannen','bike','kleidung','wetter','tools','kueche','ganhang','gkochen','gcamp','gfahrrad','ghygiene'];
+  cats.forEach(function(cat) {
+    var items = document.querySelectorAll('[data-cat="' + cat + '"]');
+    var total = 0, done = 0;
     items.forEach(function(el) {
-      if (el.classList.contains('done')) { spent += parseInt(el.dataset.price); count++; }
+      total += parseInt(el.dataset.price || '0');
+      if (parseInt(el.dataset.state || '0') === 2) done += parseInt(el.dataset.price || '0');
     });
-    var pct = TOTAL > 0 ? Math.round(spent / TOTAL * 100) : 0;
-    document.getElementById('footer-spent').textContent = spent + ' €';
-    document.getElementById('footer-count').textContent = count + ' / ' + items.length;
-    document.getElementById('footer-bar').style.width = pct + '%';
-    document.getElementById('footer-bar').style.background = pct === 100 ? 'var(--green)' : pct > 60 ? 'var(--yellow)' : 'var(--blue)';
-    var rem = TOTAL - spent;
-    document.getElementById('footer-remaining').textContent = rem > 0 ? rem + ' € noch offen' : '✓ Alles gekauft!';
-    document.getElementById('footer-remaining').style.color = rem === 0 ? 'var(--green)' : 'var(--dim)';
-    document.getElementById('prog-fill').style.width = pct + '%';
-    document.getElementById('prog-count').textContent = count + ' / ' + items.length;
-    document.getElementById('prog-total').textContent = spent + ' €';
-  }
+    var sumEl = document.getElementById('sum-' + cat);
+    if (sumEl) sumEl.textContent = total + ' €';
+    var pEl = document.getElementById('prog-' + cat);
+    if (pEl) {
+      var cnt2 = Array.from(items).filter(function(e) { return parseInt(e.dataset.state||'0') === 2; }).length;
+      pEl.textContent = cnt2 === items.length && items.length > 0 ? '✓' : cnt2 + '/' + items.length;
+    }
+  });
+}
 
-  function clearAll() { items.forEach(function(el) { el.classList.remove('done'); }); update(); }
+function updateGruppeBox() {
+  var items = Array.from(document.querySelectorAll('#tab-gruppe .item[data-price]'));
+  var total = 0, done = 0;
+  items.forEach(function(el) {
+    var p = parseInt(el.dataset.price);
+    total += p;
+    if (parseInt(el.dataset.state || '0') === 2) done += p;
+  });
+  var pp = Math.round(total / 5);
+  var donepp = Math.round(done / 5);
+  setText('gc-total', total + ' €');
+  setText('gc-per-person', pp + ' €');
+  setText('gc-paid-pp', donepp + ' €');
+  setText('gc-per-person-note', pp);
+}
 
-  update();
+// ── OPEN URLS ─────────────────────────────────────────
+function openUrls(urls) {
+  urls.forEach(function(url, i) {
+    setTimeout(function() { window.open(url, '_blank'); }, i * 220);
+  });
+}
+function openAmazon(tab) { openUrls(TABS[tab].amazonUrls); }
+function openDecathlon(tab) { openUrls(TABS[tab].decathlonUrls); }
+function openAll(tab) { openUrls(TABS[tab].amazonUrls.concat(TABS[tab].decathlonUrls)); }
+
+// ── RESET ──────────────────────────────────────────────
+function clearCurrent() {
+  getTabItems().forEach(function(el) {
+    el.dataset.state = '0';
+    var sl = document.getElementById('sl-' + el.dataset.id);
+    if (sl) sl.textContent = '';
+    var icon = el.querySelector('.cb-icon');
+    if (icon) icon.textContent = '✓';
+    localStorage.removeItem('ostsee_' + el.dataset.id);
+  });
+  updateAll();
+  applyFilter();
+}
+
+// ── HELPERS ───────────────────────────────────────────
+function setText(id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; }
+function set(id, prop, val) { var el = document.getElementById(id); if (el) el.style[prop] = val; }
+
+// ── RESTORE STATE FROM LOCALSTORAGE ──────────────────
+function restoreState() {
+  document.querySelectorAll('.item[data-id]').forEach(function(el) {
+    var saved = localStorage.getItem('ostsee_' + el.dataset.id);
+    if (saved !== null) {
+      el.dataset.state = saved;
+      var s = parseInt(saved);
+      var sl = document.getElementById('sl-' + el.dataset.id);
+      if (sl) sl.textContent = s === 1 ? '📦 Bestellt' : s === 2 ? '✓ Angekommen' : '';
+      var icon = el.querySelector('.cb-icon');
+      if (icon) icon.textContent = s === 1 ? '📦' : '✓';
+    }
+  });
+  // restore collapsed categories
+  document.querySelectorAll('.cat-wrap[id]').forEach(function(wrap) {
+    var cat = wrap.id.replace('wrap-', '');
+    if (localStorage.getItem('ostsee_cat_' + cat) === '1') wrap.classList.add('collapsed');
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────
+restoreState();
+updateAll();
+applyFilter();
 </script>
 </body>
 </html>
