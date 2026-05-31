@@ -9,170 +9,197 @@
   :root {
     --bg: #0f1117; --surface: #1a1f2e; --card: #1e293b; --border: #2d3748;
     --text: #e2e8f0; --muted: #94a3b8; --dim: #4a5568;
-    --green: #34d399; --red: #f87171; --yellow: #fbbf24; --blue: #60a5fa;
-    --orange: #fb923c;
+    --green: #34d399; --yellow: #fbbf24; --blue: #60a5fa; --orange: #fb923c;
+    --red: #f87171;
   }
   body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
 
-  header { background: var(--surface); border-bottom: 2px solid #2563eb; padding: 1.4rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; }
-  header h1 { font-size: 1.4rem; color: var(--blue); }
-  header p { color: var(--muted); font-size: .85rem; }
+  header { background: var(--surface); border-bottom: 2px solid #2563eb; padding: 1.2rem 2rem; }
+  header h1 { font-size: 1.35rem; color: var(--blue); }
+  header p { color: var(--muted); font-size: .82rem; margin-top: .2rem; }
 
-  .container { max-width: 720px; margin: 0 auto; padding: 1.8rem 1rem 8rem; }
+  .container { max-width: 740px; margin: 0 auto; padding: 1.5rem 1rem 8rem; }
 
-  /* PROGRESS BAR */
-  .progress { background: var(--surface); border-radius: 10px; padding: 1rem 1.3rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-  .prog-text { font-size: .85rem; color: var(--muted); white-space: nowrap; }
-  .prog-bar { flex: 1; min-width: 120px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  /* ── SCHNELLKAUF ── */
+  .schnellkauf { background: #0d1a2e; border: 1px solid #1e3a5f; border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.8rem; }
+  .schnellkauf h2 { font-size: .82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .9rem; }
+  .sq-row { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; margin-bottom: .6rem; }
+  .sq-label { font-size: .78rem; color: var(--dim); width: 80px; flex-shrink: 0; }
+  .sq-btn {
+    display: inline-flex; align-items: center; gap: .45rem;
+    padding: .45rem .9rem; border-radius: 7px; font-size: .82rem; font-weight: 600;
+    text-decoration: none; border: none; cursor: pointer; transition: opacity .15s;
+  }
+  .sq-btn:hover { opacity: .85; }
+  .sq-amazon { background: #ff9900; color: #111; }
+  .sq-decathlon { background: #0082c3; color: #fff; }
+  .sq-pearl { background: #cc3333; color: #fff; }
+  .sq-note { font-size: .72rem; color: var(--dim); margin-top: .35rem; line-height: 1.4; }
+
+  /* ── PROGRESS ── */
+  .progress { background: var(--surface); border-radius: 10px; padding: .9rem 1.2rem; margin-bottom: 1.8rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .prog-text { font-size: .82rem; color: var(--muted); white-space: nowrap; }
+  .prog-bar { flex: 1; min-width: 120px; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
   .prog-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width .3s; }
-  .prog-total { font-weight: 700; font-size: 1rem; color: var(--green); white-space: nowrap; }
-  .prog-count { font-size: .8rem; color: var(--dim); }
+  .prog-total { font-weight: 700; font-size: .95rem; color: var(--green); white-space: nowrap; }
+  .prog-count { font-size: .78rem; color: var(--dim); }
 
-  /* CATEGORY */
-  .cat-header { display: flex; align-items: center; gap: .6rem; margin: 2rem 0 .7rem; }
-  .cat-header h2 { font-size: 1rem; font-weight: 700; color: var(--blue); }
-  .cat-header .cat-icon { font-size: 1.2rem; }
-  .cat-header .cat-sum { margin-left: auto; font-size: .78rem; color: var(--dim); font-weight: 600; }
+  /* ── CATEGORY ── */
+  .cat-header { display: flex; align-items: center; gap: .55rem; margin: 1.8rem 0 .6rem; }
+  .cat-header h2 { font-size: .95rem; font-weight: 700; color: var(--blue); }
+  .cat-icon { font-size: 1.1rem; }
+  .cat-sum { margin-left: auto; font-size: .78rem; color: var(--dim); font-weight: 600; }
 
-  /* ITEM */
+  /* ── ITEM ── */
   .item {
-    display: grid;
-    grid-template-columns: 2rem 1fr auto;
-    align-items: start;
-    gap: .8rem;
-    padding: .85rem 1rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: .45rem;
-    cursor: pointer;
-    transition: background .15s, border-color .15s;
-    user-select: none;
+    display: grid; grid-template-columns: 1.8rem 1fr auto;
+    align-items: start; gap: .75rem;
+    padding: .8rem .95rem; background: var(--card);
+    border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: .4rem; cursor: pointer;
+    transition: background .15s, border-color .15s; user-select: none;
   }
   .item:hover { border-color: #4a90d9; }
-  .item.done { background: #111b11; border-color: #166534; }
+  .item.done { background: #0d1a0d; border-color: #14532d; }
   .item.done .item-name { text-decoration: line-through; color: var(--dim); }
-  .item.done .item-note { color: #2d5a2d; }
-  .item.done .item-model { color: #2d6a4f; }
+  .item.done .item-note, .item.done .item-model { color: #1e4a1e; }
 
-  .cb { width: 1.3rem; height: 1.3rem; border: 2px solid var(--dim); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: .1rem; transition: background .15s, border-color .15s; }
+  .cb { width: 1.2rem; height: 1.2rem; border: 2px solid var(--dim); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: .15rem; transition: background .15s, border-color .15s; }
   .item.done .cb { background: #166534; border-color: #166534; }
-  .cb-check { display: none; color: #fff; font-size: .75rem; font-weight: 900; }
+  .cb-check { display: none; color: #fff; font-size: .7rem; font-weight: 900; }
   .item.done .cb-check { display: block; }
 
   .item-body { min-width: 0; }
-  .item-name { font-weight: 700; font-size: .95rem; color: var(--text); }
-  .item-model { font-size: .78rem; color: var(--blue); margin-top: .1rem; font-weight: 600; }
-  .item-note { font-size: .76rem; color: var(--muted); margin-top: .25rem; }
-  .item-links { margin-top: .45rem; display: flex; flex-wrap: wrap; gap: .3rem; }
-  .item-link { display: inline-block; font-size: .74rem; color: var(--blue); text-decoration: none; background: #1e3a5f22; border: 1px solid #1e3a5f; border-radius: 4px; padding: .17rem .55rem; }
-  .item-link:hover { background: #1e3a5f; }
+  .item-name { font-weight: 700; font-size: .92rem; }
+  .item-model { font-size: .76rem; color: var(--blue); margin-top: .08rem; font-weight: 600; }
+  .item-note { font-size: .73rem; color: var(--muted); margin-top: .22rem; line-height: 1.4; }
+  .item-links { margin-top: .4rem; display: flex; flex-wrap: wrap; gap: .28rem; }
+  .item-link {
+    display: inline-flex; align-items: center; gap: .25rem;
+    font-size: .71rem; color: #fff; text-decoration: none;
+    border-radius: 4px; padding: .15rem .5rem; font-weight: 600;
+  }
+  .item-link:hover { opacity: .8; }
+  .lnk-amazon  { background: #b36a00; }
+  .lnk-decathlon { background: #005f8e; }
+  .lnk-pearl    { background: #8b1a1a; }
+  .lnk-alt { background: #2d3748; color: var(--muted) !important; }
 
   .item-right { text-align: right; flex-shrink: 0; }
-  .item-price { font-size: 1.05rem; font-weight: 700; color: var(--green); }
-  .item-pflicht { font-size: .67rem; background: #7c2d12; color: #fed7aa; border-radius: 3px; padding: .1rem .4rem; margin-top: .3rem; display: inline-block; }
-  .item-tip  { font-size: .67rem; background: #1e3a5f; color: #93c5fd; border-radius: 3px; padding: .1rem .4rem; margin-top: .3rem; display: inline-block; }
-  .item-opt  { font-size: .67rem; background: #312e1a; color: #fde68a; border-radius: 3px; padding: .1rem .4rem; margin-top: .3rem; display: inline-block; }
-  .item-erg  { font-size: .67rem; background: #1e2e1e; color: #86efac; border-radius: 3px; padding: .1rem .4rem; margin-top: .3rem; display: inline-block; }
+  .item-price { font-size: 1rem; font-weight: 700; color: var(--green); }
+  .badge { font-size: .63rem; border-radius: 3px; padding: .1rem .38rem; margin-top: .28rem; display: inline-block; }
+  .badge-pflicht { background: #7c2d12; color: #fed7aa; }
+  .badge-app    { background: #1e3a5f; color: #93c5fd; }
+  .badge-erg    { background: #1a2e1a; color: #86efac; }
+  .badge-opt    { background: #2d2a0f; color: #fde68a; }
 
-  /* NOTES / BANNERS */
-  .pflicht-note { background: #1a2e1a; border: 1px solid #166534; border-radius: 8px; padding: .75rem 1rem; margin-bottom: .7rem; font-size: .8rem; color: #86efac; }
-  .info-note { background: #1a2233; border: 1px solid #2d3f5e; border-radius: 8px; padding: .75rem 1rem; margin-bottom: .7rem; font-size: .8rem; color: var(--muted); }
+  /* ── INFO / PFLICHT BANNERS ── */
+  .pflicht-note { background: #1a2e1a; border: 1px solid #166534; border-radius: 8px; padding: .65rem .95rem; margin-bottom: .6rem; font-size: .77rem; color: #86efac; line-height: 1.4; }
+  .info-note    { background: #1a2233; border: 1px solid #2d3f5e; border-radius: 8px; padding: .65rem .95rem; margin-bottom: .6rem; font-size: .77rem; color: var(--muted); line-height: 1.4; }
 
-  /* BEREITS VORHANDEN */
-  .have-item {
-    display: flex; align-items: center; gap: .7rem;
-    padding: .55rem .9rem;
-    background: #14181f; border: 1px solid #232b38; border-radius: 8px;
-    margin-bottom: .35rem; opacity: .7;
-  }
-  .have-icon { color: #34d399; font-size: .85rem; flex-shrink: 0; }
-  .have-name { font-size: .85rem; color: var(--muted); }
+  /* ── BEREITS VORHANDEN ── */
+  .have-item { display: flex; align-items: center; gap: .6rem; padding: .48rem .85rem; background: #131820; border: 1px solid #1e2535; border-radius: 7px; margin-bottom: .3rem; opacity: .65; }
+  .have-icon { color: var(--green); font-size: .8rem; flex-shrink: 0; }
+  .have-name { font-size: .82rem; color: var(--muted); }
 
-  /* DIVIDER */
+  /* ── DIVIDER / TOTAL ── */
   .divider { height: 1px; background: var(--border); margin: .5rem 0; }
 
-  /* STICKY FOOTER */
+  /* ── FOOTER ── */
   .footer-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: #0d1117f2; backdrop-filter: blur(12px);
     border-top: 1px solid var(--border);
-    padding: .8rem 2rem;
+    padding: .75rem 2rem;
     display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
     z-index: 100;
   }
   .footer-left { display: flex; flex-direction: column; }
-  .footer-label { font-size: .78rem; color: var(--muted); }
-  .footer-amount { font-size: 1.4rem; font-weight: 700; color: var(--green); }
-  .footer-sub { font-size: .75rem; color: var(--dim); }
-  .clear-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: .35rem 1rem; border-radius: 6px; cursor: pointer; font-size: .8rem; }
-  .clear-btn:hover { border-color: #ef4444; color: #f87171; }
+  .footer-label { font-size: .75rem; color: var(--muted); }
+  .footer-amount { font-size: 1.35rem; font-weight: 700; color: var(--green); }
+  .footer-sub { font-size: .72rem; color: var(--dim); }
+  .clear-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: .32rem .9rem; border-radius: 6px; cursor: pointer; font-size: .78rem; }
+  .clear-btn:hover { border-color: #ef4444; color: var(--red); }
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>🚲 Ostsee-Campingtour — Einkaufsliste</h1>
-    <p>Dynamics Forte Ultra 508 · Samsung S20 · Haken = gekauft</p>
-  </div>
+  <h1>🚲 Ostsee-Campingtour — Einkaufsliste</h1>
+  <p>Dynamics Forte Ultra 508 · Samsung S20 · Haken = gekauft</p>
 </header>
 
 <div class="container">
 
+  <!-- ═══════════════ SCHNELLKAUF ═══════════════ -->
+  <div class="schnellkauf">
+    <h2>⚡ Schnellkauf</h2>
+
+    <div class="sq-row">
+      <span class="sq-label">Amazon</span>
+      <a class="sq-btn sq-amazon" href="https://www.amazon.de/gp/aws/cart/add.html?ASIN.1=B0BRCZ5ZJR&Quantity.1=1&ASIN.2=B006JMF99K&Quantity.2=1&ASIN.3=B0D2LMB7YD&Quantity.3=1&ASIN.4=B07F7FLF46&Quantity.4=2&ASIN.5=B0BZ8H3G1F&Quantity.5=1&ASIN.6=B08FBMMS26&Quantity.6=1&ASIN.7=B00320OJA2&Quantity.7=1&ASIN.8=B0B78BVZV6&Quantity.8=1&ASIN.9=B0CM7HBHGJ&Quantity.9=1&ASIN.10=B01N6NXBCR&Quantity.10=1&ASIN.11=B005MYBBB6&Quantity.11=1" target="_blank">
+        🛒 11 Artikel auf einmal in den Warenkorb
+      </a>
+    </div>
+    <div class="sq-note" style="margin-bottom:.75rem">Schlauch + Reifenheber · TipTop · Omni RideCase · Voile Straps ×2 · Sportbrille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller</div>
+
+    <div class="sq-row">
+      <span class="sq-label">Decathlon</span>
+      <button class="sq-btn sq-decathlon" onclick="openDecathlon()">
+        🏬 Alle 7 Decathlon-Tabs öffnen
+      </button>
+    </div>
+    <div class="sq-note" style="margin-bottom:.75rem">Doppel-Packtasche · Flaschenhalter · Shorts · T-Shirts · Radunterhose · Regenjacke · Regenhose<br><em>Falls Browser blockiert: Pop-up-Ausnahme für diese Seite erlauben</em></div>
+
+    <div class="sq-row">
+      <span class="sq-label">Pearl.de</span>
+      <a class="sq-btn sq-pearl" href="https://www.pearl.de/a-NX1448-4301.shtml" target="_blank">
+        🔒 Semptec BT-Schloss kaufen
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PROGRESS ═══════════════ -->
   <div class="progress">
     <span class="prog-text">Fortschritt</span>
     <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-    <span class="prog-count" id="prog-count">0 / 0 Artikel</span>
+    <span class="prog-count" id="prog-count">0 / 0</span>
     <span class="prog-total" id="prog-total">0 €</span>
   </div>
 
-  <!-- ──────────────── BEREITS VORHANDEN ──────────────── -->
+  <!-- ═══════════════ BEREITS VORHANDEN ═══════════════ -->
   <div class="cat-header">
     <span class="cat-icon">✅</span>
-    <h2>Bereits vorhanden — nichts kaufen</h2>
+    <h2>Bereits vorhanden — nicht kaufen</h2>
   </div>
-  <div class="info-note">Diese Sachen hast du schon. Einfach einpacken.</div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Fahrradhelm — Uvex Trekking-Helm (Blau-Weiß)</span></div>
+  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Fahrradhelm — Uvex Trekking (Blau-Weiß)</span></div>
+  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Luftpumpe</span></div>
   <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichtes Trekking-Zelt (~1 kg)</span></div>
   <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichter Schlafsack (~1 kg)</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Rucksack (für Regenjacke / Snacks)</span></div>
-  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Powerbank (Anker / Ugreen)</span></div>
+  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Rucksack</span></div>
+  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Powerbank</span></div>
+  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Bosch eBike Lock — kostenlos, in Flow App aktivieren (Motorsperre, kein echter Diebstahlschutz)</span></div>
 
-  <!-- ──────────────── PANNENSCHUTZ ──────────────── -->
+  <!-- ═══════════════ PANNENSCHUTZ ═══════════════ -->
   <div class="cat-header">
     <span class="cat-icon">⚠️</span>
-    <h2>Pannenschutz — Pflicht</h2>
+    <h2>Pannenschutz</h2>
     <span class="cat-sum" id="sum-pannen"></span>
   </div>
-  <div class="pflicht-note">Gemini hat das komplett vergessen. Ohne das hier strandet du bei jedem Platten. 200 g, ~22 €. Nicht optional. <strong>Ventilart vorher prüfen:</strong> Sclaverand (dünner Stift) → SV17 · Schrader (breit, wie Auto) → AV17.</div>
+  <div class="pflicht-note"><strong>Ventil prüfen bevor du bestellst:</strong> Sclaverand (dünner Stift) → SV17 · Schrader (breit wie Auto) → AV17. Beim Fahrradladen kurz schauen.</div>
 
-  <div class="item" data-price="6" data-cat="pannen" onclick="toggle(this)">
+  <div class="item" data-price="12" data-cat="pannen" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Ersatzschlauch 28"</div>
-      <div class="item-model">Schwalbe SV17 (Sclaverand) oder AV17 (Schrader) — 28/47-622</div>
-      <div class="item-note">Passt zu 700c × 35–40 mm Reifen. Ventilart am Bike checken bevor du bestellst!</div>
+      <div class="item-name">Ersatzschlauch + Reifenheber</div>
+      <div class="item-model">Schwalbe SV17 2er-Pack + 3 Reifenheber (Kombi)</div>
+      <div class="item-note">2 Schläuche für mehrtägige Tour ideal. Bei Schrader-Ventil: AV17 einzeln kaufen.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=ersatzschlauch+28&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
-        <a class="item-link" href="https://www.bike24.de/suche/?q=schwalbe+sv17" target="_blank" onclick="event.stopPropagation()">→ Bike24</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0BRCZ5ZJR" target="_blank" onclick="event.stopPropagation()">→ Amazon (SV17 Kombi)</a>
+        <a class="item-link lnk-alt" href="https://www.amazon.de/dp/B01GV0TR7O" target="_blank" onclick="event.stopPropagation()">→ Amazon (AV17 Schrader)</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~6 €</div><div class="item-pflicht">Pflicht</div></div>
-  </div>
-
-  <div class="item" data-price="4" data-cat="pannen" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Reifenheber 3er-Set</div>
-      <div class="item-model">Schwalbe oder Decathlon</div>
-      <div class="item-note">Braucht man zum Mantel runterziehen — ohne bricht man sich die Finger.</div>
-      <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=reifenheber+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~3 €)</a>
-        <a class="item-link" href="https://www.amazon.de/s?k=schwalbe+reifenheber" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~4 €</div><div class="item-pflicht">Pflicht</div></div>
+    <div class="item-right"><div class="item-price">~12 €</div><div class="badge badge-pflicht">Pflicht</div></div>
   </div>
 
   <div class="item" data-price="4" data-cat="pannen" onclick="toggle(this)">
@@ -180,29 +207,15 @@
     <div class="item-body">
       <div class="item-name">Flickzeug</div>
       <div class="item-model">Rema TipTop TT04 — 6 Patches + Vulkanisierlösung</div>
-      <div class="item-note">Backup falls der Ersatzschlauch schon drin ist. Klassiker, gibt's überall.</div>
+      <div class="item-note">Backup wenn beide Schläuche schon verbraucht sind. 28 g, passt immer rein.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=flickzeug+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
-        <a class="item-link" href="https://www.amazon.de/s?k=tiptop+tt04" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B006JMF99K" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~4 €</div><div class="item-pflicht">Pflicht</div></div>
+    <div class="item-right"><div class="item-price">~4 €</div><div class="badge badge-pflicht">Pflicht</div></div>
   </div>
 
-  <div class="item" data-price="8" data-cat="pannen" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Mini-Pumpe</div>
-      <div class="item-model">Decathlon Mini-Pumpe — passt SV + AV</div>
-      <div class="item-note">~15 cm, geht in die Tasche. Kommt immer mit raus.</div>
-      <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=mini+pumpe+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~8 €)</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~8 €</div><div class="item-pflicht">Pflicht</div></div>
-  </div>
-
-  <!-- ──────────────── FAHRRAD-ZUBEHÖR ──────────────── -->
+  <!-- ═══════════════ FAHRRAD-ZUBEHÖR ═══════════════ -->
   <div class="cat-header">
     <span class="cat-icon">🚲</span>
     <h2>Fahrrad-Zubehör</h2>
@@ -212,13 +225,11 @@
   <div class="item" data-price="35" data-cat="bike" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Topeak Omni RideCase — Handyhalter</div>
-      <div class="item-model">Universal 4,5–6,5" — kein Topeak-Case nötig, Gummi-Klemmarme</div>
-      <div class="item-note">Klemmt direkt am S20, kein Extracase kaufen. Schraube am Trekking-Lenker 22–35 mm, 360° drehbar. Nicht das normale RideCase — das braucht ein model-spezifisches Case!</div>
+      <div class="item-name">Topeak Omni RideCase II — Handyhalter</div>
+      <div class="item-model">Universal bis 6,9" — Gummi-Klemmarme, kein Extra-Case nötig</div>
+      <div class="item-note">Hält das S20 direkt per Gummibänder. Schraube am Trekking-Lenker 22–35 mm, 360° drehbar. Nicht das normale RideCase (das braucht passendes Handy-Case!).</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.fahrrad-xxl.de/topeak-omni-ridecase-x0033636" target="_blank" onclick="event.stopPropagation()">→ Fahrrad XXL</a>
-        <a class="item-link" href="https://www.bike24.com/p2806814.html" target="_blank" onclick="event.stopPropagation()">→ Bike24</a>
-        <a class="item-link" href="https://www.amazon.de/s?k=topeak+omni+ridecase" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0D2LMB7YD" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
     <div class="item-right"><div class="item-price">~35 €</div></div>
@@ -228,55 +239,55 @@
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Semptec BT-Kabelschloss mit App &amp; Alarm</div>
-      <div class="item-model">Bluetooth · per App öffnen · 90 dB Alarm</div>
-      <div class="item-note">App-Schloss für Android + iOS. Kein Schlüssel, kein Verlustrisiko. Da die Versicherung greift, muss es kein 80 €-Bügelschloss sein. Geminis Abus 6500/85 für 18 € existiert nicht — das wäre das Bordo Lite für >50 €.</div>
+      <div class="item-model">Bluetooth · per App öffnen · 90 dB Erschütterungsalarm</div>
+      <div class="item-note">App für Android + iOS, kein Schlüssel. Bosch eBike Lock disablet nur den Motor — damit kann man trotzdem wegfahren. Dieses Schloss sichert physisch. Da Versicherung greift: kein 80€-Schloss nötig.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.pearl.de/a-ZX9466-4301.shtml" target="_blank" onclick="event.stopPropagation()">→ Pearl.de (~22 €)</a>
+        <a class="item-link lnk-pearl" href="https://www.pearl.de/a-NX1448-4301.shtml" target="_blank" onclick="event.stopPropagation()">→ Pearl.de</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~22 €</div><div class="item-tip">App ✓</div></div>
+    <div class="item-right"><div class="item-price">~22 €</div><div class="badge badge-app">App ✓</div></div>
   </div>
 
   <div class="item" data-price="45" data-cat="bike" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Decathlon Riverside 500 — Packtaschen Paar</div>
-      <div class="item-model">2× 20 L = 40 L gesamt · vollständig wasserdicht</div>
-      <div class="item-note">Standard-Haken, passen direkt auf den MonkeyLoad-Träger. Bestes Preis-Leistungs-Verhältnis im Niedrigpreissegment.</div>
+      <div class="item-name">Doppel-Packtasche 500 — 2 × 20 L</div>
+      <div class="item-model">Decathlon — komplett wasserdicht, Standard-Haken</div>
+      <div class="item-note">Direkt auf den MonkeyLoad-Träger (Standard-Haken). Das ist das Paar (2×20L = 40L gesamt) — nicht die Einzeltasche.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=riverside+500+gep%C3%A4cktasche+paar&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380" target="_blank" onclick="event.stopPropagation()">→ Decathlon (Farbe wählbar)</a>
       </div>
     </div>
     <div class="item-right"><div class="item-price">~45 €</div></div>
   </div>
 
-  <div class="item" data-price="5" data-cat="bike" onclick="toggle(this)">
+  <div class="item" data-price="3" data-cat="bike" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Decathlon Basic Alu-Flaschenhalter</div>
-      <div class="item-model">+ 1 Trinkflasche 750 ml kaufen (falls nicht vorhanden)</div>
-      <div class="item-note">Schraubt in die Gewindelöcher am Unterrohr. Mehr braucht es nicht.</div>
+      <div class="item-name">Flaschenhalter + Trinkflasche</div>
+      <div class="item-model">Decathlon 100 Metall schwarz — Gewindelöcher am Unterrohr</div>
+      <div class="item-note">Direkt einschrauben. Falls noch keine Trinkflasche vorhanden: eine 750ml dazunehmen (~4€).</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=flaschenhalter+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/fahrrad-flaschenhalter-100-metall-schwarz/12560/c382m8049106" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~5 €</div></div>
+    <div class="item-right"><div class="item-price">~3 €</div></div>
   </div>
 
   <div class="item" data-price="10" data-cat="bike" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Voile Straps 2× — Gepäck-Spanngurte</div>
-      <div class="item-model">32" oder 20" · Velcro-Klett · kein Scheuern</div>
-      <div class="item-note">Zum Festzurren des Drybags (Zelt, Schlafsack) oben auf den Träger. Gemini empfiehlt "Baumarkt-Spanngurte" — die scheuern den Rahmen und lösen sich bei Vibrationen. Voile Straps sind der Standard bei Bikepacking, halten bombenfest.</div>
+      <div class="item-name">Voile Straps × 2 — Gepäck-Spanngurte</div>
+      <div class="item-model">Nylon Buckle, 50–80 cm — Drybag auf Träger befestigen</div>
+      <div class="item-note">Zum Festzurren von Drybag + Zelt oben auf den MonkeyLoad. Baumarkt-Gurte scheuern Lack und lösen sich bei Vibrationen — Voile Straps sind der Bikepacking-Standard.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.amazon.de/s?k=voile+straps+fahrrad" target="_blank" onclick="event.stopPropagation()">→ Amazon (~8–12 €)</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07F7FLF46" target="_blank" onclick="event.stopPropagation()">→ Amazon (×2 bestellen)</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~10 €</div><div class="item-erg">Ergänzt</div></div>
+    <div class="item-right"><div class="item-price">~10 €</div><div class="badge badge-erg">Ergänzt</div></div>
   </div>
 
-  <!-- ──────────────── BEKLEIDUNG ──────────────── -->
+  <!-- ═══════════════ BEKLEIDUNG ═══════════════ -->
   <div class="cat-header">
     <span class="cat-icon">👕</span>
     <h2>Bekleidung</h2>
@@ -287,10 +298,10 @@
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Trekking-Shorts</div>
-      <div class="item-model">Decathlon Quechua MH500 — elastisch, Gürtelschlaufen</div>
-      <div class="item-note">Atmungsaktiv, schnell trocknend. Gürtelschlaufen für Karabiner / Campinggeschirr im Lager.</div>
+      <div class="item-model">Decathlon Quechua MH500 Wandershorts kurz</div>
+      <div class="item-note">Elastisch, schnell trocknend, Gürtelschlaufen. Passend für Radfahren + Lager.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=quechua+mh500+shorts&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/wandershorts-kurz-herren-bergwandern-mh500-khaki/_/R-p-325530" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
       </div>
     </div>
     <div class="item-right"><div class="item-price">~25 €</div></div>
@@ -300,141 +311,135 @@
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Funktions-T-Shirts × 2</div>
-      <div class="item-model">Decathlon Kiprun oder Domyos — Polyester, schnell trocknend</div>
-      <div class="item-note">Trocknen innerhalb von 1–2 h auch bei Regen. Baumwoll-Shirts kleben nass am Körper und trocknen nie richtig — nicht nehmen.</div>
+      <div class="item-model">Decathlon Kiprun 100 Dry — Polyester, trocknet in &lt;2h</div>
+      <div class="item-note">Baumwoll-Shirts kleben nass und trocknen nie. Polyester-Laufshirts für ~9€/Stück.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=laufshirt+funktionsshirt&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~2× 9 €)</a>
+        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/laufshirt-kurzarm-atmungsaktiv-dry-herren-blau/_/R-p-165437" target="_blank" onclick="event.stopPropagation()">→ Decathlon (2× kaufen)</a>
       </div>
     </div>
     <div class="item-right"><div class="item-price">~18 €</div></div>
   </div>
 
-  <div class="item" data-price="12" data-cat="kleidung" onclick="toggle(this)">
+  <div class="item" data-price="15" data-cat="kleidung" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Radler-Unterhose mit Sitzpolster</div>
-      <div class="item-model">Decathlon B'Twin Comfort 100 (unter Trekking-Shorts tragen, keine normale drunter!)</div>
-      <div class="item-note">Verhindert Wunden + Scheuern bei Ganztagestouren. Direkt auf der Haut tragen, keine normale Unterhose drunter!</div>
+      <div class="item-name">Radunterhose mit Sitzpolster</div>
+      <div class="item-model">Decathlon Rogelli nahtlos — direkt auf Haut tragen, keine normale Unterhose drunter!</div>
+      <div class="item-note">Verhindert Wundscheuern bei Ganztagestouren. Wichtig: direkt auf der Haut, nichts drunter.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=radunterhose+sitzpolster&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/mp/radunterhose-herren-mit-sitzpolster-nahtlose-fahrradunterwasche-schwarz/4ed7bcb9-396e-4b33-bdac-c7d314da7c7b/c1" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~12 €</div></div>
+    <div class="item-right"><div class="item-price">~15 €</div></div>
   </div>
 
   <div class="item" data-price="12" data-cat="kleidung" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Polarisierte Sportbrille</div>
-      <div class="item-model">Decathlon Quechua MH140 oder ähnlich</div>
-      <div class="item-note">Schützt bei 25 km/h vor Fahrtwind, Insekten, Ostsee-Lichtreflexionen. Polarfilter eliminiert Blendung von der Wasseroberfläche.</div>
+      <div class="item-model">URAQT UV400 — superleicht, unzerbrechlich</div>
+      <div class="item-note">Schützt bei 25 km/h vor Wind, Insekten, Ostsee-Lichtreflexionen. Polarfilter = kein Blenden vom Wasser.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=sonnenbrille+sport+polarisiert&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~10–15 €)</a>
-        <a class="item-link" href="https://www.amazon.de/s?k=sportbrille+polarisiert+fahrrad" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0BZ8H3G1F" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
     <div class="item-right"><div class="item-price">~12 €</div></div>
   </div>
 
-  <!-- ──────────────── WETTERSCHUTZ ──────────────── -->
+  <!-- ═══════════════ WETTERSCHUTZ ═══════════════ -->
   <div class="cat-header">
     <span class="cat-icon">🌧️</span>
     <h2>Wetterschutz</h2>
     <span class="cat-sum" id="sum-wetter"></span>
   </div>
-  <div class="info-note">Ostsee-Küste = Regen kommt, auch im Sommer. Ohne Regensachen bist du nach 30 min komplett durch und frierst den Rest des Tages.</div>
+  <div class="info-note">Ostsee im Sommer = Regen ist realistisch. Ohne Regenklamotten bist du nach 30 min durch und frierst den Rest des Tages.</div>
 
-  <div class="item" data-price="35" data-cat="wetter" onclick="toggle(this)">
+  <div class="item" data-price="40" data-cat="wetter" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Regenjacke — atmungsaktiv</div>
-      <div class="item-model">Decathlon Quechua MH500 oder NH500 Hybrid</div>
-      <div class="item-note">Membran-Jacke: lässt Schweiß raus, hält Regen ab. Packt sich auf Apfelgröße zusammen. Billige Plastikjacken stauen die Feuchtigkeit innen — nach 10 min klatscht du von innen durch.</div>
+      <div class="item-model">Decathlon Quechua MH500 — Membran, lässt Schweiß raus</div>
+      <div class="item-note">Billiger Plastik-Poncho = nach 10 min klatscht man von innen durch. Die MH500 ist echte Membran-Jacke, packt auf Apfelgröße zusammen.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=regenjacke+wandern+atmungsaktiv&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~35–45 €)</a>
+        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-mh500-schwarz/301681/c382m8612171" target="_blank" onclick="event.stopPropagation()">→ Decathlon (Farbe wählbar)</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~35 €</div></div>
+    <div class="item-right"><div class="item-price">~40 €</div></div>
+  </div>
+
+  <div class="item" data-price="20" data-cat="wetter" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Regenhose — Überziehhose</div>
+      <div class="item-model">Decathlon Quechua MH500 — leicht, kompakt rollbar</div>
+      <div class="item-note">Zieht man über die Shorts. Rollt auf Faustgröße zusammen, wiegt 300g.</div>
+      <div class="item-links">
+        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+      </div>
+    </div>
+    <div class="item-right"><div class="item-price">~20 €</div></div>
   </div>
 
   <div class="item" data-price="15" data-cat="wetter" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Regenhose</div>
-      <div class="item-model">Decathlon Quechua kompakte Überziehhose</div>
-      <div class="item-note">Dünne Überziehhose mit Gummizug, rollt auf Handflächengröße zusammen. Zieht man über die Shorts drüber wenn's anfängt zu tröpfeln.</div>
+      <div class="item-name">Drybag 40 L</div>
+      <div class="item-model">MNT10 Cliff-Bag mit Rollverschluss — 100% wasserdicht</div>
+      <div class="item-note">Zelt + Schlafsack + Sperriges rein, mit Voile Straps oben auf den Träger. No-Name reicht — Rollverschluss ist immer dicht.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=regenhose+wandern+kompakt&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~12–20 €)</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B08FBMMS26" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
     <div class="item-right"><div class="item-price">~15 €</div></div>
   </div>
 
-  <div class="item" data-price="10" data-cat="wetter" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Drybag 40–60 L</div>
-      <div class="item-model">No-Name Packsack — wasserdichter Rollverschluss</div>
-      <div class="item-note">Schläft es Zelt, Schlafsack und alles Sperrige rein, wird oben auf den Träger geschnallt (mit Voile Straps). Kein Markensack nötig — Amazon No-Name für 10 € ist wasserdicht genug.</div>
-      <div class="item-links">
-        <a class="item-link" href="https://www.amazon.de/s?k=drybag+40l+packsack+wasserdicht" target="_blank" onclick="event.stopPropagation()">→ Amazon (~10–15 €)</a>
-        <a class="item-link" href="https://www.decathlon.de/search#q=drybag+wasserdicht&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~10 €</div></div>
-  </div>
-
-  <!-- ──────────────── KOMFORT & WERKZEUG ──────────────── -->
+  <!-- ═══════════════ KOMFORT & WERKZEUG ═══════════════ -->
   <div class="cat-header">
     <span class="cat-icon">🔧</span>
     <h2>Komfort &amp; Werkzeug</h2>
     <span class="cat-sum" id="sum-tools"></span>
   </div>
-  <div class="info-note">Gemini hat diese Kategorie vergessen. Auf Mehrtagestouren unerlässlich.</div>
 
   <div class="item" data-price="12" data-cat="tools" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Multitool</div>
-      <div class="item-model">Topeak Hexus II — Inbus 2–8 mm, Kreuz, Kettennieter</div>
-      <div class="item-note">Sattel neu einstellen, Lenker nachziehen, Kette aufschieben — alles unterwegs. 11 Funktionen, 150 g. Kein billiges 2 €-Teil aus dem Supermarkt.</div>
+      <div class="item-name">Topeak Hexus II Multitool</div>
+      <div class="item-model">Inbus 2–8 mm · Kreuz · Kettennieter · 11 Funktionen</div>
+      <div class="item-note">Sattel nach 50 km höhenverstellen, Lenker nachziehen, Kette einfädeln — alles unterwegs.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.amazon.de/s?k=topeak+hexus+II+multitool" target="_blank" onclick="event.stopPropagation()">→ Amazon (~12–15 €)</a>
-        <a class="item-link" href="https://www.fahrrad-xxl.de/suche/?tx_kesearch_pi1%5BsearchWord%5D=topeak+hexus" target="_blank" onclick="event.stopPropagation()">→ Fahrrad XXL</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B00320OJA2" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~12 €</div><div class="item-erg">Ergänzt</div></div>
+    <div class="item-right"><div class="item-price">~12 €</div><div class="badge badge-erg">Ergänzt</div></div>
   </div>
 
-  <div class="item" data-price="5" data-cat="tools" onclick="toggle(this)">
+  <div class="item" data-price="8" data-cat="tools" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Chamois-Crème</div>
-      <div class="item-model">Decathlon / Bepanthen-Alternative</div>
-      <div class="item-note">Auf die Haut im Sitzbereich (nicht auf den Sattel). Verhindert Wundscheuern bei langen Etappen. Ab Tag 2 auf einer Mehrtagestour bist du froh drum.</div>
+      <div class="item-model">SURPASS 170ml — auf die Haut, nicht den Sattel</div>
+      <div class="item-note">Auf den Sitzbereich auftragen (nicht auf den Sattel!). Ab Tag 2 auf einer Mehrtages-Tour bist du froh drum.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=chamois+creme+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~5–8 €)</a>
-        <a class="item-link" href="https://www.amazon.de/s?k=chamois+creme+fahrrad" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0B78BVZV6" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~5 €</div><div class="item-erg">Ergänzt</div></div>
+    <div class="item-right"><div class="item-price">~8 €</div><div class="badge badge-erg">Ergänzt</div></div>
   </div>
 
-  <div class="item" data-price="7" data-cat="tools" onclick="toggle(this)">
+  <div class="item" data-price="10" data-cat="tools" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Erste-Hilfe Mini-Set</div>
-      <div class="item-model">Kompaktes Verbandset — Pflaster, Binde, Folie</div>
-      <div class="item-note">Stürze passieren. Kleines Set (150 g) in die Seitentasche. Nichts Aufwändiges — nur die Basics: Pflaster verschiedene Größen, elastische Binde, Rettungsfolie.</div>
+      <div class="item-model">ALPENWERT Outdoor — Pflaster, Binde, Rettungsfolie, Zeckenzange</div>
+      <div class="item-note">Stürze passieren. 150g, in die Seitentasche. CE-zertifiziert.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.amazon.de/s?k=erste+hilfe+set+kompakt+fahrrad" target="_blank" onclick="event.stopPropagation()">→ Amazon (~5–10 €)</a>
-        <a class="item-link" href="https://www.decathlon.de/search#q=erste+hilfe+set&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0CM7HBHGJ" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~7 €</div><div class="item-erg">Ergänzt</div></div>
+    <div class="item-right"><div class="item-price">~10 €</div><div class="badge badge-erg">Ergänzt</div></div>
   </div>
 
-  <!-- ──────────────── CAMP-KÜCHE ──────────────── -->
+  <!-- ═══════════════ CAMP-KÜCHE ═══════════════ -->
   <div class="cat-header">
     <span class="cat-icon">🍽️</span>
     <h2>Camp-Küche</h2>
@@ -445,36 +450,35 @@
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
       <div class="item-name">Bundeswehr Essbesteck</div>
-      <div class="item-model">4-teilig: Messer, Gabel, Löffel, Dosenöffner — Edelstahl steckbar</div>
-      <div class="item-note">Original Militär-Besteck, unkaputtbar, kompakt, am Karabiner aufhängbar. Kein Plastikmüll-Campingbesteck.</div>
+      <div class="item-model">normani 4-teilig — Messer, Gabel, Löffel, Dosenöffner, steckbar</div>
+      <div class="item-note">Unkaputtbares Edelstahl-Militärbesteck, kompakt steckbar, am Karabiner hängbar.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.amazon.de/s?k=bundeswehr+essbesteck+edelstahl" target="_blank" onclick="event.stopPropagation()">→ Amazon (~6–10 €)</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B01N6NXBCR" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
     <div class="item-right"><div class="item-price">~8 €</div></div>
   </div>
 
-  <div class="item" data-price="7" data-cat="kueche" onclick="toggle(this)">
+  <div class="item" data-price="6" data-cat="kueche" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Camping-Tiefteller / Schüssel</div>
-      <div class="item-model">Edelstahl, 0,5–1 L — Decathlon Quechua oder Amazon</div>
-      <div class="item-note">Robust, unkaputtbar, leicht zu reinigen. Geht auch als Kochtopf-Ersatz wenn man nur Konserven aufwärmt.</div>
+      <div class="item-name">Camping-Teller tief</div>
+      <div class="item-model">Mil-Tec Edelstahl tief — unzerbrechlich, spülbar</div>
+      <div class="item-note">Edelstahl, kein Plastik-Müll, geht auch als Schüssel. 22 cm, passt in die Seitentasche.</div>
       <div class="item-links">
-        <a class="item-link" href="https://www.decathlon.de/search#q=camping+schuessel+edelstahl&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~5–8 €)</a>
-        <a class="item-link" href="https://www.amazon.de/s?k=camping+tiefteller+edelstahl" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B005MYBBB6" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">~7 €</div></div>
+    <div class="item-right"><div class="item-price">~6 €</div></div>
   </div>
 
-  <!-- ──────────────── GESAMT ──────────────── -->
-  <div class="divider" style="margin-top:1.5rem"></div>
-  <div style="text-align:right; padding:.8rem .2rem; font-size:.85rem; color:var(--muted);">
-    Gesamt wenn alles gehakt: <strong style="color:var(--text)" id="all-total"></strong>
+  <!-- GESAMT -->
+  <div class="divider" style="margin-top:1.4rem"></div>
+  <div style="text-align:right; padding:.7rem .2rem; font-size:.83rem; color:var(--muted);">
+    Gesamt (alles gekauft): <strong style="color:var(--text)" id="all-total"></strong>
   </div>
 
-</div>
+</div><!-- /container -->
 
 <!-- STICKY FOOTER -->
 <div class="footer-bar">
@@ -483,24 +487,39 @@
     <span class="footer-amount" id="footer-spent">0 €</span>
     <span class="footer-sub" id="footer-remaining"></span>
   </div>
-  <div style="flex:1; min-width:100px; max-width:250px;">
-    <div class="prog-bar" style="height:8px">
-      <div class="prog-fill" id="footer-bar" style="width:0%"></div>
-    </div>
+  <div style="flex:1; min-width:100px; max-width:220px;">
+    <div class="prog-bar"><div class="prog-fill" id="footer-bar" style="width:0%"></div></div>
   </div>
-  <span id="footer-count" style="font-size:.8rem;color:var(--dim)">0 / 0</span>
+  <span id="footer-count" style="font-size:.78rem;color:var(--dim)">0 / 0</span>
   <button class="clear-btn" onclick="clearAll()">↺ Reset</button>
 </div>
 
 <script>
+  // Decathlon URLs in order
+  var decathlonUrls = [
+    'https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380',
+    'https://www.decathlon.de/p/fahrrad-flaschenhalter-100-metall-schwarz/12560/c382m8049106',
+    'https://www.decathlon.de/p/wandershorts-kurz-herren-bergwandern-mh500-khaki/_/R-p-325530',
+    'https://www.decathlon.de/p/laufshirt-kurzarm-atmungsaktiv-dry-herren-blau/_/R-p-165437',
+    'https://www.decathlon.de/p/mp/radunterhose-herren-mit-sitzpolster-nahtlose-fahrradunterwasche-schwarz/4ed7bcb9-396e-4b33-bdac-c7d314da7c7b/c1',
+    'https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-mh500-schwarz/301681/c382m8612171',
+    'https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324'
+  ];
+
+  function openDecathlon() {
+    decathlonUrls.forEach(function(url, i) {
+      setTimeout(function() { window.open(url, '_blank'); }, i * 250);
+    });
+  }
+
+  // Checklist logic
   var items = document.querySelectorAll('.item[data-price]');
   var TOTAL = 0;
   items.forEach(function(el) { TOTAL += parseInt(el.dataset.price); });
   document.getElementById('all-total').textContent = TOTAL + ' €';
 
   // Per-category sums
-  var cats = ['pannen','bike','kleidung','wetter','tools','kueche'];
-  cats.forEach(function(cat) {
+  ['pannen','bike','kleidung','wetter','tools','kueche'].forEach(function(cat) {
     var s = 0;
     document.querySelectorAll('.item[data-cat="' + cat + '"]').forEach(function(el) {
       s += parseInt(el.dataset.price);
@@ -509,36 +528,27 @@
     if (el) el.textContent = s + ' €';
   });
 
-  function toggle(el) {
-    el.classList.toggle('done');
-    update();
-  }
+  function toggle(el) { el.classList.toggle('done'); update(); }
 
   function update() {
     var spent = 0, count = 0;
     items.forEach(function(el) {
-      if (el.classList.contains('done')) {
-        spent += parseInt(el.dataset.price);
-        count++;
-      }
+      if (el.classList.contains('done')) { spent += parseInt(el.dataset.price); count++; }
     });
-    var pct = TOTAL > 0 ? Math.round((spent / TOTAL) * 100) : 0;
+    var pct = TOTAL > 0 ? Math.round(spent / TOTAL * 100) : 0;
     document.getElementById('footer-spent').textContent = spent + ' €';
     document.getElementById('footer-count').textContent = count + ' / ' + items.length;
     document.getElementById('footer-bar').style.width = pct + '%';
     document.getElementById('footer-bar').style.background = pct === 100 ? 'var(--green)' : pct > 60 ? 'var(--yellow)' : 'var(--blue)';
-    var remaining = TOTAL - spent;
-    document.getElementById('footer-remaining').textContent = remaining > 0 ? remaining + ' € noch offen' : '✓ Alles gekauft!';
+    var rem = TOTAL - spent;
+    document.getElementById('footer-remaining').textContent = rem > 0 ? rem + ' € noch offen' : '✓ Alles gekauft!';
+    document.getElementById('footer-remaining').style.color = rem === 0 ? 'var(--green)' : 'var(--dim)';
     document.getElementById('prog-fill').style.width = pct + '%';
-    document.getElementById('prog-count').textContent = count + ' / ' + items.length + ' Artikel';
+    document.getElementById('prog-count').textContent = count + ' / ' + items.length;
     document.getElementById('prog-total').textContent = spent + ' €';
-    document.getElementById('footer-remaining').style.color = remaining === 0 ? 'var(--green)' : 'var(--dim)';
   }
 
-  function clearAll() {
-    items.forEach(function(el) { el.classList.remove('done'); });
-    update();
-  }
+  function clearAll() { items.forEach(function(el) { el.classList.remove('done'); }); update(); }
 
   update();
 </script>
