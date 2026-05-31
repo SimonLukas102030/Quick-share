@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Bike Zubehör — Dynamics Forte Ultra 508</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1f2e;
+    --card: #1e293b;
+    --border: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #475569;
+    --accent: #2563eb;
+    --accent-soft: #1d4ed820;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --selected-border: #3b82f6;
+    --selected-bg: #1e3a5f;
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 1.5rem 2rem; }
+  header h1 { font-size: 1.6rem; color: #60a5fa; }
+  header p { color: var(--muted); font-size: .9rem; margin-top: .3rem; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 6rem; }
+
+  .bike-info { background: var(--surface); border-left: 4px solid var(--dim); border-radius: 8px; padding: 1rem 1.4rem; margin-bottom: 2rem; font-size: .88rem; color: var(--muted); }
+  .bike-info strong { color: var(--text); }
+
+  .category { margin-bottom: 2.5rem; }
+  .cat-title { font-size: 1.1rem; font-weight: 700; color: #60a5fa; margin-bottom: 1rem; display: flex; align-items: center; gap: .6rem; }
+  .cat-title span { font-size: 1.3rem; }
+
+  .options { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .8rem; }
+
+  .option {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    position: relative;
+  }
+  .option:hover { border-color: #4a90d9; }
+  .option.selected { border-color: var(--selected-border); background: var(--selected-bg); }
+  .option.selected::after {
+    content: '✓';
+    position: absolute;
+    top: .6rem; right: .7rem;
+    background: var(--accent);
+    color: #fff;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem; font-weight: 700;
+    line-height: 20px; text-align: center;
+  }
+
+  .opt-tier { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; margin-bottom: .3rem; }
+  .tier-budget { color: #4ade80; }
+  .tier-mid { color: #fbbf24; }
+  .tier-premium { color: #f472b6; }
+
+  .opt-name { font-weight: 700; font-size: .95rem; color: var(--text); line-height: 1.3; }
+  .opt-price { font-size: 1.2rem; font-weight: 700; color: var(--green); margin-top: .3rem; }
+  .opt-note { font-size: .78rem; color: var(--muted); margin-top: .3rem; line-height: 1.4; }
+  .opt-tag { display: inline-block; font-size: .68rem; padding: .15rem .5rem; border-radius: 20px; margin-top: .4rem; margin-right: .3rem; }
+  .tag-ok { background: #14532d; color: #86efac; }
+  .tag-warn { background: #451a03; color: #fdba74; }
+  .tag-smart { background: #1e1b4b; color: #a5b4fc; }
+  .opt-link { display: inline-block; margin-top: .6rem; font-size: .78rem; color: #60a5fa; text-decoration: none; border: 1px solid #1e3a5f; border-radius: 4px; padding: .2rem .6rem; }
+  .opt-link:hover { background: #1e3a5f; }
+
+  /* sticky footer total */
+  .total-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #0d1117ee;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    padding: .8rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    z-index: 100;
+  }
+  .total-label { color: var(--muted); font-size: .9rem; }
+  .total-amount { font-size: 1.5rem; font-weight: 700; transition: color .3s; }
+  .total-ok { color: var(--green); }
+  .total-warn { color: var(--yellow); }
+  .total-over { color: var(--red); }
+  .budget-bar { flex: 1; min-width: 150px; max-width: 300px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .budget-fill { height: 100%; border-radius: 3px; transition: width .3s, background .3s; }
+  .total-hint { font-size: .78rem; color: var(--dim); }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: .3rem .8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: .8rem;
+  }
+  .reset-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  .note-box { background: #1a2535; border: 1px solid #2d4a6b; border-radius: 8px; padding: .8rem 1.1rem; margin-bottom: 1.5rem; font-size: .83rem; color: #93c5fd; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚲 E-Bike Zubehör</h1>
+  <p>Dynamics Forte Ultra 508 · 60 cm · Samsung S20 · Ziel: unter 200 €</p>
+</header>
+
+<div class="container">
+
+  <div class="bike-info">
+    <strong>Dein Bike:</strong> Dynamics Forte Ultra 508 · MonkeyLoad Systemgepäckträger (25 kg) · Trekking-Lenker (Ø 22–35 mm) · Keine Luftpumpe nötig · Kein Spiegel
+  </div>
+
+  <!-- HANDYHALTER -->
+  <div class="category">
+    <div class="cat-title"><span>📱</span> Handyhalter — Samsung S20 (6,2″ · 151 × 69 mm)</div>
+    <div class="note-box">Alle Optionen passen auf deinen Trekking-Lenker (Klemme 22–35 mm) — kein Rennlenker nötig.</div>
+    <div class="options" id="cat-phone">
+
+      <div class="option" data-cat="phone" data-price="12" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget</div>
+        <div class="opt-name">Lamicall Fahrrad Handyhalter</div>
+        <div class="opt-price">~12 €</div>
+        <div class="opt-note">Klemme 22–35 mm, Gummi-Arme, kein Zubehör nötig. Für gelegentliche Nutzung.</div>
+        <span class="opt-tag tag-ok">Flat-Bar ✓</span>
+        <a class="opt-link" href="https://www.amazon.de/s?k=lamicall+fahrrad+handyhalter+lenker" target="_blank">→ Amazon</a>
+      </div>
+
+      <div class="option" data-cat="phone" data-price="22" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget+</div>
+        <div class="opt-name">Topeak Ridecase Mount (Universal)</div>
+        <div class="opt-price">~22 €</div>
+        <div class="opt-note">Stabile Klemme, 360° drehbar, kein separates Case nötig. Für S20 geprüft.</div>
+        <span class="opt-tag tag-ok">Flat-Bar ✓</span>
+        <a class="opt-link" href="https://www.fahrrad-xxl.de/suche/?tx_kesearch_pi1%5BsearchWord%5D=topeak+ridecase" target="_blank">→ Fahrrad XXL</a>
+      </div>
+
+      <div class="option" data-cat="phone" data-price="45" onclick="select(this)">
+        <div class="opt-tier tier-mid">Mittel</div>
+        <div class="opt-name">SP Connect Bike Bundle II S20</div>
+        <div class="opt-price">~45 €</div>
+        <div class="opt-note">Magnetisch + Twist-Lock, Lenkerhalter inklusive. Kein Flip-Case, hält bombenfest. Bekannte Marke.</div>
+        <span class="opt-tag tag-ok">Flat-Bar ✓</span>
+        <span class="opt-tag tag-smart">Schnellwechsel</span>
+        <a class="opt-link" href="https://sp-connect.com/collections/bicycle" target="_blank">→ SP Connect</a>
+      </div>
+
+      <div class="option" data-cat="phone" data-price="62" onclick="select(this)">
+        <div class="opt-tier tier-premium">Premium</div>
+        <div class="opt-name">Quad Lock Bike Kit S20</div>
+        <div class="opt-price">~62 €</div>
+        <div class="opt-note">Case (~25 €) + Lenkerhalterung (~37 €). Bajonett-Verschluss, vibrationsstabil. Beste Lösung für tägliche Nutzung. Klemme passt auf Trekking-Lenker.</div>
+        <span class="opt-tag tag-ok">Flat-Bar ✓</span>
+        <span class="opt-tag tag-smart">Bajonett-Lock</span>
+        <a class="opt-link" href="https://www.quadlockcase.eu/products/galaxy-bike-kit-all-devices" target="_blank">→ Quad Lock EU</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCHLOSS -->
+  <div class="category">
+    <div class="cat-title"><span>🔒</span> Schloss — Versicherung übernimmt Diebstahl</div>
+    <div class="note-box">Da die Versicherung greift, reicht ein einfacheres Schloss. App-Optionen dabei — kein Schlüssel nötig.</div>
+    <div class="options" id="cat-lock">
+
+      <div class="option" data-cat="lock" data-price="10" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget</div>
+        <div class="opt-name">Kabelschloss mit Zahlenkombination</div>
+        <div class="opt-price">~10 €</div>
+        <div class="opt-note">4-stelliger Code, kein Schlüssel, leicht. Reicht für kurze Stops + Versicherungspflicht.</div>
+        <span class="opt-tag tag-ok">Kein Schlüssel</span>
+        <a class="opt-link" href="https://www.decathlon.de/search#q=kabelschloss&srt=relevance" target="_blank">→ Decathlon</a>
+      </div>
+
+      <div class="option" data-cat="lock" data-price="18" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget+</div>
+        <div class="opt-name">Abus 6500/85 Faltschloss</div>
+        <div class="opt-price">~18 €</div>
+        <div class="opt-note">Kompakt, stabiler als Kabel, inkl. Halterung am Rahmen. Zahlencode.</div>
+        <span class="opt-tag tag-ok">Kein Schlüssel</span>
+        <a class="opt-link" href="https://www.amazon.de/s?k=abus+faltschloss+zahlenkombination" target="_blank">→ Amazon</a>
+      </div>
+
+      <div class="option" data-cat="lock" data-price="35" onclick="select(this)">
+        <div class="opt-tier tier-mid">Smart Budget</div>
+        <div class="opt-name">Semptec BT-Kabelschloss mit App</div>
+        <div class="opt-price">~35 €</div>
+        <div class="opt-note">Bluetooth, per App öffnen, Alarm bei Erschütterung. Günstigste App-Option. Android + iOS.</div>
+        <span class="opt-tag tag-smart">App ✓</span>
+        <span class="opt-tag tag-smart">Alarm</span>
+        <a class="opt-link" href="https://www.pearl.de/a-ZX9466-4301.shtml" target="_blank">→ Pearl.de</a>
+      </div>
+
+      <div class="option" data-cat="lock" data-price="55" onclick="select(this)">
+        <div class="opt-tier tier-mid">Smart Mid</div>
+        <div class="opt-name">I Lock It Plus Bluetooth</div>
+        <div class="opt-price">~55 €</div>
+        <div class="opt-note">Bügelschloss, Auto-Lock wenn du weggehst, App-Öffnung, Alarm. Seriöse Marke, gute App-Bewertungen.</div>
+        <span class="opt-tag tag-smart">App ✓</span>
+        <span class="opt-tag tag-smart">Auto-Lock</span>
+        <a class="opt-link" href="https://www.ilockit.bike" target="_blank">→ I Lock It</a>
+      </div>
+
+      <div class="option" data-cat="lock" data-price="90" onclick="select(this)">
+        <div class="opt-tier tier-premium">Smart Premium</div>
+        <div class="opt-name">Abus 770A SmartX</div>
+        <div class="opt-price">~90 €</div>
+        <div class="opt-note">Bügelschloss, Bluetooth, Alarm (100 dB), zertifiziert (SH Klasse 5). Beste Lösung wenn Versicherung spezifisches Schloss vorschreibt.</div>
+        <span class="opt-tag tag-smart">App ✓</span>
+        <span class="opt-tag tag-ok">Zertifiziert</span>
+        <a class="opt-link" href="https://www.fahrrad-xxl.de/suche/?tx_kesearch_pi1%5BsearchWord%5D=abus+770a" target="_blank">→ Fahrrad XXL</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- GEPÄCKTASCHEN -->
+  <div class="category">
+    <div class="cat-title"><span>👜</span> Gepäcktaschen hinten (Paar)</div>
+    <div class="note-box">Alle passen auf deinen MonkeyLoad-Gepäckträger. Standard-Haken sind kompatibel.</div>
+    <div class="options" id="cat-bags">
+
+      <div class="option" data-cat="bags" data-price="28" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget</div>
+        <div class="opt-name">Fischer Basic Gepäcktasche (Paar)</div>
+        <div class="opt-price">~28 €</div>
+        <div class="opt-note">2× 15 L, einfache Haken, wasserfest (nicht fully waterproof). Für den Alltag ausreichend.</div>
+        <span class="opt-tag tag-warn">Spritzwasserfest</span>
+        <a class="opt-link" href="https://www.amazon.de/s?k=fischer+gep%C3%A4cktasche+fahrrad+paar" target="_blank">→ Amazon</a>
+      </div>
+
+      <div class="option" data-cat="bags" data-price="45" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget+</div>
+        <div class="opt-name">Decathlon Riverside 500 (Paar)</div>
+        <div class="opt-price">~45 €</div>
+        <div class="opt-note">2× 20 L, wasserdicht, einfache Montage. Gute Qualität für den Preis — Decathlon-Eigenmarke.</div>
+        <span class="opt-tag tag-ok">Wasserdicht</span>
+        <a class="opt-link" href="https://www.decathlon.de/search#q=gep%C3%A4cktasche+fahrrad+paar&srt=relevance" target="_blank">→ Decathlon</a>
+      </div>
+
+      <div class="option" data-cat="bags" data-price="70" onclick="select(this)">
+        <div class="opt-tier tier-mid">Mittel</div>
+        <div class="opt-name">Vaude Aqua Back (Paar)</div>
+        <div class="opt-price">~70 €</div>
+        <div class="opt-note">2× 24 L, vollständig wasserdicht, Cordura-Material, Made in Germany. Spürbar besser als Budget-Taschen.</div>
+        <span class="opt-tag tag-ok">Wasserdicht IP64</span>
+        <a class="opt-link" href="https://www.fahrrad-xxl.de/suche/?tx_kesearch_pi1%5BsearchWord%5D=vaude+aqua+back" target="_blank">→ Fahrrad XXL</a>
+      </div>
+
+      <div class="option" data-cat="bags" data-price="125" onclick="select(this)">
+        <div class="opt-tier tier-premium">Premium</div>
+        <div class="opt-name">Ortlieb Back-Roller Classic (Paar)</div>
+        <div class="opt-price">~125 €</div>
+        <div class="opt-note">2× 20 L, IP64, über 10.000 km getestet. Rollverschluss, Note 1,9. Die Referenz — Made in Germany.</div>
+        <span class="opt-tag tag-ok">IP64 ✓</span>
+        <span class="opt-tag tag-ok">&gt;10.000 km</span>
+        <a class="opt-link" href="https://www.bike24.de/suche/?q=ortlieb+back-roller+classic" target="_blank">→ Bike24</a>
+      </div>
+
+      <div class="option" data-cat="bags" data-price="158" onclick="select(this)">
+        <div class="opt-tier tier-premium">Premium+</div>
+        <div class="opt-name">Ortlieb Back-Roller Plus (Paar)</div>
+        <div class="opt-price">~158 €</div>
+        <div class="opt-note">Wie Classic, aber leichter + besserer Griff + verstärkter Boden. Für häufige Touren.</div>
+        <span class="opt-tag tag-ok">IP64 ✓</span>
+        <span class="opt-tag tag-ok">Leichter</span>
+        <a class="opt-link" href="https://www.bike24.de/suche/?q=ortlieb+back-roller+plus" target="_blank">→ Bike24</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLASCHENHALTER -->
+  <div class="category">
+    <div class="cat-title"><span>💧</span> Flaschenhalter</div>
+    <div class="options" id="cat-bottle">
+
+      <div class="option" data-cat="bottle" data-price="5" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget</div>
+        <div class="opt-name">Decathlon Basic Alu-Halter</div>
+        <div class="opt-price">~5 €</div>
+        <div class="opt-note">Passt an Unterrohr (Gewindelöcher vorhanden). Hält Standard-Trinkflaschen. Reicht vollkommen.</div>
+        <a class="opt-link" href="https://www.decathlon.de/search#q=flaschenhalter+fahrrad&srt=relevance" target="_blank">→ Decathlon</a>
+      </div>
+
+      <div class="option" data-cat="bottle" data-price="12" onclick="select(this)">
+        <div class="opt-tier tier-mid">Mittel</div>
+        <div class="opt-name">Zéfal Wiiz Alu</div>
+        <div class="opt-price">~12 €</div>
+        <div class="opt-note">Stabiler Aluhalter, passt auch breite Flaschen, leicht. Klassiker.</div>
+        <a class="opt-link" href="https://www.fahrrad-xxl.de/suche/?tx_kesearch_pi1%5BsearchWord%5D=zefal+wiiz" target="_blank">→ Fahrrad XXL</a>
+      </div>
+
+      <div class="option" data-cat="bottle" data-price="22" onclick="select(this)">
+        <div class="opt-tier tier-premium">Premium</div>
+        <div class="opt-name">Elite Vico Carbon</div>
+        <div class="opt-price">~22 €</div>
+        <div class="opt-note">Carbon-Optik, sehr leicht, hält auch bei Vibrationen. Sieht schick aus.</div>
+        <a class="opt-link" href="https://www.bike24.de/suche/?q=elite+vico" target="_blank">→ Bike24</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HELM -->
+  <div class="category">
+    <div class="cat-title"><span>🪖</span> Helm</div>
+    <div class="options" id="cat-helmet">
+
+      <div class="option" data-cat="helmet" data-price="25" onclick="select(this)">
+        <div class="opt-tier tier-budget">Budget</div>
+        <div class="opt-name">Decathlon Rockrider 500</div>
+        <div class="opt-price">~25 €</div>
+        <div class="opt-note">Belüftet, verstellbare Passform, CE EN1078. Für gelegentliche Fahrten ausreichend.</div>
+        <a class="opt-link" href="https://www.decathlon.de/search#q=rockrider+500+helm&srt=relevance" target="_blank">→ Decathlon</a>
+      </div>
+
+      <div class="option" data-cat="helmet" data-price="50" onclick="select(this)">
+        <div class="opt-tier tier-mid">Mittel</div>
+        <div class="opt-name">Decathlon Rockrider 900</div>
+        <div class="opt-price">~50 €</div>
+        <div class="opt-note">Mehr Belüftung, verstellbares Schirmsystem, leichter. Gutes Preis-Leistungs-Verhältnis.</div>
+        <a class="opt-link" href="https://www.decathlon.de/search#q=rockrider+900+helm&srt=relevance" target="_blank">→ Decathlon</a>
+      </div>
+
+      <div class="option" data-cat="helmet" data-price="70" onclick="select(this)">
+        <div class="opt-tier tier-mid">Mittel+</div>
+        <div class="opt-name">Abus Moventor 2.0</div>
+        <div class="opt-price">~70 €</div>
+        <div class="opt-note">Speziell für Trekking/E-Bikes, gute Belüftung, integrierter Schirm, solide Marke.</div>
+        <a class="opt-link" href="https://www.fahrrad-xxl.de/suche/?tx_kesearch_pi1%5BsearchWord%5D=abus+moventor" target="_blank">→ Fahrrad XXL</a>
+      </div>
+
+      <div class="option" data-cat="helmet" data-price="85" onclick="select(this)">
+        <div class="opt-tier tier-premium">Premium</div>
+        <div class="opt-name">Uvex Active CC</div>
+        <div class="opt-price">~85 €</div>
+        <div class="opt-note">MIPS-ähnliches System, sehr leicht (215 g), schlankes Design. Top-Sicherheit fürs Geld.</div>
+        <a class="opt-link" href="https://www.bike24.de/suche/?q=uvex+active+cc" target="_blank">→ Bike24</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Sticky Total Bar -->
+<div class="total-bar">
+  <div>
+    <div class="total-label">Auswahl gesamt</div>
+    <div class="total-amount total-ok" id="total-display">0 €</div>
+  </div>
+  <div style="flex:1; min-width:120px; max-width:260px;">
+    <div style="display:flex; justify-content:space-between; font-size:.72rem; color:var(--dim); margin-bottom:3px;">
+      <span>0 €</span><span id="bar-label" style="color:var(--green)">0 / 200 €</span><span>200 €</span>
+    </div>
+    <div class="budget-bar">
+      <div class="budget-fill" id="budget-fill" style="width:0%; background:var(--green)"></div>
+    </div>
+  </div>
+  <div>
+    <div class="total-hint" id="total-hint">Wähle Artikel aus ↑</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<script>
+  const BUDGET = 200;
+  const selected = {};
+
+  function select(el) {
+    const cat = el.dataset.cat;
+    const price = parseInt(el.dataset.price);
+
+    // deselect others in same category
+    document.querySelectorAll(`.option[data-cat="${cat}"]`).forEach(o => o.classList.remove('selected'));
+
+    if (selected[cat] === price && el.classList.contains('selected') === false) {
+      // was just deselected
+      delete selected[cat];
+    } else {
+      el.classList.add('selected');
+      selected[cat] = price;
+    }
+    updateTotal();
+  }
+
+  function updateTotal() {
+    const total = Object.values(selected).reduce((a, b) => a + b, 0);
+    const display = document.getElementById('total-display');
+    const fill = document.getElementById('budget-fill');
+    const hint = document.getElementById('total-hint');
+    const barLabel = document.getElementById('bar-label');
+
+    display.textContent = total + ' €';
+    const pct = Math.min((total / BUDGET) * 100, 100);
+    fill.style.width = pct + '%';
+    barLabel.textContent = total + ' / ' + BUDGET + ' €';
+
+    if (total === 0) {
+      display.className = 'total-amount total-ok';
+      fill.style.background = 'var(--green)';
+      hint.textContent = 'Wähle Artikel aus ↑';
+      barLabel.style.color = 'var(--dim)';
+    } else if (total <= BUDGET) {
+      const remaining = BUDGET - total;
+      display.className = 'total-amount total-ok';
+      fill.style.background = total < 120 ? 'var(--green)' : 'var(--yellow)';
+      hint.textContent = `✓ ${remaining} € unter Budget`;
+      barLabel.style.color = 'var(--green)';
+    } else {
+      const over = total - BUDGET;
+      display.className = 'total-amount total-over';
+      fill.style.background = 'var(--red)';
+      hint.textContent = `${over} € über 200 €-Ziel`;
+      barLabel.style.color = 'var(--red)';
+    }
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.option.selected').forEach(o => o.classList.remove('selected'));
+    Object.keys(selected).forEach(k => delete selected[k]);
+    updateTotal();
+  }
+</script>
+</body>
+</html>
