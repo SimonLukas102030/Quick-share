@@ -138,17 +138,17 @@
     <h2>⚡ Schnellkauf — Versand nach 16259 Hohenwutzen</h2>
 
     <button class="sq-mega" onclick="openAll()">
-      🚀 Alle 16 Seiten öffnen — günstigster Preis je Artikel
+      🚀 Alle 15 Seiten öffnen — günstigster Preis je Artikel
     </button>
     <div class="sq-note" style="margin-bottom:1rem">Öffnet jede Produktseite in eigenem Tab (Amazon frei ab 29€ · Decathlon frei ab 29€ · Pearl ~3€). Pop-up-Blocker für diese Seite kurz deaktivieren.</div>
 
     <div class="sq-row">
       <span class="sq-label">Amazon</span>
       <button class="sq-btn sq-amazon" onclick="openAmazon()">
-        📦 12 Amazon-Tabs öffnen
+        📦 13 Amazon-Tabs öffnen
       </button>
     </div>
-    <div class="sq-note" style="margin-bottom:.75rem">Schlauch+Reifenheber · TipTop · Omni RideCase · Voile Straps ×2 · Sportbrille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller</div>
+    <div class="sq-note" style="margin-bottom:.75rem">Schlauch+Reifenheber · TipTop · Omni RideCase · Spanngurte · Sportbrille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller · Radunterhose · Faltschloss</div>
 
     <div class="sq-row">
       <span class="sq-label">Decathlon</span>
@@ -158,12 +158,6 @@
     </div>
     <div class="sq-note" style="margin-bottom:.75rem">Riverside 500 Paar · Regenjacke MH150 · Regenhose MH500</div>
 
-    <div class="sq-row">
-      <span class="sq-label">Pearl.de</span>
-      <a class="sq-btn sq-pearl" href="https://www.pearl.de/a-NX1448-4301.shtml" target="_blank">
-        🔒 Semptec BT-Schloss
-      </a>
-    </div>
   </div>
 
   <!-- ═══════════════ PROGRESS ═══════════════ -->
@@ -244,17 +238,17 @@
     <div class="item-right"><div class="item-price">~35 €</div></div>
   </div>
 
-  <div class="item" data-price="31" data-cat="bike" onclick="toggle(this)">
+  <div class="item" data-price="18" data-cat="bike" onclick="toggle(this)">
     <div class="cb"><span class="cb-check">✓</span></div>
     <div class="item-body">
-      <div class="item-name">Semptec BT-Kabelschloss mit App &amp; Alarm</div>
-      <div class="item-model">Bluetooth · per App öffnen · 110 dB Erschütterungsalarm</div>
-      <div class="item-note">App für Android + iOS, kein Schlüssel. Bosch eBike Lock disablet nur den Motor — damit kann man trotzdem wegfahren. Dieses Schloss sichert physisch. Da Versicherung greift: kein 80€-Schloss nötig.</div>
+      <div class="item-name">Faltschloss mit Zahlencode + Rahmenhalterung</div>
+      <div class="item-model">REKALRO — 4-stellig, 85 cm, 8 Gelenke, Halterung am Rahmen</div>
+      <div class="item-note">Kein Schlüssel, kein Handy nötig — Code eintippen, fertig. Rahmenhalterung inkl. → immer dabei, nie verlieren. Da Versicherung greift: mehr braucht's nicht.</div>
       <div class="item-links">
-        <a class="item-link lnk-pearl" href="https://www.pearl.de/a-NX1448-4301.shtml" target="_blank" onclick="event.stopPropagation()">→ Pearl.de</a>
+        <a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09VBQQM7D" target="_blank" onclick="event.stopPropagation()">→ Amazon (~15–20 €)</a>
       </div>
     </div>
-    <div class="item-right"><div class="item-price">30,99 €</div><div class="badge badge-app">App ✓</div></div>
+    <div class="item-right"><div class="item-price">~18 €</div></div>
   </div>
 
   <div class="item" data-price="45" data-cat="bike" onclick="toggle(this)">
@@ -490,7 +484,8 @@
     'https://www.amazon.de/dp/B0CM7HBHGJ',
     'https://www.amazon.de/dp/B01N6NXBCR',
     'https://www.amazon.de/dp/B005MYBBB6',
-    'https://www.amazon.de/dp/B09KNGQTXJ'
+    'https://www.amazon.de/dp/B09KNGQTXJ',
+    'https://www.amazon.de/dp/B09VBQQM7D'
   ];
 
   var decathlonUrls = [
@@ -499,8 +494,6 @@
     'https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324'
   ];
 
-  var pearlUrl = 'https://www.pearl.de/a-NX1448-4301.shtml';
-
   function openUrls(urls) {
     urls.forEach(function(url, i) {
       setTimeout(function() { window.open(url, '_blank'); }, i * 220);
@@ -508,7 +501,7 @@
   }
   function openAmazon()   { openUrls(amazonUrls); }
   function openDecathlon(){ openUrls(decathlonUrls); }
-  function openAll()      { openUrls(amazonUrls.concat(decathlonUrls).concat([pearlUrl])); }
+  function openAll()      { openUrls(amazonUrls.concat(decathlonUrls)); }
 
   // Checklist logic
   var items = document.querySelectorAll('.item[data-price]');
