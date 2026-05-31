@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Bike Einkaufsliste</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117; --surface: #1a1f2e; --card: #1e293b; --border: #2d3748;
+    --text: #e2e8f0; --muted: #94a3b8; --dim: #4a5568;
+    --green: #34d399; --red: #f87171; --yellow: #fbbf24; --blue: #60a5fa;
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+
+  header { background: var(--surface); border-bottom: 2px solid #2563eb; padding: 1.4rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; }
+  header h1 { font-size: 1.4rem; color: var(--blue); }
+  header p { color: var(--muted); font-size: .85rem; }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 1.8rem 1rem 8rem; }
+
+  /* PROGRESS BAR */
+  .progress { background: var(--surface); border-radius: 10px; padding: 1rem 1.3rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .prog-text { font-size: .85rem; color: var(--muted); white-space: nowrap; }
+  .prog-bar { flex: 1; min-width: 120px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width .3s; }
+  .prog-total { font-weight: 700; font-size: 1rem; color: var(--green); white-space: nowrap; }
+  .prog-count { font-size: .8rem; color: var(--dim); }
+
+  /* CATEGORY */
+  .cat-header { display: flex; align-items: center; gap: .6rem; margin: 2rem 0 .7rem; }
+  .cat-header h2 { font-size: 1rem; font-weight: 700; color: var(--blue); }
+  .cat-header .cat-icon { font-size: 1.2rem; }
+  .cat-header .cat-sum { margin-left: auto; font-size: .8rem; color: var(--dim); }
+
+  /* ITEM */
+  .item {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: start;
+    gap: .8rem;
+    padding: .85rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: .45rem;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    user-select: none;
+  }
+  .item:hover { border-color: #4a90d9; }
+  .item.done { background: #111b11; border-color: #166534; }
+  .item.done .item-name { text-decoration: line-through; color: var(--dim); }
+  .item.done .item-note { color: #2d5a2d; }
+
+  .cb { width: 1.3rem; height: 1.3rem; border: 2px solid var(--dim); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: .1rem; transition: background .15s, border-color .15s; }
+  .item.done .cb { background: #166534; border-color: #166534; }
+  .cb-check { display: none; color: #fff; font-size: .75rem; font-weight: 900; }
+  .item.done .cb-check { display: block; }
+
+  .item-body { min-width: 0; }
+  .item-name { font-weight: 700; font-size: .95rem; color: var(--text); }
+  .item-model { font-size: .78rem; color: var(--blue); margin-top: .1rem; font-weight: 600; }
+  .item-note { font-size: .76rem; color: var(--muted); margin-top: .25rem; }
+  .item-link { display: inline-block; margin-top: .45rem; font-size: .74rem; color: var(--blue); text-decoration: none; background: #1e3a5f22; border: 1px solid #1e3a5f; border-radius: 4px; padding: .17rem .55rem; }
+  .item-link:hover { background: #1e3a5f; }
+
+  .item-right { text-align: right; flex-shrink: 0; }
+  .item-price { font-size: 1.05rem; font-weight: 700; color: var(--green); }
+  .item-pflicht { font-size: .67rem; background: #7c2d12; color: #fed7aa; border-radius: 3px; padding: .1rem .4rem; margin-top: .3rem; display: inline-block; }
+  .item-tip { font-size: .67rem; background: #1e3a5f; color: #93c5fd; border-radius: 3px; padding: .1rem .4rem; margin-top: .3rem; display: inline-block; }
+
+  /* PFLICHT HINWEIS */
+  .pflicht-note { background: #1a2e1a; border: 1px solid #166534; border-radius: 8px; padding: .75rem 1rem; margin-bottom: .7rem; font-size: .8rem; color: #86efac; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: .5rem 0; }
+
+  /* STICKY FOOTER */
+  .footer-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #0d1117f2; backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: .8rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    z-index: 100;
+  }
+  .footer-left { display: flex; flex-direction: column; }
+  .footer-label { font-size: .78rem; color: var(--muted); }
+  .footer-amount { font-size: 1.4rem; font-weight: 700; color: var(--green); }
+  .footer-sub { font-size: .75rem; color: var(--dim); }
+  .clear-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: .35rem 1rem; border-radius: 6px; cursor: pointer; font-size: .8rem; }
+  .clear-btn:hover { border-color: #ef4444; color: #f87171; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🚲 E-Bike Einkaufsliste</h1>
+    <p>Dynamics Forte Ultra 508 · Samsung S20 · Haken = gekauft</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="progress">
+    <span class="prog-text">Fortschritt</span>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <span class="prog-count" id="prog-count">0 / 0 Artikel</span>
+    <span class="prog-total" id="prog-total">0 €</span>
+  </div>
+
+  <!-- ──────────────── PANNENSCHUTZ ──────────────── -->
+  <div class="cat-header">
+    <span class="cat-icon">⚠️</span>
+    <h2>Pannenschutz — Pflicht</h2>
+    <span class="cat-sum" id="sum-pannen"></span>
+  </div>
+  <div class="pflicht-note">Ohne das hier strandet du bei jedem Platten. Kostet ~22 € und wiegt 200 g. Kein Optional. <strong>Ventil vorm Kauf prüfen:</strong> Sclaverand (dünner Stift) → SV17 · Schrader (dick, wie Auto) → AV17.</div>
+
+  <div class="item" data-price="6" data-cat="pannen" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Ersatzschlauch 28"</div>
+      <div class="item-model">Schwalbe SV17 (Sclaverand) oder AV17 (Schrader)</div>
+      <div class="item-note">Größe 28/47-622 · passt zu 700c × 35–40 mm Reifen · Ventilart am Bike prüfen!</div>
+      <a class="item-link" href="https://shop.zweirad-stadler.de/fahrrad-teile/reifen-schlaeuche/schlaeuche/schwalbe-sv-17-fahrradschlauch-28.html" target="_blank" onclick="event.stopPropagation()">→ Zweirad Stadler</a>
+      <a class="item-link" href="https://www.bike24.de/suche/?q=schwalbe+sv17" target="_blank" onclick="event.stopPropagation()">→ Bike24</a>
+    </div>
+    <div class="item-right"><div class="item-price">~6 €</div><div class="item-pflicht">Pflicht</div></div>
+  </div>
+
+  <div class="item" data-price="4" data-cat="pannen" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Reifenheber 3er-Set</div>
+      <div class="item-model">Schwalbe Reifenheber</div>
+      <div class="item-note">Braucht man zum Reifen runterziehen — ohne bricht man sich die Finger.</div>
+      <a class="item-link" href="https://fahrrad-teile.shop/products/schwalbe-reifenheber-3-stk-montage-fluid-2-x-schlauch-sv17-28-47-622-635-28-zoll" target="_blank" onclick="event.stopPropagation()">→ fahrrad-teile.shop</a>
+      <a class="item-link" href="https://www.decathlon.de/search#q=reifenheber&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+    </div>
+    <div class="item-right"><div class="item-price">~4 €</div><div class="item-pflicht">Pflicht</div></div>
+  </div>
+
+  <div class="item" data-price="4" data-cat="pannen" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Flickzeug</div>
+      <div class="item-model">Rema TipTop TT04 — 6 Patches + Lösung</div>
+      <div class="item-note">Für den Fall dass der Ersatzschlauch auch schon verbraucht ist. Kult-Produkt, gibt's überall.</div>
+      <a class="item-link" href="https://www.amazon.de/s?k=rema+tiptop+tt04" target="_blank" onclick="event.stopPropagation()">→ Amazon</a>
+      <a class="item-link" href="https://www.decathlon.de/search#q=flickzeug+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+    </div>
+    <div class="item-right"><div class="item-price">~4 €</div><div class="item-pflicht">Pflicht</div></div>
+  </div>
+
+  <div class="item" data-price="8" data-cat="pannen" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Mini-Pumpe</div>
+      <div class="item-model">Decathlon Mini-Pumpe Fahrrad</div>
+      <div class="item-note">Immer dabei in der Tasche. Passt auf Sclaverand + Schrader. Ca. 15 cm klein.</div>
+      <a class="item-link" href="https://www.decathlon.de/search#q=mini+pumpe+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon (~8 €)</a>
+      <a class="item-link" href="https://www.fahrrad-xxl.de/suche/?tx_kesearch_pi1%5BsearchWord%5D=topeak+mini+pumpe" target="_blank" onclick="event.stopPropagation()">→ Fahrrad XXL (~15 €)</a>
+    </div>
+    <div class="item-right"><div class="item-price">~8 €</div><div class="item-pflicht">Pflicht</div></div>
+  </div>
+
+  <!-- ──────────────── HANDYHALTER ──────────────── -->
+  <div class="cat-header">
+    <span class="cat-icon">📱</span>
+    <h2>Handyhalter</h2>
+    <span class="cat-sum" id="sum-phone"></span>
+  </div>
+
+  <div class="item" data-price="35" data-cat="phone" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Topeak Omni RideCase — mit Lenkerhalter</div>
+      <div class="item-model">Universell für alle Handys 4,5–6,5" — kein Topeak-Case nötig</div>
+      <div class="item-note">Gummi-Klemmarme halten das S20 direkt. Klemmt per Schraube am Trekking-Lenker (22–35 mm). 360° drehbar. Stabiler als die billigen Amazon-Klammern.</div>
+      <a class="item-link" href="https://www.fahrrad-xxl.de/topeak-omni-ridecase-x0033636" target="_blank" onclick="event.stopPropagation()">→ Fahrrad XXL</a>
+      <a class="item-link" href="https://www.bike24.com/p2806814.html" target="_blank" onclick="event.stopPropagation()">→ Bike24</a>
+    </div>
+    <div class="item-right"><div class="item-price">~35 €</div></div>
+  </div>
+
+  <!-- ──────────────── SCHLOSS ──────────────── -->
+  <div class="cat-header">
+    <span class="cat-icon">🔒</span>
+    <h2>Schloss</h2>
+    <span class="cat-sum" id="sum-lock"></span>
+  </div>
+
+  <div class="item" data-price="22" data-cat="lock" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Semptec BT-Kabelschloss mit App & Alarm</div>
+      <div class="item-model">Bluetooth · per App öffnen · 90 dB Alarm bei Erschütterung</div>
+      <div class="item-note">Du wolltest App-Schloss. Das hier ist die günstigste echte Option. Android + iOS. Kein Schlüssel. Da die Versicherung sowieso greift, muss es kein 100€-Schloss sein.</div>
+      <a class="item-link" href="https://www.pearl.de/a-ZX9466-4301.shtml" target="_blank" onclick="event.stopPropagation()">→ Pearl.de (~22 €)</a>
+    </div>
+    <div class="item-right"><div class="item-price">~22 €</div><div class="item-tip">App ✓</div></div>
+  </div>
+
+  <!-- ──────────────── GEPÄCKTASCHEN ──────────────── -->
+  <div class="cat-header">
+    <span class="cat-icon">👜</span>
+    <h2>Gepäcktaschen hinten</h2>
+    <span class="cat-sum" id="sum-bags"></span>
+  </div>
+
+  <div class="item" data-price="45" data-cat="bags" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Decathlon Riverside 500 — Paar</div>
+      <div class="item-model">2× 20 L = 40 L total · vollständig wasserdicht</div>
+      <div class="item-note">Passen auf den MonkeyLoad-Träger (Standard-Haken). Wasserdicht, robuste Verarbeitung, einfaches Ein- und Aushängen. Bestes Preis-Leistungs-Verhältnis im Budget.</div>
+      <a class="item-link" href="https://www.decathlon.de/search#q=riverside+gep%C3%A4cktasche+paar&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+    </div>
+    <div class="item-right"><div class="item-price">~45 €</div></div>
+  </div>
+
+  <!-- ──────────────── FLASCHENHALTER ──────────────── -->
+  <div class="cat-header">
+    <span class="cat-icon">💧</span>
+    <h2>Flaschenhalter</h2>
+    <span class="cat-sum" id="sum-bottle"></span>
+  </div>
+
+  <div class="item" data-price="5" data-cat="bottle" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Decathlon Basic Alu-Flaschenhalter</div>
+      <div class="item-model">+ 1 Trinkflasche 750 ml dazu kaufen</div>
+      <div class="item-note">Schraubt direkt in die Gewindelöcher am Unterrohr. Mehr braucht es nicht.</div>
+      <a class="item-link" href="https://www.decathlon.de/search#q=flaschenhalter+fahrrad&srt=relevance" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
+    </div>
+    <div class="item-right"><div class="item-price">~5 €</div></div>
+  </div>
+
+  <!-- ──────────────── HELM ──────────────── -->
+  <div class="cat-header">
+    <span class="cat-icon">🪖</span>
+    <h2>Helm</h2>
+    <span class="cat-sum" id="sum-helm"></span>
+  </div>
+
+  <div class="item" data-price="40" data-cat="helm" onclick="toggle(this)">
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <div class="item-body">
+      <div class="item-name">Decathlon Btwin 900 Stadthelm</div>
+      <div class="item-model">Stadt / Trekking — nicht MTB</div>
+      <div class="item-note">Gute Belüftung für längere Strecken, verstellbares Radsystem, leichter als MTB-Helme. CE EN1078. Für deinen Einsatz genau richtig.</div>
+      <a class="item-link" href="https://www.decathlon.de/alle-sportarten-a-z/fahrrad-welt/fahrrad-helme" target="_blank" onclick="event.stopPropagation()">→ Decathlon (Stadthelme)</a>
+    </div>
+    <div class="item-right"><div class="item-price">~40 €</div></div>
+  </div>
+
+  <!-- ──────────────── GESAMT ──────────────── -->
+  <div class="divider" style="margin-top:1.5rem"></div>
+  <div style="text-align:right; padding:.8rem .2rem; font-size:.85rem; color:var(--muted);">
+    Gesamt wenn alles gehakt: <strong style="color:var(--text)" id="all-total"></strong>
+  </div>
+
+</div>
+
+<!-- STICKY FOOTER -->
+<div class="footer-bar">
+  <div class="footer-left">
+    <span class="footer-label">Bereits gekauft</span>
+    <span class="footer-amount" id="footer-spent">0 €</span>
+    <span class="footer-sub" id="footer-remaining"></span>
+  </div>
+  <div style="flex:1; min-width:100px; max-width:250px;">
+    <div class="prog-bar" style="height:8px">
+      <div class="prog-fill" id="footer-bar" style="width:0%"></div>
+    </div>
+  </div>
+  <span id="footer-count" style="font-size:.8rem;color:var(--dim)">0 / 0</span>
+  <button class="clear-btn" onclick="clearAll()">↺ Reset</button>
+</div>
+
+<script>
+  var items = document.querySelectorAll('.item[data-price]');
+  var TOTAL = 0;
+  items.forEach(function(el) { TOTAL += parseInt(el.dataset.price); });
+  document.getElementById('all-total').textContent = TOTAL + ' €';
+
+  function toggle(el) {
+    el.classList.toggle('done');
+    update();
+  }
+
+  function update() {
+    var spent = 0, count = 0;
+    items.forEach(function(el) {
+      if (el.classList.contains('done')) {
+        spent += parseInt(el.dataset.price);
+        count++;
+      }
+    });
+    var pct = TOTAL > 0 ? Math.round((spent / TOTAL) * 100) : 0;
+    document.getElementById('footer-spent').textContent = spent + ' €';
+    document.getElementById('footer-count').textContent = count + ' / ' + items.length;
+    document.getElementById('footer-bar').style.width = pct + '%';
+    document.getElementById('footer-bar').style.background = pct === 100 ? 'var(--green)' : pct > 60 ? 'var(--yellow)' : 'var(--blue)';
+    var remaining = TOTAL - spent;
+    document.getElementById('footer-remaining').textContent = remaining > 0 ? remaining + ' € noch offen' : '✓ Alles gekauft!';
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-count').textContent = count + ' / ' + items.length + ' Artikel';
+    document.getElementById('prog-total').textContent = spent + ' €';
+    document.getElementById('footer-remaining').style.color = remaining === 0 ? 'var(--green)' : 'var(--dim)';
+  }
+
+  function clearAll() {
+    items.forEach(function(el) { el.classList.remove('done'); });
+    update();
+  }
+
+  update();
+</script>
+</body>
+</html>
