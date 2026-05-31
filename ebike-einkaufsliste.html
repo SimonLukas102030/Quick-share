@@ -218,11 +218,11 @@
   <details class="schnellkauf">
     <summary>⚡ Schnellkauf — Versand nach 16259 Hohenwutzen</summary>
     <div class="sq-body">
-      <button class="sq-mega" onclick="openAll('mein')">🚀 Alle 15 Tabs öffnen — günstigster Preis je Artikel</button>
+      <button class="sq-mega" onclick="openAll('mein')">🚀 Alle 16 Tabs öffnen — günstigster Preis je Artikel</button>
       <div class="sq-note" style="margin-bottom:.8rem">Pop-up-Blocker kurz deaktivieren · Amazon frei ab 29 € · Decathlon frei ab 29 €</div>
       <div class="sq-row">
         <span class="sq-label">Amazon</span>
-        <button class="sq-btn sq-amazon" onclick="openAmazon('mein')">📦 12 Tabs</button>
+        <button class="sq-btn sq-amazon" onclick="openAmazon('mein')">📦 13 Tabs</button>
       </div>
       <div class="sq-note" style="margin-bottom:.6rem">Schlauch · TipTop · Omni RideCase · Spanngurte · Brille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller · Radunterhose · Faltschloss</div>
       <div class="sq-row">
@@ -354,7 +354,7 @@
         <div class="item-body">
           <div class="item-name">Spanngurte × 2 — Drybag auf Träger</div>
           <div class="item-model">URAQT elastisch, 60–105 cm, Stahlhaken</div>
-          <div class="item-note">Zum Festzurren von Drybag + Zelt oben auf den Träger.</div>
+          <div class="item-note">Zum Festzurren von Drybag + Zelt oben auf den MonkeyLoad. Hinweis: Die Stahlhaken greifen an freiliegenden Rohren — falls der MonkeyLoad keine Außenrohre hat, Softgurte ohne Metallhaken verwenden.</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B09FPYY3BH" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
         </div>
         <div class="item-right"><div class="item-price">~8 €</div><div class="badge badge-erg">Ergänzt</div><div class="item-state-label" id="sl-m7"></div></div>
@@ -400,7 +400,7 @@
     </div>
     <div class="cat-body" id="body-wetter">
       <div class="info-note">Ostsee im Sommer = Regen ist realistisch. Ohne Regenklamotten bist du nach 30 min durch.</div>
-      <div class="item" data-price="45" data-cat="wetter" data-id="m10" data-state="0" onclick="cycleState(this)">
+      <div class="item" data-price="25" data-cat="wetter" data-id="m10" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
         <div class="item-body">
           <div class="item-name">Regenjacke — MH150</div>
@@ -408,9 +408,9 @@
           <div class="item-note">Raincut hat kaum Atmungsaktivität → beim Radfahren sofort durchgeschwitzt. MH150 = 15.000 mm + RET 10, packbar auf Faustgröße.</div>
           <div class="item-links"><a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-wandern-mh150-dunkelblau/309604/c43c188m8585162" target="_blank" onclick="event.stopPropagation()">→ Decathlon (Farbe wählbar)</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~45 €</div><div class="item-state-label" id="sl-m10"></div></div>
+        <div class="item-right"><div class="item-price">~25 €</div><div class="item-state-label" id="sl-m10"></div></div>
       </div>
-      <div class="item" data-price="50" data-cat="wetter" data-id="m11" data-state="0" onclick="cycleState(this)">
+      <div class="item" data-price="22" data-cat="wetter" data-id="m11" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
         <div class="item-body">
           <div class="item-name">Regenhose — MH500 Überziehhose</div>
@@ -418,7 +418,7 @@
           <div class="item-note">Zieht man über die Shorts. Rollt auf Faustgröße, 300 g.</div>
           <div class="item-links"><a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~50 €</div><div class="item-state-label" id="sl-m11"></div></div>
+        <div class="item-right"><div class="item-price">~22 €</div><div class="item-state-label" id="sl-m11"></div></div>
       </div>
       <div class="item" data-price="12" data-cat="wetter" data-id="m12" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
@@ -503,6 +503,55 @@
     </div>
   </div>
 
+  <!-- PERSÖNLICH: VERGESSENE PFLICHT-ITEMS -->
+  <div class="cat-wrap" id="wrap-persoenlich">
+    <div class="cat-header" onclick="toggleCat('persoenlich')">
+      <span class="cat-icon">🧴</span><h2>Persönliche Pflichtartikel</h2>
+      <div class="cat-stats"><span class="cat-sum" id="sum-persoenlich"></span><span class="cat-progress" id="prog-persoenlich"></span><span class="cat-toggle">▾</span></div>
+    </div>
+    <div class="cat-body" id="body-persoenlich">
+      <div class="item" data-price="35" data-cat="persoenlich" data-id="m18" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Isomatte / Schlafpad</div>
+          <div class="item-model">Therm-a-Rest Z-Lite Sol oder ähnlich — 410 g</div>
+          <div class="item-note">KRITISCH: Ohne Schlafpad verlierst du Wärme nach unten — der Boden kühlt deinen Schlafsack aus. Kein Komfort auf hartem Untergrund. Schlafsack allein reicht nicht!</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=isomatte+camping+leicht+faltbar" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen (~30–40 €)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~35 €</div><div class="badge badge-pflicht">Pflicht!</div><div class="item-state-label" id="sl-m18"></div></div>
+      </div>
+      <div class="item" data-price="20" data-cat="persoenlich" data-id="m19" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Stirnlampe / Kopflampe</div>
+          <div class="item-model">Petzl Tikkina oder ähnlich — 45 g, 150 lm</div>
+          <div class="item-note">BioLite-Laterne beleuchtet das Lager. Fürs Zelt aufbauen, Toilette nachts, Werkzeug suchen: Stirnlampe mit freien Händen ist Pflicht.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=petzl+tikkina+stirnlampe" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen (~15–25 €)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~20 €</div><div class="badge badge-pflicht">Pflicht!</div><div class="item-state-label" id="sl-m19"></div></div>
+      </div>
+      <div class="item" data-price="15" data-cat="persoenlich" data-id="m20" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Mikrofaser-Handtuch</div>
+          <div class="item-model">Camping-Handtuch, trocknet schnell, kompakt</div>
+          <div class="item-note">Campingplätze stellen keine Handtücher. Baumwoll-Handtücher trocknen nie richtig. 1 Stück pro Person.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=mikrofaser+handtuch+camping+kompakt" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen (~10–20 €)</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~15 €</div><div class="item-state-label" id="sl-m20"></div></div>
+      </div>
+      <div class="item" data-price="8" data-cat="persoenlich" data-id="m21" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Sonnencreme LSF 50</div>
+          <div class="item-model">Apotheke / DM / Supermarkt vor Abfahrt kaufen</div>
+          <div class="item-note">Ostseeküste + Wind + ganztägiges Radfahren = starke UV-Exposition. Ohne Schutz nach 1 Tag verbrannt.</div>
+        </div>
+        <div class="item-right"><div class="item-price">~8 €</div><div class="item-state-label" id="sl-m21"></div></div>
+      </div>
+    </div>
+  </div>
+
   <div class="divider" style="margin-top:1.2rem"></div>
   <div style="text-align:right;padding:.6rem .2rem;font-size:.8rem;color:var(--muted)">
     Gesamt: <strong style="color:var(--text)" id="mein-total"></strong>
@@ -563,6 +612,8 @@
 
   <div class="gruppe-note">Alle 5 Personen teilen diese Kosten zu gleichen Teilen. Jeder zahlt <strong id="gc-per-person-note">—</strong> €.</div>
 
+  <div class="gruppe-note" style="margin-bottom:1rem">⚠️ <strong>Campingplätze vorbuchen!</strong> An der Ostsee im Sommer oft wochenlang ausgebucht. Route + Plätze vor Abfahrt reservieren.</div>
+
   <!-- ── ANHÄNGER & KUPPLUNG ── -->
   <div class="cat-wrap" id="wrap-ganhang">
     <div class="cat-header" onclick="toggleCat('ganhang')">
@@ -570,8 +621,8 @@
       <div class="cat-stats"><span class="cat-sum" id="sum-ganhang"></span><span class="cat-progress" id="prog-ganhang"></span><span class="cat-toggle">▾</span></div>
     </div>
     <div class="cat-body" id="body-ganhang">
-      <div class="info-note">Das Forte Ultra 508 hat einen <strong>Schnellspanner</strong> (QR) an der Hinterachse. Der Burley COHO XC braucht die extra QR-Achse (g2) — ohne die montiert er nicht!</div>
-      <div class="item" data-price="450" data-cat="ganhang" data-id="g1" data-state="0" onclick="cycleState(this)">
+      <div class="info-note">⚠️ <strong>Achsentyp VOR dem Kauf prüfen!</strong> Wahrscheinlich Schnellspanner (QR) → dann g2 (QR-Achse) bestellen. Falls Steckachse (Thru-Axle, 12mm Durchmesser) → anderen Burley Thru-Axle-Adapter bestellen statt g2. Am Hinterrad: Schnellspanner = klassischer Hebel, Thru-Axle = Schraube/Bolzen.</div>
+      <div class="item" data-price="700" data-cat="ganhang" data-id="g1" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
         <div class="item-body">
           <div class="item-name">Burley COHO XC Cargo Trailer — Einrad</div>
@@ -579,7 +630,7 @@
           <div class="item-note">Einradanhänger — kompakter als Zweirad, besser auf Radwegen. Für Kocher, Töpfe, Zelte der Gruppe. Explizit für Bikepacking/Touring gebaut. QR-Achse (g2) separat mitbestellen!</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0CSZ2XW2D" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~450 €</div><div class="badge badge-pflicht">Pflicht</div><div class="item-state-label" id="sl-g1"></div></div>
+        <div class="item-right"><div class="item-price">~700 €</div><div class="badge badge-pflicht">Pflicht</div><div class="item-state-label" id="sl-g1"></div></div>
       </div>
       <div class="item" data-price="22" data-cat="ganhang" data-id="g2" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
@@ -590,16 +641,6 @@
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07ND8LS1N" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
         </div>
         <div class="item-right"><div class="item-price">~22 €</div><div class="badge badge-pflicht">Pflicht</div><div class="item-state-label" id="sl-g2"></div></div>
-      </div>
-      <div class="item" data-price="18" data-cat="ganhang" data-id="g3" data-state="0" onclick="cycleState(this)">
-        <div class="cb"><span class="cb-icon">✓</span></div>
-        <div class="item-body">
-          <div class="item-name">Weber Kupplung Typ E — Backup</div>
-          <div class="item-model">Universal, passt auf 95 % aller Fahrräder</div>
-          <div class="item-note">Nur nötig falls jemand in der Gruppe bereits einen anderen Anhänger mit Weber-Deichsel hat. Beim COHO XC ist die Kupplung integriert.</div>
-          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B0026IZL1C" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
-        </div>
-        <div class="item-right"><div class="item-price">~18 €</div><div class="badge badge-opt">Optional</div><div class="item-state-label" id="sl-g3"></div></div>
       </div>
     </div>
   </div>
@@ -621,15 +662,15 @@
         </div>
         <div class="item-right"><div class="item-price">~70 €</div><div class="item-state-label" id="sl-g4"></div></div>
       </div>
-      <div class="item" data-price="65" data-cat="gkochen" data-id="g5" data-state="0" onclick="cycleState(this)">
+      <div class="item" data-price="28" data-cat="gkochen" data-id="g5" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
         <div class="item-body">
-          <div class="item-name">Campingaz CV470 Plus Gaskartusche — 12 Stück (3× 4er-Pack)</div>
-          <div class="item-model">450 g Kartusche = ca. 4,5 h Brennzeit · selbstdichtend</div>
-          <div class="item-note">Für 5 Personen über 7 Tage: mindestens 12 Kartuschen. 3 Packs à 4 = 12 Stück. CV-Format passt zum Campingaz Cook CV.</div>
-          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07218LTG5" target="_blank" onclick="event.stopPropagation()">→ Amazon (3× bestellen)</a></div>
+          <div class="item-name">Campingaz CV470 Plus Gaskartusche — 5 Stück (2× 4er-Pack, 1 übrig)</div>
+          <div class="item-model">470 g Kartusche = ~3,4 h Vollbetrieb · selbstdichtend</div>
+          <div class="item-note">Realistisch: ~1 h Kochen/Tag × 7 Tage = 4–5 Kartuschen genug. 12 Stück wären 8+ kg Gasgewicht — absurd. 5 Stück mit 1 Puffer ist richtig. CV-Format passt zum Campingaz Cook CV.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07218LTG5" target="_blank" onclick="event.stopPropagation()">→ Amazon (2× 4er-Pack bestellen)</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~65 €</div><div class="item-state-label" id="sl-g5"></div></div>
+        <div class="item-right"><div class="item-price">~28 €</div><div class="item-state-label" id="sl-g5"></div></div>
       </div>
       <div class="item" data-price="40" data-cat="gkochen" data-id="g6" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
@@ -646,7 +687,7 @@
         <div class="item-body">
           <div class="item-name">Kochutensilien-Set Silikon</div>
           <div class="item-model">Kelle, Pfannenwender, Schöpflöffel, Dosenöffner</div>
-          <div class="item-note">Silikon schont Alu-Töpfe. Mindest: Kelle + Pfannenwender + Schöpflöffel.</div>
+          <div class="item-note">Silikon schont Alu-Töpfe. Mindest: Kelle + Pfannenwender + Schöpflöffel. Dosenöffner ist bereits im Bundeswehr-Besteck (persönlich) — kein Extra nötig.</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=camping+kochutensilien+set+silikon" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
         </div>
         <div class="item-right"><div class="item-price">~20 €</div><div class="item-state-label" id="sl-g7"></div></div>
@@ -666,10 +707,10 @@
         <div class="item-body">
           <div class="item-name">Stabanzünder / Feuerzeug ×2</div>
           <div class="item-model">Campingaz Cook CV ohne Piezo-Zündung</div>
-          <div class="item-note">Der Cook CV hat keine eingebaute Zündung. 2 Feuerzeuge oder Stabanzünder als Backup.</div>
+          <div class="item-note">Am Gerät prüfen ob Piezo-Zündung vorhanden — manche Versionen haben sie, manche nicht. Falls nicht: Stabanzünder/Feuerzeug mitnehmen.</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=stabanzünder+camping" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~5 €</div><div class="item-state-label" id="sl-g9"></div></div>
+        <div class="item-right"><div class="item-price">~5 €</div><div class="badge badge-opt">Optional</div><div class="item-state-label" id="sl-g9"></div></div>
       </div>
     </div>
   </div>
@@ -686,10 +727,10 @@
         <div class="item-body">
           <div class="item-name">Sawyer Squeeze Wasserfilter × 2</div>
           <div class="item-model">0,1 Mikron absolut — 99,99999 % Bakterien, lebenslang rückspülbar</div>
-          <div class="item-note">Für 5 Personen: 2 Filter (einer als Backup + Geschwindigkeit). Campingplätze haben Trinkwasser, aber bei Naturstopps essenziell. ~45 € pro Stück.</div>
+          <div class="item-note">Deutsche Campingplätze haben Trinkwasser nach EU-Standard — Sawyer ist hier kein Muss. Nur relevant bei Naturcamping fernab von Campingplätzen. ~45 € pro Stück.</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=sawyer+squeeze+wasserfilter" target="_blank" onclick="event.stopPropagation()">→ Amazon (2× kaufen)</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~90 €</div><div class="item-state-label" id="sl-g10"></div></div>
+        <div class="item-right"><div class="item-price">~90 €</div><div class="badge badge-opt">Optional</div><div class="item-state-label" id="sl-g10"></div></div>
       </div>
       <div class="item" data-price="25" data-cat="gwasser" data-id="g11" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
@@ -731,7 +772,7 @@
       <div class="cat-stats"><span class="cat-sum" id="sum-glager"></span><span class="cat-progress" id="prog-glager"></span><span class="cat-toggle">▾</span></div>
     </div>
     <div class="cat-body" id="body-glager">
-      <div class="item" data-price="70" data-cat="glager" data-id="g14" data-state="0" onclick="cycleState(this)">
+      <div class="item" data-price="100" data-cat="glager" data-id="g14" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
         <div class="item-body">
           <div class="item-name">BioLite AlpenGlow 500 — Campinglaterne</div>
@@ -739,7 +780,7 @@
           <div class="item-note">Für Gemeinschaftsbereich. Abends am Tisch. Auch als Powerbank für Handys nutzbar. 1 Stück reicht für die Gruppe.</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B08Z6294Y5" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~70 €</div><div class="item-state-label" id="sl-g14"></div></div>
+        <div class="item-right"><div class="item-price">~100 €</div><div class="item-state-label" id="sl-g14"></div></div>
       </div>
       <div class="item" data-price="35" data-cat="glager" data-id="g15" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
@@ -823,7 +864,7 @@
       <div class="cat-stats"><span class="cat-sum" id="sum-gfahrrad"></span><span class="cat-progress" id="prog-gfahrrad"></span><span class="cat-toggle">▾</span></div>
     </div>
     <div class="cat-body" id="body-gfahrrad">
-      <div class="item" data-price="55" data-cat="gfahrrad" data-id="g21" data-state="0" onclick="cycleState(this)">
+      <div class="item" data-price="85" data-cat="gfahrrad" data-id="g21" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
         <div class="item-body">
           <div class="item-name">Topeak Alien X Multitool — 38 Funktionen</div>
@@ -831,9 +872,9 @@
           <div class="item-note">Umfassenderes Gruppenswerkzeug als die persönlichen Hexus II. 1 Stück für die Gruppe — für alles was der Hexus II nicht kann.</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B082VFVH4Y" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~55 €</div><div class="item-state-label" id="sl-g21"></div></div>
+        <div class="item-right"><div class="item-price">~85 €</div><div class="item-state-label" id="sl-g21"></div></div>
       </div>
-      <div class="item" data-price="45" data-cat="gfahrrad" data-id="g22" data-state="0" onclick="cycleState(this)">
+      <div class="item" data-price="65" data-cat="gfahrrad" data-id="g22" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
         <div class="item-body">
           <div class="item-name">Topeak Joe Blow Sport III — Standpumpe</div>
@@ -841,7 +882,7 @@
           <div class="item-note">Kommt in den Anhänger. Für VeeTyre 42-622 braucht man ~4–6 bar — Joe Blow schafft das problemlos. Für Unterwegs hat jeder seine Mini-Pumpe.</div>
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/dp/B07D8GBFKL" target="_blank" onclick="event.stopPropagation()">→ Amazon</a></div>
         </div>
-        <div class="item-right"><div class="item-price">~45 €</div><div class="item-state-label" id="sl-g22"></div></div>
+        <div class="item-right"><div class="item-price">~65 €</div><div class="item-state-label" id="sl-g22"></div></div>
       </div>
       <div class="item" data-price="33" data-cat="gfahrrad" data-id="g23" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
@@ -897,6 +938,25 @@
           <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=drybag+10l+packsack+wasserdicht" target="_blank" onclick="event.stopPropagation()">→ Amazon (3× kaufen)</a></div>
         </div>
         <div class="item-right"><div class="item-price">~36 €</div><div class="item-state-label" id="sl-g26"></div></div>
+      </div>
+      <div class="item" data-price="8" data-cat="gorg" data-id="g28" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Insektenschutz-Spray</div>
+          <div class="item-model">Icaridin oder DEET — Mücken an der Ostsee abends</div>
+          <div class="item-note">Campingplätze in Waldnähe an der Ostsee: Mücken abends. 1–2 Flaschen für die Gruppe reichen.</div>
+          <div class="item-links"><a class="item-link lnk-amazon" href="https://www.amazon.de/s?k=insektenschutz+spray+icaridin+mücken" target="_blank" onclick="event.stopPropagation()">→ Amazon suchen</a></div>
+        </div>
+        <div class="item-right"><div class="item-price">~8 €</div><div class="item-state-label" id="sl-g28"></div></div>
+      </div>
+      <div class="item" data-price="4" data-cat="gorg" data-id="g29" data-state="0" onclick="cycleState(this)">
+        <div class="cb"><span class="cb-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-name">Toilettenpapier × 4 Rollen</div>
+          <div class="item-model">Supermarkt vor Abfahrt kaufen</div>
+          <div class="item-note">Nicht alle Campingplätze haben zuverlässig Nachschub. 4 Rollen für 5 Personen über 7 Tage.</div>
+        </div>
+        <div class="item-right"><div class="item-price">~4 €</div><div class="item-state-label" id="sl-g29"></div></div>
       </div>
       <div class="item" data-price="10" data-cat="gorg" data-id="g27" data-state="0" onclick="cycleState(this)">
         <div class="cb"><span class="cb-icon">✓</span></div>
@@ -1125,7 +1185,7 @@ function updateFooter() {
 }
 
 function updateCatStats() {
-  var cats = ['pannen','bike','kleidung','wetter','tools','kueche','ganhang','gkochen','gcamp','gfahrrad','ghygiene'];
+  var cats = ['pannen','bike','kleidung','wetter','tools','kueche','persoenlich','ganhang','gkochen','gwasser','gfahrrad','glager','gehilfe','gorg'];
   cats.forEach(function(cat) {
     var items = document.querySelectorAll('[data-cat="' + cat + '"]');
     var total = 0, done = 0;
