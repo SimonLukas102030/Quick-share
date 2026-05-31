@@ -138,7 +138,7 @@
     <h2>⚡ Schnellkauf — Versand nach 16259 Hohenwutzen</h2>
 
     <button class="sq-mega" onclick="openAll()">
-      🚀 Alle 19 Seiten öffnen — günstigster Preis je Artikel
+      🚀 Alle 17 Seiten öffnen — günstigster Preis je Artikel
     </button>
     <div class="sq-note" style="margin-bottom:1rem">Öffnet jede Produktseite in eigenem Tab (Amazon frei ab 29€ · Decathlon frei ab 29€ · Pearl ~3€). Pop-up-Blocker für diese Seite kurz deaktivieren.</div>
 
@@ -153,10 +153,10 @@
     <div class="sq-row">
       <span class="sq-label">Decathlon</span>
       <button class="sq-btn sq-decathlon" onclick="openDecathlon()">
-        🏬 7 Decathlon-Tabs öffnen
+        🏬 5 Decathlon-Tabs öffnen
       </button>
     </div>
-    <div class="sq-note" style="margin-bottom:.75rem">Doppel-Packtasche · Flaschenhalter · Shorts · T-Shirts · Radunterhose · Regenjacke · Regenhose</div>
+    <div class="sq-note" style="margin-bottom:.75rem">Doppel-Packtasche · Flaschenhalter · Radunterhose · Regenjacke · Regenhose</div>
 
     <div class="sq-row">
       <span class="sq-label">Pearl.de</span>
@@ -184,6 +184,8 @@
   <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichtes Trekking-Zelt (~1 kg)</span></div>
   <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Ultraleichter Schlafsack (~1 kg)</span></div>
   <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Rucksack</span></div>
+  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Sporthose (Trekking)</span></div>
+  <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Sport-T-Shirts × 2</span></div>
   <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Powerbank</span></div>
   <div class="have-item"><span class="have-icon">✓</span><span class="have-name">Bosch eBike Lock — kostenlos, in Flow App aktivieren (Motorsperre, kein echter Diebstahlschutz)</span></div>
 
@@ -299,32 +301,6 @@
     <span class="cat-icon">👕</span>
     <h2>Bekleidung</h2>
     <span class="cat-sum" id="sum-kleidung"></span>
-  </div>
-
-  <div class="item" data-price="25" data-cat="kleidung" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Trekking-Shorts</div>
-      <div class="item-model">Decathlon Quechua MH500 Wandershorts kurz</div>
-      <div class="item-note">Elastisch, schnell trocknend, Gürtelschlaufen. Passend für Radfahren + Lager.</div>
-      <div class="item-links">
-        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/wandershorts-kurz-herren-bergwandern-mh500-khaki/_/R-p-325530" target="_blank" onclick="event.stopPropagation()">→ Decathlon</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~25 €</div></div>
-  </div>
-
-  <div class="item" data-price="18" data-cat="kleidung" onclick="toggle(this)">
-    <div class="cb"><span class="cb-check">✓</span></div>
-    <div class="item-body">
-      <div class="item-name">Funktions-T-Shirts × 2</div>
-      <div class="item-model">Decathlon Kiprun 100 Dry — Polyester, trocknet in &lt;2h</div>
-      <div class="item-note">Baumwoll-Shirts kleben nass und trocknen nie. Polyester-Laufshirts für ~9€/Stück.</div>
-      <div class="item-links">
-        <a class="item-link lnk-decathlon" href="https://www.decathlon.de/p/laufshirt-kurzarm-atmungsaktiv-dry-herren-blau/_/R-p-165437" target="_blank" onclick="event.stopPropagation()">→ Decathlon (2× kaufen)</a>
-      </div>
-    </div>
-    <div class="item-right"><div class="item-price">~18 €</div></div>
   </div>
 
   <div class="item" data-price="15" data-cat="kleidung" onclick="toggle(this)">
@@ -519,8 +495,6 @@
   var decathlonUrls = [
     'https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380',
     'https://www.decathlon.de/p/fahrrad-flaschenhalter-100-metall-schwarz/12560/c382m8049106',
-    'https://www.decathlon.de/p/wandershorts-kurz-herren-bergwandern-mh500-khaki/_/R-p-325530',
-    'https://www.decathlon.de/p/laufshirt-kurzarm-atmungsaktiv-dry-herren-blau/_/R-p-165437',
     'https://www.decathlon.de/p/mp/radunterhose-herren-mit-sitzpolster-nahtlose-fahrradunterwasche-schwarz/4ed7bcb9-396e-4b33-bdac-c7d314da7c7b/c1',
     'https://www.decathlon.de/p/regenjacke-herren-wasserdicht-leicht-mh500-schwarz/301681/c382m8612171',
     'https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324'
