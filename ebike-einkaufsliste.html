@@ -23,6 +23,8 @@
   /* ── SCHNELLKAUF ── */
   .schnellkauf { background: #0d1a2e; border: 1px solid #1e3a5f; border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.8rem; }
   .schnellkauf h2 { font-size: .82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .9rem; }
+  .sq-mega { display: block; width: 100%; text-align: center; padding: .7rem 1rem; border-radius: 9px; font-size: .95rem; font-weight: 700; background: linear-gradient(135deg,#ff9900,#0082c3); color: #fff; border: none; cursor: pointer; margin-bottom: 1rem; transition: opacity .15s; }
+  .sq-mega:hover { opacity: .88; }
   .sq-row { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; margin-bottom: .6rem; }
   .sq-label { font-size: .78rem; color: var(--dim); width: 80px; flex-shrink: 0; }
   .sq-btn {
@@ -133,28 +135,33 @@
 
   <!-- ═══════════════ SCHNELLKAUF ═══════════════ -->
   <div class="schnellkauf">
-    <h2>⚡ Schnellkauf</h2>
+    <h2>⚡ Schnellkauf — Versand nach 16259 Hohenwutzen</h2>
+
+    <button class="sq-mega" onclick="openAll()">
+      🚀 Alle 19 Seiten öffnen — günstigster Preis je Artikel
+    </button>
+    <div class="sq-note" style="margin-bottom:1rem">Öffnet jede Produktseite in eigenem Tab (Amazon frei ab 29€ · Decathlon frei ab 29€ · Pearl ~3€). Pop-up-Blocker für diese Seite kurz deaktivieren.</div>
 
     <div class="sq-row">
       <span class="sq-label">Amazon</span>
-      <a class="sq-btn sq-amazon" href="https://www.amazon.de/gp/aws/cart/add.html?ASIN.1=B0BRCZ5ZJR&Quantity.1=1&ASIN.2=B006JMF99K&Quantity.2=1&ASIN.3=B0D2LMB7YD&Quantity.3=1&ASIN.4=B07F7FLF46&Quantity.4=2&ASIN.5=B0BZ8H3G1F&Quantity.5=1&ASIN.6=B08FBMMS26&Quantity.6=1&ASIN.7=B00320OJA2&Quantity.7=1&ASIN.8=B0B78BVZV6&Quantity.8=1&ASIN.9=B0CM7HBHGJ&Quantity.9=1&ASIN.10=B01N6NXBCR&Quantity.10=1&ASIN.11=B005MYBBB6&Quantity.11=1" target="_blank">
-        🛒 11 Artikel auf einmal in den Warenkorb
-      </a>
+      <button class="sq-btn sq-amazon" onclick="openAmazon()">
+        📦 11 Amazon-Tabs öffnen
+      </button>
     </div>
-    <div class="sq-note" style="margin-bottom:.75rem">Schlauch + Reifenheber · TipTop · Omni RideCase · Voile Straps ×2 · Sportbrille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller</div>
+    <div class="sq-note" style="margin-bottom:.75rem">Schlauch+Reifenheber · TipTop · Omni RideCase · Voile Straps ×2 · Sportbrille · Drybag · Hexus II · Chamois · Erste Hilfe · Besteck · Teller</div>
 
     <div class="sq-row">
       <span class="sq-label">Decathlon</span>
       <button class="sq-btn sq-decathlon" onclick="openDecathlon()">
-        🏬 Alle 7 Decathlon-Tabs öffnen
+        🏬 7 Decathlon-Tabs öffnen
       </button>
     </div>
-    <div class="sq-note" style="margin-bottom:.75rem">Doppel-Packtasche · Flaschenhalter · Shorts · T-Shirts · Radunterhose · Regenjacke · Regenhose<br><em>Falls Browser blockiert: Pop-up-Ausnahme für diese Seite erlauben</em></div>
+    <div class="sq-note" style="margin-bottom:.75rem">Doppel-Packtasche · Flaschenhalter · Shorts · T-Shirts · Radunterhose · Regenjacke · Regenhose</div>
 
     <div class="sq-row">
       <span class="sq-label">Pearl.de</span>
       <a class="sq-btn sq-pearl" href="https://www.pearl.de/a-NX1448-4301.shtml" target="_blank">
-        🔒 Semptec BT-Schloss kaufen
+        🔒 Semptec BT-Schloss
       </a>
     </div>
   </div>
@@ -495,7 +502,20 @@
 </div>
 
 <script>
-  // Decathlon URLs in order
+  var amazonUrls = [
+    'https://www.amazon.de/dp/B0BRCZ5ZJR',
+    'https://www.amazon.de/dp/B006JMF99K',
+    'https://www.amazon.de/dp/B0D2LMB7YD',
+    'https://www.amazon.de/dp/B07F7FLF46',
+    'https://www.amazon.de/dp/B0BZ8H3G1F',
+    'https://www.amazon.de/dp/B08FBMMS26',
+    'https://www.amazon.de/dp/B00320OJA2',
+    'https://www.amazon.de/dp/B0B78BVZV6',
+    'https://www.amazon.de/dp/B0CM7HBHGJ',
+    'https://www.amazon.de/dp/B01N6NXBCR',
+    'https://www.amazon.de/dp/B005MYBBB6'
+  ];
+
   var decathlonUrls = [
     'https://www.decathlon.de/p/doppel-fahrradtasche-500-2-20-l-gelb/_/R-p-338380',
     'https://www.decathlon.de/p/fahrrad-flaschenhalter-100-metall-schwarz/12560/c382m8049106',
@@ -506,11 +526,16 @@
     'https://www.decathlon.de/p/regenhose-herren-wasserdicht-leicht-wandern-mh500/307241/c382m8545324'
   ];
 
-  function openDecathlon() {
-    decathlonUrls.forEach(function(url, i) {
-      setTimeout(function() { window.open(url, '_blank'); }, i * 250);
+  var pearlUrl = 'https://www.pearl.de/a-NX1448-4301.shtml';
+
+  function openUrls(urls) {
+    urls.forEach(function(url, i) {
+      setTimeout(function() { window.open(url, '_blank'); }, i * 220);
     });
   }
+  function openAmazon()   { openUrls(amazonUrls); }
+  function openDecathlon(){ openUrls(decathlonUrls); }
+  function openAll()      { openUrls(amazonUrls.concat(decathlonUrls).concat([pearlUrl])); }
 
   // Checklist logic
   var items = document.querySelectorAll('.item[data-price]');
