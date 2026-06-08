@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantencomputer – Die Zukunft des Rechnens</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050a14;
+    --surface: #0b1628;
+    --card: #0f1f38;
+    --accent: #00f5c4;
+    --accent2: #7b61ff;
+    --accent3: #ff6b6b;
+    --text: #e8f4ff;
+    --muted: #6a8aaa;
+    --border: rgba(0,245,196,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    cursor: default;
+  }
+
+  /* ── CANVAS BACKGROUND ── */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── SLIDE SYSTEM ── */
+  .slides-wrapper {
+    position: relative;
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+    padding: 48px 72px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    animation: slideIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+    overflow: hidden;
+  }
+  .slide.active { display: flex; }
+
+  @keyframes slideIn {
+    from { opacity:0; transform: translateY(24px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── NAV BAR ── */
+  #nav {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(11,22,40,0.9);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 10px 24px;
+    backdrop-filter: blur(12px);
+  }
+
+  #nav button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 20px;
+    transition: background 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+  #nav button:hover { background: rgba(0,245,196,0.12); }
+  #slide-counter {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 80px;
+    text-align: center;
+  }
+
+  /* block indicator */
+  #block-label {
+    position: fixed;
+    top: 24px;
+    right: 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 4px 14px;
+    border-radius: 20px;
+    z-index: 100;
+  }
+
+  /* progress bar */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transition: width 0.4s ease;
+    z-index: 200;
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .block-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .block-tag::before { content:''; display:inline-block; width:24px; height:2px; background:var(--accent); }
+
+  h1 {
+    font-size: clamp(42px, 7vw, 96px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--accent);
+  }
+
+  p, li {
+    font-size: clamp(14px, 1.6vw, 20px);
+    line-height: 1.6;
+    color: rgba(232,244,255,0.85);
+    max-width: 800px;
+  }
+
+  .big-text {
+    font-size: clamp(18px, 2.8vw, 36px);
+    font-weight: 700;
+    line-height: 1.4;
+    max-width: 900px;
+  }
+
+  .highlight { color: var(--accent); }
+  .highlight2 { color: var(--accent2); }
+  .highlight3 { color: var(--accent3); }
+
+  em-box {
+    display: inline-block;
+    background: rgba(0,245,196,0.08);
+    border: 1px solid rgba(0,245,196,0.3);
+    border-radius: 6px;
+    padding: 2px 10px;
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards {
+    display: grid;
+    gap: 16px;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .cards.cols-2 { grid-template-columns: 1fr 1fr; }
+  .cards.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cards.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+  .card:hover { transform: translateY(-2px); border-color: rgba(0,245,196,0.4); }
+  .card .icon { font-size: 28px; margin-bottom: 10px; }
+  .card h3 { font-size: clamp(13px, 1.6vw, 18px); margin-bottom: 6px; }
+  .card p { font-size: clamp(12px, 1.2vw, 15px); }
+
+  /* ── VERSUS LAYOUT ── */
+  .versus {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: center;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .vs-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+  }
+  .vs-box.classic { border-color: rgba(255,107,107,0.3); }
+  .vs-box.classic h3 { color: var(--accent3); }
+  .vs-box.quantum { border-color: rgba(0,245,196,0.3); }
+  .vs-box.quantum h3 { color: var(--accent); }
+  .vs-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+  }
+  .vs-box ul { list-style: none; padding: 0; }
+  .vs-box ul li { padding: 6px 0; font-size: clamp(12px, 1.3vw, 16px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .vs-box ul li:last-child { border-bottom: none; }
+  .vs-box ul li::before { content: '→ '; color: var(--muted); }
+
+  /* ── QUBIT VISUAL ── */
+  .qubit-demo {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    margin-top: 16px;
+  }
+  .qubit-sphere-wrap { position: relative; }
+  svg.qubit-svg { width: 180px; height: 180px; }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    margin-top: 8px;
+    position: relative;
+  }
+  .timeline::before {
+    content:'';
+    position: absolute;
+    left: 28px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent2), var(--accent), var(--accent3));
+  }
+  .tl-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 14px 0;
+  }
+  .tl-dot {
+    width: 58px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2;
+  }
+  .tl-dot span {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    display: block;
+  }
+  .tl-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+    margin-bottom: 2px;
+  }
+  .tl-item p { font-size: clamp(12px, 1.2vw, 15px); max-width: 700px; }
+
+  /* ── ANWENDUNG CARDS ── */
+  .app-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    border-left: 4px solid var(--accent2);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .app-icon { font-size: 28px; flex-shrink: 0; }
+
+  /* ── QUIZ ── */
+  .quiz-q {
+    font-size: clamp(18px, 2.5vw, 30px);
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  .quiz-opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 700px;
+  }
+  .quiz-opt {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: clamp(14px, 1.5vw, 18px);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Syne', sans-serif;
+    color: var(--text);
+    text-align: left;
+  }
+  .quiz-opt:hover { border-color: var(--accent2); background: rgba(123,97,255,0.15); }
+  .quiz-opt.correct { border-color: var(--accent); background: rgba(0,245,196,0.15); color: var(--accent); }
+  .quiz-opt.wrong { border-color: var(--accent3); background: rgba(255,107,107,0.15); color: var(--accent3); }
+  #quiz-feedback {
+    margin-top: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    min-height: 28px;
+    transition: all 0.3s;
+  }
+
+  /* ── BIG NUMBER ── */
+  .stat-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 28px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .stat .num {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    display: block;
+  }
+  .stat .label { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* ── TITLE SLIDE SPECIFIC ── */
+  .title-slide { justify-content: center; }
+  .title-slide h1 span { display: block; }
+  .title-slide .sub {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(12px, 1.4vw, 16px);
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SPLIT LAYOUT ── */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* ── GLOW PILL ── */
+  .pill {
+    display: inline-block;
+    background: rgba(0,245,196,0.1);
+    border: 1px solid rgba(0,245,196,0.4);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  /* ── SUPERPOSITION INTERACTIVE ── */
+  #coin {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) 50%, var(--accent2) 50%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(0,245,196,0.4);
+    transition: transform 0.1s;
+    user-select: none;
+    animation: spin-idle 4s linear infinite;
+  }
+  @keyframes spin-idle {
+    0%   { box-shadow: 0 0 20px rgba(0,245,196,0.4); }
+    50%  { box-shadow: 0 0 40px rgba(123,97,255,0.6); }
+    100% { box-shadow: 0 0 20px rgba(0,245,196,0.4); }
+  }
+  #coin.spinning { animation: coin-spin 0.6s ease-out; }
+  @keyframes coin-spin {
+    0%   { transform: rotateY(0deg) scale(1); }
+    50%  { transform: rotateY(900deg) scale(1.1); }
+    100% { transform: rotateY(1800deg) scale(1); }
+  }
+  #coin-result { margin-top: 12px; font-size: 22px; font-weight: 800; min-height: 34px; }
+
+  /* entanglement vis */
+  .entangle-wrap {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  .qubit-ball {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    font-weight: 900;
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 20px rgba(0,245,196,0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
+    font-family: 'Space Mono', monospace;
+  }
+  .qubit-ball.up { background: rgba(0,245,196,0.15); color: var(--accent); }
+  .qubit-ball.down { background: rgba(255,107,107,0.15); color: var(--accent3); border-color: var(--accent3); box-shadow: 0 0 20px rgba(255,107,107,0.3); }
+  .connect-line {
+    flex: 1;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .connect-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; right: 100%;
+    height: 100%;
+    background: white;
+    animation: pulse-line 2s linear infinite;
+  }
+  @keyframes pulse-line {
+    0%   { left: -100%; right: 100%; }
+    100% { left: 100%; right: -100%; }
+  }
+
+  /* ── FEHLER / KORRREKTUR ── */
+  .error-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .qubit-state {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    text-align: center;
+    min-width: 70px;
+  }
+  .qubit-state.error { border-color: var(--accent3); color: var(--accent3); animation: glitch 0.3s infinite; }
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    25% { transform: translate(-2px, 1px); }
+    75% { transform: translate(2px, -1px); }
+  }
+  .arrow-label { color: var(--muted); font-size: 24px; }
+
+  ul.list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  ul.list li { display: flex; gap: 10px; align-items: flex-start; }
+  ul.list li::before { content: '▸'; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+  /* ── STEPS ── */
+  .steps {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    margin-top: 16px;
+    position: relative;
+  }
+  .step {
+    flex: 1;
+    text-align: center;
+    padding: 0 8px;
+    position: relative;
+  }
+  .step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -10px;
+    top: 18px;
+    color: var(--accent2);
+    font-size: 20px;
+    z-index: 2;
+  }
+  .step-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: var(--bg);
+    font-weight: 900;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+    font-family: 'Space Mono', monospace;
+  }
+  .step p { font-size: clamp(11px, 1.1vw, 14px); }
+
+  /* divider */
+  .block-divider {
+    background: linear-gradient(135deg, #0a1525 0%, #1a0a2e 50%, #0a1525 100%);
+  }
+
+  /* ── ZUSAMMENFASSUNG ── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .sum-item {
+    background: var(--card);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px;
+  }
+  .sum-item h3 { font-size: 14px; color: var(--accent2); margin-bottom: 4px; }
+  .sum-item p { font-size: 13px; }
+
+  /* closing */
+  .closing-slide {
+    text-align: center;
+    align-items: center;
+  }
+  .closing-slide h2 { font-size: clamp(36px, 6vw, 80px); }
+  .closing-slide p { text-align: center; }
+
+  /* keyboard hint */
+  #keyhint {
+    position: fixed;
+    bottom: 90px;
+    right: 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(106,138,170,0.5);
+    z-index: 100;
+  }
+  #keyhint kbd {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  /* Scrollable content for dense slides */
+  .slide-inner {
+    overflow-y: auto;
+    max-height: calc(100vh - 120px);
+    width: 100%;
+    padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent2) transparent;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="progress"></div>
+<div id="block-label">BLOCK 1 · GRUNDLAGEN</div>
+<div id="keyhint"><kbd>←</kbd> <kbd>→</kbd> navigieren</div>
+
+<div class="slides-wrapper">
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 0 – TITEL
+  ══════════════════════════════════════════ -->
+  <div class="slide active title-slide" data-block="EINFÜHRUNG">
+    <div class="block-tag">Klasse 9 · Informatik & Physik</div>
+    <h1>
+      <span>Quanten</span>
+      <span class="highlight">computer</span>
+    </h1>
+    <p class="big-text" style="margin-top:16px;">
+      Die verrückteste Technologie,<br>die Menschen je gebaut haben.
+    </p>
+    <p class="sub" style="margin-top:28px;">
+      Block 1: Grundlagen &amp; Physik &nbsp;·&nbsp; Block 2: Anwendungen &amp; Zukunft
+    </p>
+
+    <div class="stat-row" style="margin-top:40px;">
+      <div class="stat"><span class="num">2×</span><span class="label">Blöcke à 90 min</span></div>
+      <div class="stat"><span class="num">∞</span><span class="label">Spannung</span></div>
+      <div class="stat"><span class="num">0</span><span class="label">Vorwissen nötig</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 1 – AGENDA
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Übersicht</div>
+    <h2>Was erwartet euch?</h2>
+    <div class="cards cols-2" style="max-width:900px;">
+      <div class="card">
+        <div class="icon">🔵</div>
+        <h3>Block 1 – Grundlagen</h3>
+        <ul class="list" style="margin-top:4px;">
+          <li>Was ist ein normaler Computer?</li>
+          <li>Was ist ein Qubit?</li>
+          <li>Superposition & Verschränkung</li>
+          <li>Warum ist das so schwierig?</li>
+          <li>Quiz & Pause</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:rgba(123,97,255,0.3);">
+        <div class="icon">🟣</div>
+        <h3>Block 2 – Anwendungen</h3>
+        <ul class="list" style="margin-top:4px;">
+          <li>Wozu brauchen wir sie?</li>
+          <li>Passwörter & Sicherheit</li>
+          <li>Medizin & Klimaforschung</li>
+          <li>Wer baut sie gerade?</li>
+          <li>Zukunft – Was kommt?</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:20px; font-size:15px; color:var(--muted);">
+      ⚡ Zwischendurch: Interaktive Demos, Beispiele aus dem Alltag, und ein Quiz!
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 2 – KLASSISCHER COMPUTER
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Schritt 1 – Was wir schon kennen</div>
+    <h2>Normale Computer – wie funktionieren die?</h2>
+    <div class="split">
+      <div>
+        <p class="big-text">Alles ist <span class="highlight3">0</span> oder <span class="highlight">1</span>.</p>
+        <p style="margin-top:16px;">Ein Computer denkt in <strong>Bits</strong>. Ein Bit ist wie ein Lichtschalter: entweder <span class="highlight3">aus (0)</span> oder <span class="highlight">an (1)</span>. Nichts dazwischen.</p>
+        <p style="margin-top:12px;">Alles, was du auf deinem Handy machst – Videos, Spiele, WhatsApp – ist am Ende eine gigantische Abfolge von Nullen und Einsen.</p>
+        <div class="stat-row" style="margin-top:20px;">
+          <div class="stat"><span class="num">64</span><span class="label">Bits in einem Word</span></div>
+          <div class="stat"><span class="num">10¹⁰</span><span class="label">Transistoren in einem Chip</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:20px; padding:28px;">
+          <h3>Bit-Beispiel</h3>
+          <p style="font-family:'Space Mono',monospace; font-size:clamp(11px,1.3vw,16px); color:var(--accent); line-height:2;">
+            A = 01000001<br>
+            B = 01000010<br>
+            0 = 00110000<br>
+            1 = 00110001<br>
+            😀 = 11110000 10011111 10011000 10000000
+          </p>
+          <p style="margin-top:12px; font-size:13px; color:var(--muted);">Jedes Zeichen, jedes Bild, jeder Sound – alles Bits.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 3 – PROBLEM MIT NORMALEN COMPUTERN
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Das Problem</div>
+    <h2>Manche Probleme sind zu schwer</h2>
+    <p class="big-text">Was, wenn ein Problem so groß ist, dass selbst der schnellste Computer der Welt <span class="highlight3">Milliarden Jahre</span> brauchen würde?</p>
+    <div class="cards cols-3" style="margin-top:20px;">
+      <div class="card">
+        <div class="icon">🔐</div>
+        <h3>Verschlüsselung</h3>
+        <p>Deine Bankdaten sind sicher, weil normale Computer zu langsam sind, um sie zu knacken.</p>
+      </div>
+      <div class="card">
+        <div class="icon">💊</div>
+        <h3>Medikamente</h3>
+        <p>Ein neues Medikament zu entwickeln kostet 10 Jahre – weil wir nicht alle Moleküle simulieren können.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Klimamodelle</h3>
+        <p>Das Wetter der Erde exakt vorherzusagen ist für normale Computer unmöglich genau.</p>
+      </div>
+    </div>
+    <p style="margin-top:20px; color:var(--muted);">→ Für diese Probleme brauchen wir eine <span class="highlight">völlig andere Art</span> zu rechnen.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 4 – WAS IST EIN QUBIT
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Das Herzstück</div>
+    <h2>Das Qubit – der neue Baustein</h2>
+    <div class="split">
+      <div>
+        <p>Ein <strong class="highlight">Qubit</strong> (= Quantum Bit) ist wie ein normales Bit – aber mit einem Superkraft-Twist:</p>
+        <ul class="list" style="margin-top:16px;">
+          <li>Ein normales Bit: <em-box>0</em-box> oder <em-box>1</em-box></li>
+          <li>Ein Qubit: <em-box>0</em-box>, <em-box>1</em-box>, oder <span class="highlight">beides gleichzeitig!</span></li>
+        </ul>
+        <p style="margin-top:16px;">Das klingt verrückt – ist es auch. Aber die Physik erlaubt das wirklich.</p>
+        <p style="margin-top:12px; color:var(--muted);">Stellt euch vor: Wenn ihr gefragt werdet „Stehst du oder sitzt du?" – ein Qubit antwortet: <span class="highlight">„Beides, bis ich mich entscheide."</span></p>
+      </div>
+      <div>
+        <!-- Bloch sphere SVG -->
+        <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:240px; display:block; margin:auto;">
+          <defs>
+            <radialGradient id="sg" cx="40%" cy="35%">
+              <stop offset="0%" stop-color="#1a3a5c"/>
+              <stop offset="100%" stop-color="#0b1628"/>
+            </radialGradient>
+          </defs>
+          <!-- sphere -->
+          <ellipse cx="110" cy="110" rx="90" ry="90" fill="url(#sg)" stroke="rgba(0,245,196,0.25)" stroke-width="1.5"/>
+          <!-- equator -->
+          <ellipse cx="110" cy="110" rx="90" ry="28" fill="none" stroke="rgba(0,245,196,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
+          <!-- vertical line -->
+          <line x1="110" y1="20" x2="110" y2="200" stroke="rgba(0,245,196,0.2)" stroke-width="1"/>
+          <!-- horizontal -->
+          <line x1="20" y1="110" x2="200" y2="110" stroke="rgba(0,245,196,0.2)" stroke-width="1"/>
+          <!-- state arrow -->
+          <line x1="110" y1="110" x2="155" y2="58" stroke="#00f5c4" stroke-width="2.5" marker-end="url(#arr)"/>
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#00f5c4"/>
+            </marker>
+          </defs>
+          <!-- labels -->
+          <text x="110" y="14" text-anchor="middle" fill="#00f5c4" font-size="13" font-family="Space Mono">|1⟩</text>
+          <text x="110" y="215" text-anchor="middle" fill="#7b61ff" font-size="13" font-family="Space Mono">|0⟩</text>
+          <text x="205" y="113" fill="rgba(232,244,255,0.5)" font-size="11" font-family="Space Mono">x</text>
+          <text x="96" y="60" fill="#00f5c4" font-size="11" font-family="Space Mono">|ψ⟩</text>
+          <!-- center dot -->
+          <circle cx="110" cy="110" r="4" fill="#fff" opacity="0.5"/>
+        </svg>
+        <p style="text-align:center; font-size:12px; color:var(--muted); margin-top:8px;">Bloch-Kugel: Der Zustand eines Qubits kann überall auf dieser Kugel sein.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 5 – SUPERPOSITION (interaktiv)
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Phänomen 1</div>
+    <h2>Superposition <span style="font-size:0.5em; color:var(--muted);">– der erste Superkraft</span></h2>
+    <div class="split">
+      <div>
+        <p>Stellt euch eine Münze vor, die <span class="highlight">in der Luft dreht</span>. Ist sie Kopf oder Zahl? <strong>Beides auf einmal!</strong> Erst wenn sie landet, „entscheidet" sie sich.</p>
+        <p style="margin-top:12px;">Genau so ein Qubit: Es ist gleichzeitig 0 und 1 – <span class="highlight">bis wir es messen</span>. Dann wählt es zufällig.</p>
+        <p style="margin-top:12px; color:var(--muted);">👇 Klickt auf die Münze – werft sie!</p>
+        <div id="coin" onclick="throwCoin()" title="Münze werfen!">🪙</div>
+        <div id="coin-result"></div>
+        <p style="margin-top:12px; font-size:13px; color:var(--muted);">→ Das nennt man <strong style="color:var(--accent);">Kollaps der Wellenfunktion</strong>. Durch das Messen zwingt man das Qubit zur Entscheidung.</p>
+      </div>
+      <div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:20px; padding:24px;">
+          <h3>Warum ist das nützlich?</h3>
+          <p style="margin-top:8px;">Mit <strong class="highlight">3 Qubits</strong> kann man gleichzeitig <strong>8 Zustände</strong> darstellen.</p>
+          <p style="margin-top:8px;">Mit <strong class="highlight">10 Qubits</strong>: 1.024 Zustände gleichzeitig.</p>
+          <p style="margin-top:8px;">Mit <strong class="highlight">300 Qubits</strong>: mehr Zustände als Atome im Universum!</p>
+          <div style="margin-top:16px; background:rgba(0,245,196,0.06); border-radius:10px; padding:12px;">
+            <p style="font-family:'Space Mono',monospace; font-size:13px; color:var(--accent);">
+              n Qubits = 2ⁿ Zustände<br>
+              gleichzeitig
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 6 – VERSCHRÄNKUNG
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Phänomen 2</div>
+    <h2>Verschränkung <span style="font-size:0.5em; color:var(--muted);">– spooky action at a distance</span></h2>
+    <div class="split">
+      <div>
+        <p>Zwei Qubits können <strong class="highlight">verschränkt</strong> sein. Das bedeutet: Egal wie weit sie voneinander entfernt sind – wenn man das eine misst, weiß man sofort, was das andere ist.</p>
+        <p style="margin-top:12px;">Albert Einstein nannte das <em>"spukhafte Fernwirkung"</em> – er glaubte nicht, dass das möglich ist. <span class="highlight3">Aber es ist wahr.</span></p>
+        <p style="margin-top:12px; color:var(--muted);">👇 Klickt auf ein Qubit, um es zu messen:</p>
+        <div class="entangle-wrap">
+          <div class="qubit-ball up" id="q1" onclick="measureQubit(1)">?</div>
+          <div class="connect-line"></div>
+          <div class="qubit-ball up" id="q2" onclick="measureQubit(2)">?</div>
+        </div>
+        <p id="entangle-text" style="margin-top:12px; font-size:14px; color:var(--muted);">Noch nicht gemessen – beide in Superposition</p>
+      </div>
+      <div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:20px; padding:24px;">
+          <h3>Warum ist das nützlich?</h3>
+          <ul class="list">
+            <li>Verschränkte Qubits können Informationen koordinieren, ohne sich zu "schreiben"</li>
+            <li>Perfekte Grundlage für <span class="highlight">abhörsichere Kommunikation</span></li>
+            <li>Macht Quantencomputer viel mächtiger als das Rechnen alleine</li>
+          </ul>
+          <p style="margin-top:12px; font-size:13px; color:var(--muted);">Einstein hat es nicht geglaubt – Experimente haben es aber 100% bestätigt.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 7 – QUANTENINTERFERENZ
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Phänomen 3</div>
+    <h2>Interferenz – falsche Wege löschen</h2>
+    <div class="split">
+      <div>
+        <p>Ein Quantencomputer rechnet nicht „Trial and Error". Er nutzt <strong class="highlight">Interferenz</strong>:</p>
+        <ul class="list" style="margin-top:12px;">
+          <li>Alle möglichen Lösungen existieren gleichzeitig</li>
+          <li>Die richtigen Lösungen <span class="highlight">verstärken sich</span></li>
+          <li>Die falschen Lösungen <span class="highlight3">löschen sich aus</span></li>
+          <li>Am Ende bleibt meist die <strong>beste Antwort</strong> übrig</li>
+        </ul>
+        <p style="margin-top:16px; color:var(--muted);">Vergleich: Wie Wellen im Wasser. Zwei Wellen treffen aufeinander und können sich gegenseitig aufheben oder verstärken.</p>
+      </div>
+      <div>
+        <!-- wave interference visual -->
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:300px; display:block; margin:auto; background:var(--card); border-radius:16px; padding:8px; border:1px solid var(--border);">
+          <text x="10" y="22" fill="rgba(232,244,255,0.5)" font-size="11" font-family="Space Mono">Falsche Wege</text>
+          <!-- destructive -->
+          <path d="M10 60 Q47 30 85 60 Q122 90 160 60 Q197 30 235 60 Q272 90 290 60" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,3" opacity="0.7"/>
+          <path d="M10 60 Q47 90 85 60 Q122 30 160 60 Q197 90 235 60 Q272 30 290 60" fill="none" stroke="#7b61ff" stroke-width="2" stroke-dasharray="5,3" opacity="0.7"/>
+          <text x="130" y="82" fill="var(--accent3)" font-size="11" font-family="Space Mono" text-anchor="middle">= 0 (ausgelöscht)</text>
+
+          <text x="10" y="120" fill="rgba(232,244,255,0.5)" font-size="11" font-family="Space Mono">Richtige Lösung</text>
+          <!-- constructive -->
+          <path d="M10 155 Q47 115 85 155 Q122 195 160 155 Q197 115 235 155 Q272 195 290 155" fill="none" stroke="#00f5c4" stroke-width="2" opacity="0.7"/>
+          <path d="M10 155 Q47 115 85 155 Q122 195 160 155 Q197 115 235 155 Q272 195 290 155" fill="none" stroke="#00f5c4" stroke-width="4" opacity="0.4"/>
+          <text x="150" y="192" fill="var(--accent)" font-size="11" font-family="Space Mono" text-anchor="middle">= VERSTÄRKT ✓</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 8 – VERGLEICH NORMAL vs QUANTUM
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Vergleich</div>
+    <h2>Klassisch vs. Quanten</h2>
+    <div class="versus">
+      <div class="vs-box classic">
+        <h3>💻 Klassischer Computer</h3>
+        <ul>
+          <li>Rechnet Schritt für Schritt</li>
+          <li>Ein Weg zur Lösung</li>
+          <li>Bit: 0 ODER 1</li>
+          <li>Für die meisten Aufgaben perfekt</li>
+          <li>Zimmertemperatur</li>
+          <li>Günstig & robust</li>
+          <li>Milliarden Nutzer heute</li>
+        </ul>
+      </div>
+      <div class="vs-label">VS</div>
+      <div class="vs-box quantum">
+        <h3>⚛️ Quantencomputer</h3>
+        <ul>
+          <li>Erkundet alle Wege gleichzeitig</li>
+          <li>Millionen Möglichkeiten parallel</li>
+          <li>Qubit: 0 UND 1 gleichzeitig</li>
+          <li>Für spezielle Probleme riesig</li>
+          <li>−273 °C (fast absoluter Nullpunkt)</li>
+          <li>Extrem teuer & fragil</li>
+          <li>Nur wenige Labore weltweit</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:12px; color:var(--muted); font-size:14px;">→ Quantencomputer <em>ersetzen</em> keine normalen Computer. Sie sind ein Spezialwerkzeug für bestimmte riesige Probleme.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 9 – WARUM SO SCHWIERIG?
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · GRUNDLAGEN">
+    <div class="block-tag">Die Herausforderung</div>
+    <h2>Warum ist das so schwierig zu bauen?</h2>
+    <div class="cards cols-2">
+      <div class="card">
+        <div class="icon">🌡️</div>
+        <h3>Extreme Kälte nötig</h3>
+        <p>Qubits müssen auf fast <strong>−273,15 °C</strong> abgekühlt werden – kälter als der Weltraum! Schon winzige Wärme zerstört den Quantenzustand.</p>
+      </div>
+      <div class="card">
+        <div class="icon">😵</div>
+        <h3>Dekohärenz</h3>
+        <p>Qubits sind unglaublich empfindlich. Eine einzige Vibration, ein Magnetfeld, ein Staubkorn – und der Quantenzustand ist weg. (<strong>"Dekohärenz"</strong>)</p>
+      </div>
+      <div class="card">
+        <div class="icon">❌</div>
+        <h3>Fehler überall</h3>
+        <p>Heutige Quantencomputer machen ständig Fehler. Man braucht viele Extra-Qubits nur zur <strong>Fehlerkorrektur</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="icon">📏</div>
+        <h3>Noch zu wenig Qubits</h3>
+        <p>Für echte nützliche Probleme braucht man Millionen von Qubits. Die besten Maschinen haben heute erst rund <strong>1.000–10.000</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 10 – QUIZ BLOCK 1
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 1 · QUIZ">
+    <div class="block-tag">Quiz – Block 1</div>
+    <h2>Testet euch!</h2>
+    <div id="quiz-container">
+      <p class="quiz-q" id="quiz-question">Was ist ein Qubit?</p>
+      <div class="quiz-opts" id="quiz-opts">
+        <button class="quiz-opt" onclick="checkAnswer(this, false)">A) Ein sehr schnelles normales Bit</button>
+        <button class="quiz-opt" onclick="checkAnswer(this, true)">B) Ein Bit, das gleichzeitig 0 und 1 sein kann</button>
+        <button class="quiz-opt" onclick="checkAnswer(this, false)">C) Eine Quantenfestplatte</button>
+        <button class="quiz-opt" onclick="checkAnswer(this, false)">D) Ein Bit aus dem Weltraum</button>
+      </div>
+      <div id="quiz-feedback"></div>
+      <button id="next-q-btn" onclick="nextQuizQ()" style="display:none; margin-top:16px; background:var(--accent2); color:white; border:none; border-radius:10px; padding:10px 24px; font-size:16px; cursor:pointer; font-family:'Syne',sans-serif; font-weight:700;">Nächste Frage →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 11 – PAUSE / BLOCK 2 START
+  ══════════════════════════════════════════ -->
+  <div class="slide block-divider" data-block="PAUSE">
+    <div style="text-align:center; width:100%; align-items:center; display:flex; flex-direction:column; gap:16px;">
+      <div class="block-tag" style="justify-content:center;">Ende Block 1</div>
+      <h1 style="font-size:clamp(48px,8vw,110px); text-align:center;">☕ Pause</h1>
+      <p class="big-text" style="text-align:center; color:var(--muted);">15 Minuten. Dann geht es weiter mit Block 2.</p>
+      <div class="cards cols-3" style="max-width:800px; margin-top:16px;">
+        <div class="card" style="text-align:center;">
+          <div class="icon">✅</div>
+          <h3>Bits & Qubits</h3>
+          <p style="font-size:12px;">Unterschied gelernt</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div class="icon">✅</div>
+          <h3>Superposition</h3>
+          <p style="font-size:12px;">= gleichzeitig 0 und 1</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div class="icon">✅</div>
+          <h3>Verschränkung</h3>
+          <p style="font-size:12px;">= Verbindung über Distanz</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 12 – BLOCK 2 INTRO
+  ══════════════════════════════════════════ -->
+  <div class="slide title-slide block-divider" data-block="BLOCK 2 · ANWENDUNGEN">
+    <div class="block-tag">Block 2 startet jetzt</div>
+    <h1><span class="highlight2">Anwen</span><span class="highlight">dungen</span></h1>
+    <p class="big-text" style="margin-top:16px;">Wofür werden Quantencomputer<br>die Welt verändern?</p>
+    <p style="margin-top:20px; color:var(--muted);">Passwörter · Medizin · Klima · KI · und mehr...</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 13 – KRYPTOGRAPHIE / SICHERHEIT
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · ANWENDUNGEN">
+    <div class="block-tag">Anwendung 1 – Sicherheit</div>
+    <h2>🔐 Passwörter & Verschlüsselung</h2>
+    <div class="split">
+      <div>
+        <p>Eure Bankdaten, WhatsApp-Nachrichten, Passwörter – alles ist mit Mathematik geschützt. Das System heißt <strong class="highlight">RSA-Verschlüsselung</strong>.</p>
+        <p style="margin-top:12px;">Es basiert darauf, dass normale Computer sehr lange brauchen, um eine riesige Zahl in ihre Primfaktoren zu zerlegen.</p>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:16px; font-family:'Space Mono',monospace; font-size:13px;">
+          <p style="color:var(--muted);">z.B. Welche zwei Primzahlen ergibt:</p>
+          <p style="color:var(--accent); font-size:18px; margin:8px 0;">15.347 × ?</p>
+          <p style="color:var(--muted);">Normaler PC: Stunden bis Jahre</p>
+          <p style="color:var(--accent3);">Quantencomputer: Sekunden</p>
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:20px; padding:24px;">
+          <h3>Was passiert dann?</h3>
+          <div class="steps" style="flex-direction:column; gap:12px; margin-top:12px;">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div class="step-num" style="flex-shrink:0;">!</div>
+              <p style="font-size:14px;">Alle heutigen Verschlüsselungen könnten <span class="highlight3">geknackt</span> werden</p>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div class="step-num" style="flex-shrink:0;">→</div>
+              <p style="font-size:14px;">Deshalb entwickelt man jetzt schon <span class="highlight">Post-Quanten-Kryptographie</span></p>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div class="step-num" style="flex-shrink:0;">✓</div>
+              <p style="font-size:14px;">Auch <span class="highlight">Quantenverschlüsselung</span> ist physikalisch unknackbar!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 14 – MEDIZIN
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · ANWENDUNGEN">
+    <div class="block-tag">Anwendung 2 – Medizin</div>
+    <h2>💊 Medikamente & Medizin</h2>
+    <div class="split">
+      <div>
+        <p>Ein neues Medikament zu entwickeln dauert heute <strong>10–15 Jahre</strong> und kostet Milliarden Euro. Warum?</p>
+        <p style="margin-top:12px;">Moleküle sind Quantenobjekte. Um zu verstehen, wie ein Protein sich faltet oder wie ein Medikament wirkt, muss man Quantenmechanik simulieren.</p>
+        <p style="margin-top:12px; color:var(--muted);">→ Normaler Computer: unmöglich genau. <br>→ Quantencomputer: <span class="highlight">perfekt geeignet!</span></p>
+        <ul class="list" style="margin-top:16px;">
+          <li>Krebs-Therapien viel schneller entdecken</li>
+          <li>Alzheimer-Proteine simulieren</li>
+          <li>Neue Antibiotika gegen resistente Bakterien</li>
+        </ul>
+      </div>
+      <div>
+        <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:280px; display:block; margin:auto; background:var(--card); border-radius:16px; border:1px solid var(--border);">
+          <!-- molecule illustration -->
+          <circle cx="130" cy="110" r="20" fill="rgba(0,245,196,0.2)" stroke="#00f5c4" stroke-width="2"/>
+          <text x="130" y="115" text-anchor="middle" fill="#00f5c4" font-size="12" font-family="Space Mono">C</text>
+          <!-- bonds -->
+          <line x1="110" y1="100" x2="80" y2="75" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <line x1="150" y1="100" x2="180" y2="75" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <line x1="130" y1="130" x2="130" y2="160" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <line x1="110" y1="120" x2="75" y2="140" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <line x1="150" y1="120" x2="185" y2="140" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <!-- atoms -->
+          <circle cx="75" cy="68" r="14" fill="rgba(255,107,107,0.2)" stroke="#ff6b6b" stroke-width="2"/>
+          <text x="75" y="73" text-anchor="middle" fill="#ff6b6b" font-size="11" font-family="Space Mono">H</text>
+          <circle cx="185" cy="68" r="14" fill="rgba(255,107,107,0.2)" stroke="#ff6b6b" stroke-width="2"/>
+          <text x="185" y="73" text-anchor="middle" fill="#ff6b6b" font-size="11" font-family="Space Mono">H</text>
+          <circle cx="130" cy="170" r="14" fill="rgba(123,97,255,0.2)" stroke="#7b61ff" stroke-width="2"/>
+          <text x="130" y="175" text-anchor="middle" fill="#7b61ff" font-size="11" font-family="Space Mono">O</text>
+          <circle cx="65" cy="145" r="14" fill="rgba(255,107,107,0.2)" stroke="#ff6b6b" stroke-width="2"/>
+          <text x="65" y="150" text-anchor="middle" fill="#ff6b6b" font-size="11" font-family="Space Mono">N</text>
+          <circle cx="195" cy="145" r="14" fill="rgba(255,107,107,0.2)" stroke="#ff6b6b" stroke-width="2"/>
+          <text x="195" y="150" text-anchor="middle" fill="#ff6b6b" font-size="11" font-family="Space Mono">N</text>
+          <!-- orbital rings -->
+          <ellipse cx="130" cy="110" rx="45" ry="18" fill="none" stroke="rgba(0,245,196,0.1)" stroke-width="1" stroke-dasharray="3,3"/>
+          <ellipse cx="130" cy="110" rx="18" ry="45" fill="none" stroke="rgba(123,97,255,0.1)" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="130" y="20" text-anchor="middle" fill="rgba(232,244,255,0.4)" font-size="11" font-family="Space Mono">Molekül-Simulation</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 15 – KLIMA & LOGISTIK
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · ANWENDUNGEN">
+    <div class="block-tag">Anwendung 3 & 4</div>
+    <h2>🌍 Klima & ✈️ Logistik</h2>
+    <div class="cards cols-2" style="margin-top:8px;">
+      <div class="card">
+        <div class="icon">🌡️</div>
+        <h3>Klimaforschung</h3>
+        <p>Das Klima der Erde ist unglaublich komplex. Quantencomputer könnten exaktere Klimamodelle berechnen und uns helfen, den Klimawandel besser zu verstehen und zu stoppen.</p>
+        <ul class="list" style="margin-top:8px;">
+          <li>Wettervorhersagen für Monate</li>
+          <li>Neue Materialien für Solarzellen</li>
+          <li>Optimale Windkraft-Standorte</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:rgba(123,97,255,0.3);">
+        <div class="icon">📦</div>
+        <h3>Logistik & Optimierung</h3>
+        <p>Wenn Amazon oder DHL Pakete zustellt, müssen tausende Wege optimiert werden. Das sogenannte <strong class="highlight2">Travelling Salesman Problem</strong> ist für klassische Computer unlösbar.</p>
+        <ul class="list" style="margin-top:8px;">
+          <li>Flugrouten optimieren</li>
+          <li>Lieferwege berechnen</li>
+          <li>Strom-Netzwerke steuern</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stat-row" style="margin-top:16px;">
+      <div class="stat"><span class="num">30%</span><span class="label">Sprit-Ersparnis möglich</span></div>
+      <div class="stat"><span class="num">10×</span><span class="label">genauere Wetter­vorhersage</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 16 – KI & FINANZEN
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · ANWENDUNGEN">
+    <div class="block-tag">Anwendung 5 & 6</div>
+    <h2>🤖 KI & 📈 Finanzen</h2>
+    <div class="cards cols-2" style="margin-top:8px;">
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h3>Künstliche Intelligenz</h3>
+        <p>ChatGPT und andere KIs werden mit riesigen Datenmengen trainiert – das dauert Wochen. Quantencomputer könnten KI-Training <strong class="highlight">exponentiell beschleunigen</strong>.</p>
+        <ul class="list" style="margin-top:8px;">
+          <li>Bilder in Millisekunden erkennen</li>
+          <li>Bessere Sprachmodelle</li>
+          <li>Echte KI-Intelligenz möglich?</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:rgba(123,97,255,0.3);">
+        <div class="icon">💹</div>
+        <h3>Finanzmarkt</h3>
+        <p>Banken und Hedgefonds müssen aus Millionen Variablen die besten Investments wählen. Quantencomputer können solche Optimierungen <strong class="highlight2">sofort</strong> lösen.</p>
+        <ul class="list" style="margin-top:8px;">
+          <li>Portfolio-Optimierung</li>
+          <li>Betrug schneller erkennen</li>
+          <li>Risiko-Modelle verbessern</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 17 – WER BAUT SIE?
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · WELTLAGE">
+    <div class="block-tag">Weltlage</div>
+    <h2>Wer baut Quantencomputer?</h2>
+    <div class="cards cols-2" style="margin-top:8px;">
+      <div class="card">
+        <div class="icon">🇺🇸</div>
+        <h3>USA – vorne dabei</h3>
+        <p><strong>IBM</strong>: Hat einen 1.121-Qubit-Computer (Condor, 2023). <br><strong>Google</strong>: Behauptete 2019 "Quantum Supremacy" – ein Problem in 200 Sekunden gelöst, das normale Computer 10.000 Jahre bräuchten.</p>
+      </div>
+      <div class="card" style="border-color:rgba(255,107,107,0.3);">
+        <div class="icon">🇨🇳</div>
+        <h3>China – aufholend</h3>
+        <p>China investiert Milliarden in Quantenforschung. Hat eigene Quantensatelliten für abhörsichere Kommunikation gestartet. Großes staatliches Programm.</p>
+      </div>
+      <div class="card" style="border-color:rgba(123,97,255,0.3);">
+        <div class="icon">🇪🇺</div>
+        <h3>Europa & Deutschland</h3>
+        <p>Das <strong>Quantum Flagship</strong> Programm investiert 1 Mrd. €. IBM hat seinen ersten europäischen Quantencomputer in <strong>Ehningen bei Stuttgart</strong> aufgestellt!</p>
+      </div>
+      <div class="card">
+        <div class="icon">🚀</div>
+        <h3>Startups</h3>
+        <p><strong>IonQ, Quantinuum, Rigetti</strong> – viele Startups bauen eigene Ansätze. D-Wave aus Kanada nutzt einen anderen Ansatz (Quantum Annealing).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 18 – TIMELINE GESCHICHTE
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · GESCHICHTE">
+    <div class="block-tag">Geschichte</div>
+    <h2>Wie kam es dazu?</h2>
+    <div class="slide-inner">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"><span></span></div>
+          <div>
+            <div class="tl-year">1981</div>
+            <p><strong>Richard Feynman</strong> (Physiker) schlägt als erster vor, Quantenmechanik mit Computern zu simulieren. Die Idee des Quantencomputers ist geboren.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><span style="background:var(--accent2); box-shadow:0 0 12px var(--accent2);"></span></div>
+          <div>
+            <div class="tl-year">1994</div>
+            <p><strong>Peter Shor</strong> erfindet den Shor-Algorithmus: ein Quantenprogramm, das RSA-Verschlüsselung brechen könnte.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><span style="background:var(--accent3); box-shadow:0 0 12px var(--accent3);"></span></div>
+          <div>
+            <div class="tl-year">2019</div>
+            <p><strong>Google</strong> behauptet, "Quantum Supremacy" erreicht zu haben: Ein Quanten-PC löst ein Problem in 200 Sekunden, das normale Computer 10.000 Jahre bräuchten.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><span></span></div>
+          <div>
+            <div class="tl-year">2023</div>
+            <p><strong>IBM</strong> stellt den 1.121-Qubit-Condor vor. Die Fehlerraten sinken immer weiter. Der Wettlauf ist in vollem Gang.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><span style="background:var(--accent2); box-shadow:0 0 12px var(--accent2);"></span></div>
+          <div>
+            <div class="tl-year">2030+?</div>
+            <p>Experten erwarten den ersten <strong>"fehlertoleranten"</strong> Quantencomputer, der wirklich nützliche Probleme löst.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 19 – ZUKUNFT
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · ZUKUNFT">
+    <div class="block-tag">Blick in die Zukunft</div>
+    <h2>Was kommt als nächstes?</h2>
+    <div class="split">
+      <div>
+        <p class="big-text">Wir leben in den <span class="highlight">Kindertagen</span> der Quantentechnologie.</p>
+        <p style="margin-top:16px;">Wie das Smartphone 2007 die Welt veränderte, könnten Quantencomputer in 20–30 Jahren die Welt revolutionieren.</p>
+        <ul class="list" style="margin-top:16px;">
+          <li>Viele Krankheiten könnten heilbar werden</li>
+          <li>Klimaprobleme könnten gelöst werden</li>
+          <li>Materialien wie Raumtemperatur-Supraleiter</li>
+          <li>Sichere globale Kommunikation</li>
+          <li>Möglicherweise echte künstliche Intelligenz</li>
+        </ul>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="background:var(--card); border-radius:16px; padding:20px; border-left:4px solid var(--accent);">
+          <h3 style="color:var(--accent);">Quantum Advantage</h3>
+          <p style="font-size:14px;">Wenn Quantencomputer erstmals wirklich nützlichere Dinge tun als klassische – nicht nur theoretisch.</p>
+        </div>
+        <div style="background:var(--card); border-radius:16px; padding:20px; border-left:4px solid var(--accent2);">
+          <h3 style="color:var(--accent2);">Quantum Internet</h3>
+          <p style="font-size:14px;">Ein Netzwerk aus verschränkten Qubits – 100% abhörsichere Kommunikation weltweit.</p>
+        </div>
+        <div style="background:var(--card); border-radius:16px; padding:20px; border-left:4px solid var(--accent3);">
+          <h3 style="color:var(--accent3);">Vorsicht!</h3>
+          <p style="font-size:14px;">„Harvest now, decrypt later" – Geheimdienste speichern verschlüsselte Daten, um sie mit zukünftigen Quantencomputern zu entschlüsseln.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 20 – ZUSAMMENFASSUNG
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · ZUSAMMENFASSUNG">
+    <div class="block-tag">Das Wichtigste</div>
+    <h2>Was ihr heute gelernt habt</h2>
+    <div class="summary-grid">
+      <div class="sum-item">
+        <h3>Bit vs. Qubit</h3>
+        <p>Normales Bit: 0 oder 1. Qubit: beides gleichzeitig – das ist Superposition.</p>
+      </div>
+      <div class="sum-item">
+        <h3>Superposition</h3>
+        <p>Ein Qubit ist 0 und 1 gleichzeitig, bis es gemessen wird. Erst dann entscheidet es sich.</p>
+      </div>
+      <div class="sum-item">
+        <h3>Verschränkung</h3>
+        <p>Zwei Qubits sind verbunden – misst man eines, weiß man sofort was das andere ist, egal wie weit weg.</p>
+      </div>
+      <div class="sum-item">
+        <h3>Interferenz</h3>
+        <p>Richtige Lösungen werden verstärkt, falsche ausgelöscht. So findet der Quantencomputer Antworten.</p>
+      </div>
+      <div class="sum-item">
+        <h3>Anwendungen</h3>
+        <p>Verschlüsselung, Medizin, Klima, KI, Finanzen – überall wo heute Computer scheitern.</p>
+      </div>
+      <div class="sum-item" style="border-left-color:var(--accent);">
+        <h3>Zukunft</h3>
+        <p>Wir stehen am Anfang. In 20–30 Jahren könnten Quantencomputer die Welt grundlegend verändern.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 21 – QUIZ BLOCK 2
+  ══════════════════════════════════════════ -->
+  <div class="slide" data-block="BLOCK 2 · ABSCHLUSSQUIZ">
+    <div class="block-tag">Abschlussquiz</div>
+    <h2>Letzter Test!</h2>
+    <div id="quiz2-container">
+      <p class="quiz-q" id="quiz2-question">Welches reale Problem können Quantencomputer viel besser lösen als normale Computer?</p>
+      <div class="quiz-opts" id="quiz2-opts">
+        <button class="quiz-opt" onclick="checkAnswer2(this, false)">A) Einen Film abspielen</button>
+        <button class="quiz-opt" onclick="checkAnswer2(this, true)">B) Moleküle für Medikamente simulieren</button>
+        <button class="quiz-opt" onclick="checkAnswer2(this, false)">C) Eine Website laden</button>
+        <button class="quiz-opt" onclick="checkAnswer2(this, false)">D) Textnachrichten senden</button>
+      </div>
+      <div id="quiz2-feedback"></div>
+      <button id="next-q2-btn" onclick="nextQuiz2Q()" style="display:none; margin-top:16px; background:var(--accent2); color:white; border:none; border-radius:10px; padding:10px 24px; font-size:16px; cursor:pointer; font-family:'Syne',sans-serif; font-weight:700;">Nächste Frage →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 22 – ABSCHLUSS
+  ══════════════════════════════════════════ -->
+  <div class="slide closing-slide" data-block="ABSCHLUSS">
+    <div class="block-tag" style="justify-content:center;">Ende der Präsentation</div>
+    <h2>Die <span class="highlight">Quanten</span><span class="highlight2">welt</span><br>gehört euch.</h2>
+    <p style="margin-top:20px; text-align:center; max-width:600px;">Ihr seid die Generation, die mit Quantencomputern aufwachsen wird. Vielleicht ist einer von euch dabei, wenn der erste wirklich nützliche Quantencomputer gebaut wird.</p>
+    <div class="stat-row" style="margin-top:32px; justify-content:center;">
+      <div class="stat"><span class="num">🔬</span><span class="label">Physik studieren</span></div>
+      <div class="stat"><span class="num">💻</span><span class="label">Informatik lernen</span></div>
+      <div class="stat"><span class="num">🌟</span><span class="label">Neugierig bleiben</span></div>
+    </div>
+    <p style="margin-top:32px; color:var(--muted); font-size:14px; text-align:center;">Fragen? Einfach fragen! 🙋</p>
+    <p style="margin-top:8px; font-family:'Space Mono',monospace; font-size:12px; color:rgba(106,138,170,0.4); text-align:center;">Quantencomputer Präsentation · Klasse 9 · 2×90 min</p>
+  </div>
+
+</div><!-- /slides-wrapper -->
+
+<!-- ── NAVIGATION ── -->
+<div id="nav">
+  <button onclick="prevSlide()" title="Zurück">←</button>
+  <span id="slide-counter">1 / 23</span>
+  <button onclick="nextSlide()" title="Weiter">→</button>
+</div>
+
+<script>
+// ── PARTICLE BACKGROUND ──
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * 2000,
+    y: Math.random() * 1200,
+    r: Math.random() * 1.5 + 0.3,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+    hue: Math.random() > 0.5 ? '#00f5c4' : '#7b61ff',
+    alpha: Math.random() * 0.6 + 0.1
+  });
+}
+
+function drawBg() {
+  ctx.clearRect(0, 0, W, H);
+  // connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i+1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(0,245,196,${0.08 * (1 - dist/120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  // dots
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W;
+    if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H;
+    if (p.y > H) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = p.hue;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+// ── SLIDE SYSTEM ──
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+function showSlide(n) {
+  slides[current].classList.remove('active');
+  current = (n + total) % total;
+  slides[current].classList.add('active');
+  document.getElementById('slide-counter').textContent = `${current+1} / ${total}`;
+  document.getElementById('progress').style.width = `${((current+1)/total)*100}%`;
+  const block = slides[current].dataset.block || 'QUANTENCOMPUTER';
+  document.getElementById('block-label').textContent = block;
+  // reset entanglement on each slide show
+  resetEntangle();
+}
+
+function nextSlide() { showSlide(current + 1); }
+function prevSlide() { showSlide(current - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+// ── COIN TOSS ──
+function throwCoin() {
+  const coin = document.getElementById('coin');
+  const result = document.getElementById('coin-result');
+  coin.classList.remove('spinning');
+  void coin.offsetWidth;
+  coin.classList.add('spinning');
+  result.textContent = '';
+  setTimeout(() => {
+    const isHeads = Math.random() > 0.5;
+    result.textContent = isHeads ? '👑 Kopf! (Qubit = 1)' : '🌀 Zahl! (Qubit = 0)';
+    result.style.color = isHeads ? 'var(--accent)' : 'var(--accent2)';
+  }, 650);
+}
+
+// ── ENTANGLEMENT ──
+let entangleMeasured = false;
+function measureQubit(which) {
+  if (entangleMeasured) { resetEntangle(); return; }
+  entangleMeasured = true;
+  const isUp = Math.random() > 0.5;
+  const q1 = document.getElementById('q1');
+  const q2 = document.getElementById('q2');
+  const text = document.getElementById('entangle-text');
+  if (which === 1) {
+    q1.textContent = isUp ? '↑' : '↓';
+    q1.className = 'qubit-ball ' + (isUp ? 'up' : 'down');
+    q2.textContent = isUp ? '↓' : '↑'; // opposite!
+    q2.className = 'qubit-ball ' + (isUp ? 'down' : 'up');
+  } else {
+    q2.textContent = isUp ? '↑' : '↓';
+    q2.className = 'qubit-ball ' + (isUp ? 'up' : 'down');
+    q1.textContent = isUp ? '↓' : '↑';
+    q1.className = 'qubit-ball ' + (isUp ? 'down' : 'up');
+  }
+  text.textContent = '⚡ Gemessen! Das andere Qubit hat sich sofort entschieden – egal wie weit weg! Klicken zum Zurücksetzen.';
+  text.style.color = 'var(--accent)';
+}
+function resetEntangle() {
+  entangleMeasured = false;
+  const q1 = document.getElementById('q1');
+  const q2 = document.getElementById('q2');
+  if (!q1 || !q2) return;
+  q1.textContent = '?'; q1.className = 'qubit-ball up';
+  q2.textContent = '?'; q2.className = 'qubit-ball up';
+  const text = document.getElementById('entangle-text');
+  if (text) { text.textContent = 'Noch nicht gemessen – beide in Superposition'; text.style.color = ''; }
+}
+
+// ── QUIZ 1 ──
+const quiz1 = [
+  {
+    q: "Was ist Superposition?",
+    opts: ["A) Ein Computerchip", "B) Ein Qubit ist gleichzeitig 0 und 1", "C) Ein neues Betriebssystem", "D) Die Kühlung des Quantencomputers"],
+    correct: 1
+  },
+  {
+    q: "Was bedeutet Dekohärenz?",
+    opts: ["A) Mehr Qubits hinzufügen", "B) Den Computer abkühlen", "C) Das Qubit verliert seinen Quantenzustand durch Störungen", "D) Zwei Computer verbinden"],
+    correct: 2
+  },
+  {
+    q: "Wie kalt muss ein Quantencomputer sein?",
+    opts: ["A) 0 °C (Gefrierpunkt)", "B) –100 °C", "C) –273 °C (fast absoluter Nullpunkt)", "D) Zimmertemperatur"],
+    correct: 2
+  }
+];
+let qIdx = 0, q1done = false;
+function initQuiz() { renderQ1(); }
+function renderQ1() {
+  const d = quiz1[qIdx];
+  document.getElementById('quiz-question').textContent = d.q;
+  document.getElementById('quiz-feedback').textContent = '';
+  document.getElementById('next-q-btn').style.display = 'none';
+  const opts = document.getElementById('quiz-opts');
+  opts.innerHTML = '';
+  d.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = o;
+    btn.onclick = () => checkAnswer(btn, i === d.correct);
+    opts.appendChild(btn);
+  });
+}
+function checkAnswer(btn, isCorrect) {
+  if (q1done) return;
+  q1done = true;
+  const opts = document.querySelectorAll('#quiz-opts .quiz-opt');
+  opts.forEach(b => b.style.pointerEvents = 'none');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.getElementById('quiz-feedback').innerHTML = '✅ Richtig! Super gemacht!';
+    document.getElementById('quiz-feedback').style.color = 'var(--accent)';
+  } else {
+    btn.classList.add('wrong');
+    document.getElementById('quiz-feedback').innerHTML = '❌ Leider falsch. Die richtige Antwort: ' + quiz1[qIdx].opts[quiz1[qIdx].correct];
+    document.getElementById('quiz-feedback').style.color = 'var(--accent3)';
+  }
+  if (qIdx < quiz1.length - 1) document.getElementById('next-q-btn').style.display = 'inline-block';
+}
+function nextQuizQ() {
+  qIdx++;
+  q1done = false;
+  if (qIdx < quiz1.length) renderQ1();
+  else {
+    document.getElementById('quiz-question').textContent = '🎉 Quiz abgeschlossen! Bereit für Block 2?';
+    document.getElementById('quiz-opts').innerHTML = '';
+    document.getElementById('quiz-feedback').textContent = '';
+    document.getElementById('next-q-btn').style.display = 'none';
+  }
+}
+
+// ── QUIZ 2 ──
+const quiz2 = [
+  {
+    q: "Was ist der Shor-Algorithmus?",
+    opts: ["A) Ein Spielprogramm", "B) Ein Quanten-Algorithmus zum Knacken von Verschlüsselung", "C) Eine Kühlmethode", "D) Eine Programmiersprache"],
+    correct: 1
+  },
+  {
+    q: "In welcher Stadt steht IBMs europäischer Quantencomputer?",
+    opts: ["A) Berlin", "B) München", "C) Ehningen bei Stuttgart", "D) Hamburg"],
+    correct: 2
+  },
+  {
+    q: "Was bedeutet 'Quantum Supremacy'?",
+    opts: ["A) Der schnellste klassische Computer", "B) Eine Regierung für Quantentechnik", "C) Ein Quantencomputer löst eine Aufgabe, die kein klassischer Computer kann", "D) 1000 Qubits erreichen"],
+    correct: 2
+  }
+];
+let q2Idx = 0, q2done = false;
+function renderQ2() {
+  const d = quiz2[q2Idx];
+  document.getElementById('quiz2-question').textContent = d.q;
+  document.getElementById('quiz2-feedback').textContent = '';
+  document.getElementById('next-q2-btn').style.display = 'none';
+  const opts = document.getElementById('quiz2-opts');
+  opts.innerHTML = '';
+  d.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = o;
+    btn.onclick = () => checkAnswer2(btn, i === d.correct);
+    opts.appendChild(btn);
+  });
+}
+function checkAnswer2(btn, isCorrect) {
+  if (q2done) return;
+  q2done = true;
+  document.querySelectorAll('#quiz2-opts .quiz-opt').forEach(b => b.style.pointerEvents = 'none');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.getElementById('quiz2-feedback').innerHTML = '✅ Richtig! Ausgezeichnet!';
+    document.getElementById('quiz2-feedback').style.color = 'var(--accent)';
+  } else {
+    btn.classList.add('wrong');
+    document.getElementById('quiz2-feedback').innerHTML = '❌ Nicht ganz. Richtige Antwort: ' + quiz2[q2Idx].opts[quiz2[q2Idx].correct];
+    document.getElementById('quiz2-feedback').style.color = 'var(--accent3)';
+  }
+  if (q2Idx < quiz2.length - 1) document.getElementById('next-q2-btn').style.display = 'inline-block';
+}
+function nextQuiz2Q() {
+  q2Idx++;
+  q2done = false;
+  if (q2Idx < quiz2.length) renderQ2();
+  else {
+    document.getElementById('quiz2-question').textContent = '🎉 Alles fertig! Ihr seid Quantencomputer-Experten!';
+    document.getElementById('quiz2-opts').innerHTML = '';
+    document.getElementById('quiz2-feedback').textContent = '';
+    document.getElementById('next-q2-btn').style.display = 'none';
+  }
+}
+
+// init
+renderQ2();
+showSlide(0);
+</script>
+</body>
+</html>
