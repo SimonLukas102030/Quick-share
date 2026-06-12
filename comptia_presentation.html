@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompTIA A+ Präsentation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .slide-container {
+            position: relative;
+            width: 85%;
+            max-width: 950px;
+            height: 520px;
+            background-color: #1e293b;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-left: 6px solid #38bdf8;
+        }
+        .slide {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+            height: 100%;
+        }
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide-layout {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            height: 100%;
+        }
+        .slide-content {
+            flex: 1.2;
+        }
+        .slide-image {
+            flex: 0.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .slide-image img {
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        h1 {
+            color: #38bdf8;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #38bdf8;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 10px;
+        }
+        p, li {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+        ul {
+            margin-left: 24px;
+            margin-top: 10px;
+        }
+        li {
+            margin-bottom: 12px;
+        }
+        li strong {
+            color: #38bdf8;
+        }
+        .quote-box {
+            background-color: #0f172a;
+            border-left: 4px solid #f59e0b;
+            padding: 24px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-style: italic;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            width: 85%;
+            max-width: 950px;
+        }
+        .btn {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .btn:hover {
+            background-color: #7dd3fc;
+            transform: translateY(-1px);
+        }
+        .btn:disabled {
+            background-color: #475569;
+            color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #334155;
+            margin: 0 30px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #38bdf8;
+            width: 25%;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        <div class="slide active" id="slide-1">
+            <div class="slide-layout">
+                <div class="slide-content">
+                    <h1>CompTIA A+</h1>
+                    <p style="font-size: 1.4rem; color: #94a3b8; margin-bottom: 25px;">Das Standardwerk für IT-Administration</p>
+                    <p style="margin-bottom: 8px;"><strong>Autor:</strong> Markus Kammermann</p>
+                    <p style="margin-bottom: 8px;"><strong>Auflage:</strong> 6. Auflage (mitp Verlag)</p>
+                    <p style="margin-top: 40px; font-size: 1.1rem; color: #94a3b8;">3-Minuten-Präsentation von Simon</p>
+                </div>
+                <div class="slide-image">
+                    <img src="https://m.media-amazon.com/images/I/71tqrn3xdoL._AC_UF894,1000_QL80_.jpg" alt="CompTIA A+ Buchcover">
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <h2>1. Worum geht das Buch?</h2>
+            <p>Das Buch bietet eine strukturierte Vorbereitung auf die offiziellen CompTIA A+ Zertifizierungen und vermittelt essenzielle IT-Grundlagen:</p>
+            <ul>
+                <li><strong>Hardware &amp; Infrastruktur:</strong> Aufbau, Diagnose und Fehlerbehebung von PCs, Laptops, Mobilgeräten und Serverkomponenten.</li>
+                <li><strong>Betriebssysteme:</strong> Professionelle Konfiguration und Verwaltung von Windows, Linux, macOS, Android und iOS.</li>
+                <li><strong>Netzwerktechnik:</strong> Grundlagen von TCP/IP, IP-Adressierung, Routing, DNS sowie WLAN-Technologien.</li>
+                <li><strong>IT-Sicherheit:</strong> Erkennung von Cyber-Bedrohungen, Implementierung von Schutzmaßnahmen und sichere Zugriffskontrolle.</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-3">
+            <h2>2. Warum habe ich das Buch gewählt?</h2>
+            <p>Die Entscheidung für dieses Werk basiert auf meiner Begeisterung für IT-Infrastruktur und Systemadministration:</p>
+            <ul>
+                <li><strong>Tiefgehendes Systemverständnis:</strong> Es beschreibt detailliert die logischen Zusammenhänge von Soft- und Hardware, statt nur oberflächliche Anleitungen zu geben.</li>
+                <li><strong>Praktischer Nutzen für eigene Systeme:</strong> Das vermittelte Wissen bildet das perfekte Fundament, um komplexe Serverstrukturen zu verstehen und Netzwerkdienste abzusichern.</li>
+                <li><strong>Professionelle Fehlersuche:</strong> Die strukturierte Methodik hilft dabei, technische Probleme im Alltag gezielt einzugrenzen und effizient zu lösen.</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-4">
+            <h2>3. Ein zentraler Satz aus dem Buch</h2>
+            <p>Der Kern der CompTIA-Philosophie bezüglich Wartung und Support lässt sich in folgendem Kernsatz zusammenfassen:</p>
+            <div class="quote-box">
+                <p>"Das strukturierte Troubleshooting-Modell bildet das Fundament jeder erfolgreichen Fehlerbehebung und beginnt zwingend mit der präzisen Identifikation des Problems durch gezielte Befragung und Analyse."</p>
+            </div>
+            <p style="margin-top: 25px;"><strong>Bedeutung:</strong> In der professionellen IT wird nicht blind experimentiert. Erst ein methodisches Vorgehen in sechs Phasen garantiert eine nachhaltige Lösung der eigentlichen Ursache.</p>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="prevBtn" disabled onclick="changeSlide(-1)">Zurück</button>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <button class="btn" id="nextBtn" onclick="changeSlide(1)">Weiter</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 4;
+
+        function changeSlide(direction) {
+            document.getElementById('slide-' + currentSlide).classList.remove('active');
+            currentSlide += direction;
+            document.getElementById('slide-' + currentSlide).classList.add('active');
+
+            document.getElementById('prevBtn').disabled = (currentSlide === 1);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+    </script>
+</body>
+</html>
