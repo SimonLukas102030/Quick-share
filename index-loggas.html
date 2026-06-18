@@ -23,6 +23,13 @@
         }
         .debug-val { color: #ff7b72; word-break: break-all; }
     </style>
+    <script>
+      // Prüft, ob der Nutzer von der Index-Seite kommt
+      if (document.referrer === "" || !document.referrer.includes("index.html")) {
+        alert("Zugriff verweigert. Bitte nutze den Hub.");
+        window.location.href = "index.html";
+      }
+    </script>
 </head>
 <body>
 
