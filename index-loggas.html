@@ -47,12 +47,12 @@
         }
 
         async function init() {
-            const user = "simonlukas102030";
-            const repo = "Quick-share";
+            const user = "xLoki7050";
+            const repo = "Buch-DE";
             const list = document.getElementById('file-list');
             const hashOutput = document.getElementById('generated-hash');
             const lastInputDisplay = document.getElementById('last-input');
-
+            
             try {
                 // Passwort-Liste laden (mit Cache-Buster)
                 const pRes = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/passwords.json?t=${Date.now()}`);
