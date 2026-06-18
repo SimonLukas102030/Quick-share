@@ -62,7 +62,7 @@
             
             try {
                 // Passwort-Liste laden (mit Cache-Buster)
-                const pRes = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/passwords.json?t=${Date.now()}`);
+                const pRes = await fetch(`https://raw.githubusercontent.com/SimonLukas102030/Quick-share/main/passwords.json?t=${Date.now()}`);
                 if(pRes.ok) passwords = await pRes.json();
 
                 // GitHub Repo Inhalt laden
