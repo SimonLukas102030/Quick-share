@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Share Hub</title>
+    <style>
+        :root { --bg: #0d1117; --panel: #161b22; --border: #30363d; --accent: #58a6ff; --text: #c9d1d9; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 40px; margin: 0; min-height: 100vh; }
+        .wrapper { max-width: 800px; margin: 0 auto; padding-bottom: 80px; }
+        h1 { font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 25px; }
+        #file-list { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; padding: 0; list-style: none; overflow: hidden; }
+        .file-item { background: var(--panel); }
+        .file-item a { display: block; padding: 16px; color: var(--accent); text-decoration: none; cursor: pointer; transition: background 0.1s; }
+        .file-item a:hover { background: #1f242c; }
+        .locked::after { content: " 🔒"; opacity: 0.5; margin-left: 10px; font-size: 0.9rem; }
+        
+        #debug-bar { 
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #000; border-top: 1px solid var(--border);
+            padding: 12px 20px; font-family: monospace; font-size: 0.85rem;
+            display: flex; gap: 20px; color: #8b949e; z-index: 100;
+        }
+        .debug-val { color: #ff7b72; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <h1>Quick Share Rep</h1>
+        <ul id="file-list"><li>Initialisiere...</li></ul>
+    </div>
+
+    <div id="debug-bar">
+        <span>Eingabe: <span id="last-input" class="debug-val">-</span></span>
+        <span>Sha256: <span id="generated-hash" class="debug-val">-</span></span>
+    </div>
+
+    <script>
+        let passwords = {};
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
+        }
+
+        async function init() {
+            const user = "simonlukas102030";
+            const repo = "Quick-share";
+            const list = document.getElementById('file-list');
+            const hashOutput = document.getElementById('generated-hash');
+            const lastInputDisplay = document.getElementById('last-input');
+
+            try {
+                // Passwort-Liste laden (mit Cache-Buster)
+                const pRes = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/passwords.json?t=${Date.now()}`);
+                if(pRes.ok) passwords = await pRes.json();
+
+                // GitHub Repo Inhalt laden
+                const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/`);
+                const files = await res.json();
+                
+                list.innerHTML = "";
+                files.forEach(file => {
+                    // Nur HTML Dateien listen, index.html ignorieren
+                    if (file.name.endsWith('.html') && file.name.toLowerCase() !== 'index.html') {
+                        const li = document.createElement('li');
+                        li.className = 'file-item';
+                        
+                        // Check ob Passwort existiert
+                        const hasPassword = passwords.hasOwnProperty(file.name);
+                        
+                        const a = document.createElement('a');
+                        a.textContent = file.name;
+                        if(hasPassword) a.classList.add('locked');
+                        
+                        a.onclick = async () => {
+                            if (hasPassword) {
+                                const pw = prompt("Passwort erforderlich für " + file.name + ":");
+                                if (!pw) return;
+                                
+                                const hashedInput = await sha256(pw);
+                                
+                                // Debug-Bar aktualisieren
+                                lastInputDisplay.textContent = pw;
+                                hashOutput.textContent = hashedInput;
+
+                                if (hashedInput === passwords[file.name].toLowerCase().trim()) {
+                                    window.location.href = file.name;
+                                } else {
+                                    alert("Falsches Passwort! Check den Hash unten in der Leiste.");
+                                }
+                            } else {
+                                // Kein Passwort -> sofortiger Zugriff
+                                window.location.href = file.name;
+                            }
+                        };
+                        li.appendChild(a);
+                        list.appendChild(li);
+                    }
+                });
+            } catch (e) {
+                list.innerHTML = "<li style='padding:16px; color:#ff7b72'>Fehler beim Laden der Dateien.</li>";
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
