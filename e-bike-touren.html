@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Bike Familientouren – Kurztrip &amp; Seenplatte</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+<style>
+  :root{
+    --paper: #EDE7D3;
+    --paper-dark: #E2DAC0;
+    --ink: #22312A;
+    --forest: #35594A;
+    --forest-dark: #24392F;
+    --lake: #2E7C8C;
+    --rust: #BB5A34;
+    --sand: #DCC788;
+    --line: rgba(34,49,42,0.16);
+    --radius: 14px;
+    --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--lake);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    padding:5.5rem 1.5rem 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(53,89,74,0.08), transparent 55%),
+      radial-gradient(circle at 85% 0%, rgba(46,124,140,0.10), transparent 50%),
+      var(--paper);
+    overflow:hidden;
+    text-align:center;
+  }
+  .hero .eyebrow{
+    font-family:var(--mono);
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:0.72rem;
+    color:var(--rust);
+    margin-bottom:1.1rem;
+  }
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:clamp(2.3rem, 5.5vw, 4rem);
+    line-height:1.08;
+    margin:0 0 1rem;
+    color:var(--forest-dark);
+    max-width:16ch;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .hero p.lede{
+    max-width:52ch;
+    margin:0 auto 2.5rem;
+    font-size:1.05rem;
+    color:#3c4a43;
+  }
+  .hero-nav{
+    display:flex;
+    justify-content:center;
+    gap:1rem;
+    flex-wrap:wrap;
+    margin-bottom:3rem;
+  }
+  .hero-nav a{
+    text-decoration:none;
+    font-family:var(--mono);
+    font-size:0.82rem;
+    letter-spacing:0.02em;
+    color:var(--forest-dark);
+    background:#fff;
+    border:1px solid var(--line);
+    padding:0.65rem 1.1rem;
+    border-radius:999px;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 1px 0 rgba(0,0,0,0.03);
+  }
+  .hero-nav a:hover{ transform:translateY(-2px); box-shadow:0 6px 14px rgba(34,49,42,0.12); }
+  .hero-nav a b{ color:var(--rust); }
+
+  /* elevation-profile divider */
+  .profile-divider{ display:block; width:100%; height:70px; }
+  .profile-divider path{ fill:var(--forest); opacity:0.9; }
+  .profile-divider path.bg{ fill:var(--sand); opacity:0.55; }
+
+  main{ background:var(--forest-dark); }
+
+  /* ---------- Chapter ---------- */
+  .chapter{
+    max-width:920px;
+    margin:0 auto;
+    padding:4.5rem 1.5rem 3rem;
+    color:var(--paper);
+  }
+  .chapter-head{ margin-bottom:2.2rem; }
+  .chapter-head .kicker{
+    font-family:var(--mono);
+    font-size:0.75rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--sand);
+    display:block;
+    margin-bottom:0.6rem;
+  }
+  .chapter-head h2{
+    font-family:var(--serif);
+    font-size:clamp(1.7rem, 3.6vw, 2.5rem);
+    margin:0 0 0.4rem;
+    color:#fff;
+  }
+  .chapter-head .sub{ color:#c9d6cd; font-size:1rem; }
+
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
+    gap:1px;
+    background:rgba(255,255,255,0.14);
+    border-radius:var(--radius);
+    overflow:hidden;
+    margin:1.8rem 0 2.4rem;
+  }
+  .stat{
+    background:rgba(255,255,255,0.05);
+    padding:1.1rem 1rem;
+    text-align:left;
+  }
+  .stat .n{ font-family:var(--mono); font-size:1.5rem; color:var(--sand); display:block; }
+  .stat .l{ font-size:0.78rem; color:#c9d6cd; }
+
+  /* ---------- distance profile bars (signature element) ---------- */
+  .km-profile{
+    display:flex;
+    align-items:flex-end;
+    gap:0.6rem;
+    height:150px;
+    margin:0 0 2.6rem;
+    padding:0 0.2rem;
+    border-bottom:1px dashed rgba(255,255,255,0.25);
+  }
+  .km-bar{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    height:100%;
+    min-width:0;
+  }
+  .km-bar .col{
+    width:100%;
+    max-width:46px;
+    background:var(--lake);
+    border-radius:6px 6px 2px 2px;
+    position:relative;
+  }
+  .km-bar.rest .col{ background:var(--sand); }
+  .km-bar.optional .col{
+    background:transparent;
+    border:2px dashed rgba(255,255,255,0.5);
+  }
+  .km-bar .val{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    color:var(--sand);
+    margin-bottom:0.35rem;
+  }
+  .km-bar .lab{
+    font-family:var(--mono);
+    font-size:0.68rem;
+    color:#c9d6cd;
+    margin-top:0.5rem;
+    text-align:center;
+  }
+
+  /* ---------- day cards ---------- */
+  .days{ display:flex; flex-direction:column; gap:0; margin-bottom:2.6rem; }
+  .day{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:1.1rem;
+    padding:1.3rem 0;
+    border-top:1px solid rgba(255,255,255,0.12);
+  }
+  .day:last-child{ border-bottom:1px solid rgba(255,255,255,0.12); }
+  .day .badge{
+    font-family:var(--mono);
+    font-size:0.95rem;
+    color:var(--forest-dark);
+    background:var(--sand);
+    width:44px; height:44px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:600;
+  }
+  .day.rest .badge{ background:#fff; }
+  .day.optional .badge{ background:transparent; border:2px dashed var(--sand); color:var(--sand); }
+  .day h3{
+    margin:0 0 0.3rem;
+    font-family:var(--serif);
+    font-size:1.2rem;
+    color:#fff;
+  }
+  .day h3 .km{
+    font-family:var(--mono);
+    font-size:0.8rem;
+    color:var(--sand);
+    font-weight:400;
+    margin-left:0.5rem;
+  }
+  .day p{ margin:0; color:#d7e0da; font-size:0.95rem; }
+  .day .tag{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:0.68rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--forest-dark);
+    background:var(--sand);
+    padding:0.15rem 0.55rem;
+    border-radius:999px;
+    margin-top:0.5rem;
+  }
+
+  /* ---------- map ---------- */
+  .map-wrap{
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.18);
+    margin-bottom:2rem;
+  }
+  .map{ width:100%; height:420px; background:#cfd8d2; }
+  @media (max-width:600px){ .map{ height:320px; } }
+
+  /* ---------- callouts ---------- */
+  .callout{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:var(--radius);
+    padding:1.3rem 1.4rem;
+    margin-bottom:1rem;
+  }
+  .callout h4{
+    margin:0 0 0.5rem;
+    font-family:var(--mono);
+    font-size:0.8rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--rust);
+  }
+  .callout p{ margin:0; color:#d7e0da; font-size:0.92rem; }
+  .callout ul{ margin:0.4rem 0 0; padding-left:1.1rem; color:#d7e0da; font-size:0.92rem; }
+  .callout li{ margin-bottom:0.3rem; }
+
+  .divider{
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    margin:0;
+  }
+
+  footer{
+    text-align:center;
+    padding:2.5rem 1.5rem 3rem;
+    color:#c9d6cd;
+    font-family:var(--mono);
+    font-size:0.75rem;
+    letter-spacing:0.03em;
+  }
+
+  .leaflet-popup-content{ font-family:var(--sans); font-size:0.88rem; }
+  .leaflet-popup-content b{ font-family:var(--serif); font-size:1rem; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">Reiseplan · E-Bike &amp; Zelt</span>
+  <h1>Zwei Touren für die ganze Familie</h1>
+  <p class="lede">Ein kurzer Übernachtungs-Ausflug ab der Haustür und eine große Sommertour durch die Mecklenburgische Seenplatte – flach, wasserreich und mit viel Zeit zum Schwimmen.</p>
+  <div class="hero-nav">
+    <a href="#kurztrip"><b>01</b> · Kurztrip Oderbruch (2 Tage)</a>
+    <a href="#seenplatte"><b>02</b> · Große Tour Seenplatte (6 Tage)</a>
+  </div>
+  <svg class="profile-divider" viewBox="0 0 1200 70" preserveAspectRatio="none">
+    <path class="bg" d="M0,55 L100,30 200,45 320,15 440,40 560,20 680,48 800,25 920,42 1040,18 1200,38 1200,70 0,70 Z"></path>
+    <path d="M0,62 L110,42 230,58 350,32 470,52 590,28 710,55 830,35 950,50 1070,30 1200,48 1200,70 0,70 Z"></path>
+  </svg>
+</div>
+
+<main>
+
+  <!-- ============ CHAPTER 1: KURZTRIP ============ -->
+  <section class="chapter" id="kurztrip">
+    <div class="chapter-head">
+      <span class="kicker">Route 01 · Nächstes Wochenende</span>
+      <h2>Kurztrip: Oderbruch &amp; Nationalpark</h2>
+      <div class="sub">Hohenwutzen ↔ Schwedt · 2 Tage · Zelt am Wasser</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><span class="n">~55 km</span><span class="l">Gesamtstrecke</span></div>
+      <div class="stat"><span class="n">2</span><span class="l">Tage</span></div>
+      <div class="stat"><span class="n">flach</span><span class="l">Höhenprofil</span></div>
+      <div class="stat"><span class="n">🏕️</span><span class="l">Zelt-Camping</span></div>
+    </div>
+
+    <div class="km-profile">
+      <div class="km-bar"><span class="val">26 km</span><div class="col" style="height:70%"></div><span class="lab">Tag 1<br>Hohenwutzen →<br>Schwedt</span></div>
+      <div class="km-bar"><span class="val">26 km</span><div class="col" style="height:70%"></div><span class="lab">Tag 2<br>Schwedt →<br>Hohenwutzen</span></div>
+      <div class="km-bar optional"><span class="val">+18 km</span><div class="col" style="height:48%"></div><span class="lab">Bonus<br>Abstecher<br>Cedynia (PL)</span></div>
+    </div>
+
+    <div class="days">
+      <div class="day">
+        <div class="badge">1</div>
+        <div>
+          <h3>Hohenwutzen → Schwedt <span class="km">26 km</span></h3>
+          <p>Start direkt an der Haustür, dann flach am Oderdeich entlang durch den Nationalpark Unteres Odertal. Nach ca. 18&nbsp;km Stopp im Besucherzentrum Criewen – interaktive Ausstellung, vielleicht Singschwäne. Weiter nach Schwedt zum Zeltplatz StroamCamp direkt am Wasser.</p>
+          <span class="tag">Nationalpark · Aussichtspunkte</span>
+        </div>
+      </div>
+      <div class="day">
+        <div class="badge">2</div>
+        <div>
+          <h3>Schwedt → Hohenwutzen <span class="km">26 km</span></h3>
+          <p>Gleiche Strecke zurück (oder die parallele Route auf der anderen Deichseite). Ankunft am frühen bis mittleren Nachmittag.</p>
+          <span class="tag">Rückweg</span>
+        </div>
+      </div>
+      <div class="day optional">
+        <div class="badge">+</div>
+        <div>
+          <h3>Optional: Abstecher nach Polen <span class="km">+18 km</span></h3>
+          <p>Mit Restakku und Zeit: über die Brücke bei Hohenwutzen nach Polen, hoch zum kostenlosen Aussichtsturm in Cedynia – schöner Ausblick zum Abschluss. Personalausweis nicht vergessen (keine Grenzkontrolle, Schengen).</p>
+          <span class="tag">Bonus-Runde</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-wrap"><div id="map1" class="map"></div></div>
+
+    <div class="callout">
+      <h4>Gut zu wissen</h4>
+      <ul>
+        <li>Wetter am Wochenende meist trocken und warm – ideal, aber vorher nochmal kurz prüfen.</li>
+        <li>StroamCamp vorher anrufen und Zeltplatz reservieren, im Sommer gut besucht.</li>
+        <li>Falls am Platz Strom verfügbar ist: Akkus über Nacht laden, dann ist für Tag 2 volle Reichweite da.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ============ CHAPTER 2: SEENPLATTE ============ -->
+  <section class="chapter" id="seenplatte">
+    <div class="chapter-head">
+      <span class="kicker">Route 02 · Sommerurlaub, ganze Familie</span>
+      <h2>Große Tour: Mecklenburgische Seenplatte</h2>
+      <div class="sub">Anreise per Bahn nach Fürstenberg/Havel · Rückreise ab Waren oder Malchow · 6 Tage</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><span class="n">~206 km</span><span class="l">Gesamtstrecke</span></div>
+      <div class="stat"><span class="n">6</span><span class="l">Tage</span></div>
+      <div class="stat"><span class="n">Ø 34 km</span><span class="l">pro Tag</span></div>
+      <div class="stat"><span class="n">🏕️/🏨</span><span class="l">Camping &amp; Hotel</span></div>
+    </div>
+
+    <div class="km-profile">
+      <div class="km-bar"><span class="val">35 km</span><div class="col" style="height:78%"></div><span class="lab">Tag 1<br>Feldberg</span></div>
+      <div class="km-bar"><span class="val">38 km</span><div class="col" style="height:85%"></div><span class="lab">Tag 2<br>Neustrelitz</span></div>
+      <div class="km-bar rest"><span class="val">28 km</span><div class="col" style="height:62%"></div><span class="lab">Tag 3<br>Userin<br>(Pausentag)</span></div>
+      <div class="km-bar"><span class="val">35 km</span><div class="col" style="height:78%"></div><span class="lab">Tag 4<br>Rechlin</span></div>
+      <div class="km-bar"><span class="val">40 km</span><div class="col" style="height:90%"></div><span class="lab">Tag 5<br>Waren</span></div>
+      <div class="km-bar optional"><span class="val">30 km</span><div class="col" style="height:67%"></div><span class="lab">Tag 6<br>Malchow<br>(optional)</span></div>
+    </div>
+
+    <div class="days">
+      <div class="day">
+        <div class="badge">1</div>
+        <div>
+          <h3>Fürstenberg/Havel → Feldberg <span class="km">35 km</span></h3>
+          <p>Zug bis Fürstenberg/Havel (Berlin–Stralsund-Linie), dann gemütlicher Einstieg in die Feldberger Seenlandschaft. Übernachtung am Campingplatz Feldberg direkt an der Haussee – einer der saubersten Seen Deutschlands, Kanu-/SUP-Verleih vor Ort.</p>
+          <span class="tag">Zuganreise · Schwimmen</span>
+        </div>
+      </div>
+      <div class="day">
+        <div class="badge">2</div>
+        <div>
+          <h3>Feldberg → Neustrelitz <span class="km">38 km</span></h3>
+          <p>Weiter zum Schlossgarten Neustrelitz und zum Baden in den Zierker See. Für eine komfortable Nacht: Hotel in der Stadt, alternativ Campinghof Am Grünen Baum (Top-Bewertungen).</p>
+          <span class="tag">Schloss · Wahlweise Hotel</span>
+        </div>
+      </div>
+      <div class="day rest">
+        <div class="badge">3</div>
+        <div>
+          <h3>Neustrelitz → Userin <span class="km">28 km · Pausentag</span></h3>
+          <p>Bewusst kurze Etappe, dafür viel Zeit zum Spielen. Havelberge Camping Resort in Userin ist bei Kindern beliebt: Klettergarten, Bogenschießen, Trampoline, Abendprogramm, direkt am See.</p>
+          <span class="tag">Viel Zeit zum Spielen</span>
+        </div>
+      </div>
+      <div class="day">
+        <div class="badge">4</div>
+        <div>
+          <h3>Userin → Rechlin <span class="km">35 km</span></h3>
+          <p>Hinein in den Müritz-Nationalpark. Campingplatz „Boek" liegt direkt am Eingang zum Park, mit Sandstrand und Spielplatz am See.</p>
+          <span class="tag">Nationalpark Müritz</span>
+        </div>
+      </div>
+      <div class="day">
+        <div class="badge">5</div>
+        <div>
+          <h3>Rechlin → Waren (Müritz) <span class="km">40 km</span></h3>
+          <p>Am Ufer der Müritz (zweitgrößter See Deutschlands) entlang nach Waren. Unterwegs Stopp im Müritzeum (interaktives Natur- und Aquarium-Museum, gut auch bei Regen). Übernachtung auf dem großen, familienfreundlichen Platz Ecktannen oder in einem Hotel in Waren.</p>
+          <span class="tag">Müritzeum · Seeufer</span>
+        </div>
+      </div>
+      <div class="day optional">
+        <div class="badge">6</div>
+        <div>
+          <h3>Waren → Malchow <span class="km">30 km · optional</span></h3>
+          <p>Wer noch einen Tag dranhängen möchte: entspannte Etappe zum Plauer See und der hübschen Inselstadt Malchow. Naturcamping Malchow liegt direkt am Wasser. Rückreise per Bahn ab Waren (direkt auf der Berlin–Stralsund-Linie) oder ab Malchow/Plau am See.</p>
+          <span class="tag">Verlängerung</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-wrap"><div id="map2" class="map"></div></div>
+
+    <div class="callout">
+      <h4>Gut zu wissen</h4>
+      <ul>
+        <li>Fahrradstellplätze im Zug frühzeitig reservieren – für 5&nbsp;E-Bikes sollte das nicht spontan passieren.</li>
+        <li>Beliebte Plätze (v.&nbsp;a. Havelberge, Ecktannen) im Sommer vorab buchen.</li>
+        <li>Die Region ist Teil des gut ausgeschilderten Radnetzes „Mecklenburgische Seenplatte" – Navigation ist auch ohne Detailkarte gut machbar.</li>
+        <li>Die meisten Plätze haben Stromanschluss – Akkus können über Nacht laden.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>Erstellt für die Radtour-Planung · Karten © OpenStreetMap-Mitwirkende</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+  function buildMap(elId, stops, lineColor){
+    const map = L.map(elId, { scrollWheelZoom:false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap-Mitwirkende'
+    }).addTo(map);
+
+    const latlngs = stops.map(s => [s.lat, s.lng]);
+
+    L.polyline(latlngs, { color: lineColor, weight: 4, opacity: 0.8, dashArray: '1,8', lineCap:'round' }).addTo(map);
+
+    stops.forEach((s, i) => {
+      const isOptional = !!s.optional;
+      const marker = L.circleMarker([s.lat, s.lng], {
+        radius: 8,
+        weight: 2,
+        color: isOptional ? '#DCC788' : '#BB5A34',
+        fillColor: isOptional ? '#DCC788' : '#BB5A34',
+        fillOpacity: 0.9,
+        dashArray: isOptional ? '3,3' : null
+      }).addTo(map);
+      marker.bindPopup('<b>' + s.name + '</b><br>' + s.note);
+    });
+
+    map.fitBounds(latlngs, { padding: [30,30] });
+    return map;
+  }
+
+  const trip1 = [
+    { lat:52.8735, lng:14.2871, name:"Zuhause – Hohenwutzen", note:"Start &amp; Ziel der Tour." },
+    { lat:53.0122, lng:14.2229, name:"Nationalpark-Zentrum Criewen", note:"~18 km ab Start. Ausstellung zur Oder-Aue." },
+    { lat:53.0571, lng:14.2976, name:"StroamCamp Schwedt", note:"~26 km. Zeltplatz direkt an der Oder, Übernachtung." },
+    { lat:52.8755, lng:14.2034, name:"Aussichtsturm Cedynia (PL)", note:"Optionaler Abstecher, ~9 km ab Hohenwutzen, kostenlos." }
+  ];
+
+  const trip2 = [
+    { lat:53.1685, lng:13.1439, name:"Fürstenberg/Havel", note:"Ankunft mit dem Zug, Start der Radtour." },
+    { lat:53.3453, lng:13.4566, name:"Campingplatz Feldberg", note:"Tag 1 · ~35 km. Direkt an der Haussee." },
+    { lat:53.3323, lng:13.1194, name:"Neustrelitz", note:"Tag 2 · ~38 km. Schlossgarten &amp; Zierker See." },
+    { lat:53.3087, lng:13.0027, name:"Havelberge Camping Resort, Userin", note:"Tag 3 (Pausentag) · ~28 km. Klettergarten, Trampoline." },
+    { lat:53.3958, lng:12.7876, name:"Campingplatz „Boek“, Rechlin", note:"Tag 4 · ~35 km. Eingang Müritz-Nationalpark." },
+    { lat:53.5149, lng:12.6834, name:"Müritzeum, Waren", note:"Tag 5, Zwischenstopp. Natur- &amp; Aquarium-Museum." },
+    { lat:53.4993, lng:12.6634, name:"CampingPlatz Ecktannen, Waren", note:"Tag 5 Ziel · ~40 km ab Rechlin." },
+    { lat:53.4922, lng:12.3725, name:"Naturcamping Malchow", note:"Tag 6 (optional) · ~30 km. Plauer See, Inselstadt.", optional:true }
+  ];
+
+  const map1 = buildMap('map1', trip1, '#2E7C8C');
+  const map2 = buildMap('map2', trip2, '#2E7C8C');
+
+  setTimeout(() => { map1.invalidateSize(); map2.invalidateSize(); }, 200);
+</script>
+
+</body>
+</html>
