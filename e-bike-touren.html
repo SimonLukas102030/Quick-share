@@ -31,7 +31,7 @@
     line-height:1.55;
     -webkit-font-smoothing:antialiased;
   }
-  a{color:var(--lake);}
+  a{color:var(--lake); font-weight: 500;}
 
   /* ---------- Hero ---------- */
   .hero{
@@ -222,6 +222,7 @@
     margin-left:0.5rem;
   }
   .day p{ margin:0; color:#d7e0da; font-size:0.95rem; }
+  .day ul { margin-top: 0.5rem; padding-left: 1.2rem; color:#d7e0da; font-size:0.9rem; }
   .day .tag{
     display:inline-block;
     font-family:var(--mono);
@@ -232,7 +233,7 @@
     background:var(--sand);
     padding:0.15rem 0.55rem;
     border-radius:999px;
-    margin-top:0.5rem;
+    margin-top:0.8rem;
   }
 
   /* ---------- map ---------- */
@@ -240,10 +241,28 @@
     border-radius:var(--radius);
     overflow:hidden;
     border:1px solid rgba(255,255,255,0.18);
-    margin-bottom:2rem;
+    margin-bottom:1rem;
   }
   .map{ width:100%; height:420px; background:#cfd8d2; }
   @media (max-width:600px){ .map{ height:320px; } }
+
+  .gmaps-link {
+    display: block;
+    text-align: center;
+    background: #fff;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--sans);
+    font-weight: 600;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 2.5rem;
+    transition: all 0.2s;
+  }
+  .gmaps-link:hover {
+    background: var(--sand);
+    color: var(--forest-dark);
+  }
 
   /* ---------- callouts ---------- */
   .callout{
@@ -280,14 +299,14 @@
     letter-spacing:0.03em;
   }
 
-  .leaflet-popup-content{ font-family:var(--sans); font-size:0.88rem; }
+  .leaflet-popup-content{ font-family:var(--sans); font-size:0.88rem; color:#22312A; }
   .leaflet-popup-content b{ font-family:var(--serif); font-size:1rem; }
 </style>
 </head>
 <body>
 
 <div class="hero">
-  <span class="eyebrow">Reiseplan · E-Bike &amp; Zelt</span>
+  <span class="eyebrow">Reiseplan · E-Bike & Zelt</span>
   <h1>Sommertour für die ganze Familie</h1>
   <p class="lede">Eine große Sommertour durch die Mecklenburgische Seenplatte – flach, wasserreich und mit viel Zeit zum Schwimmen.</p>
   <div class="hero-nav">
@@ -303,7 +322,7 @@
 
   <section class="chapter" id="seenplatte">
     <div class="chapter-head">
-      <span class="kicker">Sommerurlaub, ganze Familie</span>
+      <span class="kicker">Route 02 · Sommerurlaub, ganze Familie</span>
       <h2>Große Tour: Mecklenburgische Seenplatte</h2>
       <div class="sub">Anreise per Bahn nach Fürstenberg/Havel · Rückreise ab Waren oder Malchow · 6 Tage</div>
     </div>
@@ -312,7 +331,7 @@
       <div class="stat"><span class="n">~206 km</span><span class="l">Gesamtstrecke</span></div>
       <div class="stat"><span class="n">6</span><span class="l">Tage</span></div>
       <div class="stat"><span class="n">Ø 34 km</span><span class="l">pro Tag</span></div>
-      <div class="stat"><span class="n">🏕️/🏨</span><span class="l">Camping &amp; Hotel</span></div>
+      <div class="stat"><span class="n">🏕️/🏨</span><span class="l">Camping & Hotel</span></div>
     </div>
 
     <div class="km-profile">
@@ -329,7 +348,10 @@
         <div class="badge">1</div>
         <div>
           <h3>Fürstenberg/Havel → Feldberg <span class="km">35 km</span></h3>
-          <p>Zug bis Fürstenberg/Havel (Berlin–Stralsund-Linie), dann gemütlicher Einstieg in die Feldberger Seenlandschaft. Übernachtung am Campingplatz Feldberg direkt an der Haussee – einer der saubersten Seen Deutschlands, Kanu-/SUP-Verleih vor Ort.</p>
+          <p>Zug bis Fürstenberg/Havel, dann gemütlicher Einstieg. Am Nachmittag bleibt genug Zeit zum Schwimmen in der Haussee. Übernachtung am sauberen <a href="https://www.campingplatz-feldberg.de" target="_blank">Camping am Bauernhof Feldberg</a> (Tel: 039831 21084).</p>
+          <ul>
+            <li><b>Restaurant-Tipp:</b> <a href="https://www.pension-mecklenburgerhof.de/" target="_blank">Mecklenburger Hof</a> (Tel: 039831 22750) – Gutbürgerlich mit zarten Schnitzeln und Burgern für Kinder.</li>
+          </ul>
           <span class="tag">Zuganreise · Schwimmen</span>
         </div>
       </div>
@@ -337,31 +359,43 @@
         <div class="badge">2</div>
         <div>
           <h3>Feldberg → Neustrelitz <span class="km">38 km</span></h3>
-          <p>Weiter zum Schlossgarten Neustrelitz und zum Baden in den Zierker See. Für eine komfortable Nacht: Hotel in der Stadt, alternativ Campinghof Am Grünen Baum (Top-Bewertungen).</p>
-          <span class="tag">Schloss · Wahlweise Hotel</span>
+          <p>Weiter nach Neustrelitz. Hier lohnt sich ein Spaziergang durch den wunderschönen Schlossgarten. Übernachtung wahlweise im Hotel oder auf dem Campinghof Am Grünen Baum.</p>
+          <ul>
+            <li><b>Restaurant-Tipp:</b> <a href="https://www.pizza-more.de/" target="_blank">Pizza & More</a> – Riesige Auswahl an Pizza, Burgern und Hähnchen (liefern auch).</li>
+          </ul>
+          <span class="tag">Schlossgarten · Wahlweise Hotel</span>
         </div>
       </div>
       <div class="day rest">
         <div class="badge">3</div>
         <div>
           <h3>Neustrelitz → Userin <span class="km">28 km · Pausentag</span></h3>
-          <p>Bewusst kurze Etappe, dafür viel Zeit zum Spielen. Havelberge Camping Resort in Userin ist bei Kindern beliebt: Klettergarten, Bogenschießen, Trampoline, Abendprogramm, direkt am See.</p>
-          <span class="tag">Viel Zeit zum Spielen</span>
+          <p>Bewusst kurze Etappe. Das bewährte <a href="https://www.havelberge.de" target="_blank">Havelberge Camping Resort</a> (Tel: 03981 24790) in Userin bietet alles für Kinder: Klettergarten, Bogenschießen, Trampoline.</p>
+          <ul>
+             <li><b>Restaurant-Tipp:</b> <a href="https://www.havelberge.de/gastronomie" target="_blank">Restaurant Havelberge</a> – Direkt auf dem Campingplatz. Bietet leckere Burger, knusprige Pizza, Fisch und Eisbecher.</li>
+          </ul>
+          <span class="tag">Klettergarten · Pausentag</span>
         </div>
       </div>
       <div class="day">
         <div class="badge">4</div>
         <div>
           <h3>Userin → Rechlin <span class="km">35 km</span></h3>
-          <p>Hinein in den Müritz-Nationalpark. Campingplatz „Boek" liegt direkt am Eingang zum Park, mit Sandstrand und Spielplatz am See.</p>
-          <span class="tag">Nationalpark Müritz</span>
+          <p>Hinein in den Müritz-Nationalpark zum <a href="https://www.campingplatz-boek.de" target="_blank">Campingplatz Boek C16</a> (Tel: 039823 169941). Ein tolles Ausflugsziel in der Nähe ist das Luftfahrttechnische Museum Rechlin.</p>
+          <ul>
+            <li><b>Restaurant-Tipps:</b> <a href="https://ristorante-pizzeria-toscana.metro.bar/?lang=de" target="_blank">Toscana</a> (Tel: 039823 253241) für erstklassige Pizza und Pasta oder das <a href="https://residenz-am-ostufer.de/geniessen/restaurant" target="_blank">Restaurant Auszeit</a> (Tel: 039823 2701) für Burger und saftige Fleischgerichte.</li>
+          </ul>
+          <span class="tag">Museum · Nationalpark</span>
         </div>
       </div>
       <div class="day">
         <div class="badge">5</div>
         <div>
           <h3>Rechlin → Waren (Müritz) <span class="km">40 km</span></h3>
-          <p>Am Ufer der Müritz (zweitgrößter See Deutschlands) entlang nach Waren. Unterwegs Stopp im Müritzeum (interaktives Natur- und Aquarium-Museum, gut auch bei Regen). Übernachtung auf dem großen, familienfreundlichen Platz Ecktannen oder in einem Hotel in Waren.</p>
+          <p>Am Ufer der Müritz entlang. Unterwegs lohnt sich ein Stopp im <b>Müritzeum</b> (interaktives Natur- und Aquarium-Museum, super für Kids). Übernachtung auf dem <a href="https://www.camping-ecktannen.de" target="_blank">CampingPlatz Ecktannen</a> (Tel: 03991 668513).</p>
+          <ul>
+            <li><b>Restaurant-Tipps:</b> <a href="https://www.alt-waren.de/" target="_blank">Restaurant Alt Waren</a> (Tel: 03991 633777) für Schnitzel und urige Küche oder das <a href="https://roma-waren.de/" target="_blank">Restaurant Roma</a> (Tel: 03991 7798473) für frische Pizza Napoletana.</li>
+          </ul>
           <span class="tag">Müritzeum · Seeufer</span>
         </div>
       </div>
@@ -369,21 +403,27 @@
         <div class="badge">6</div>
         <div>
           <h3>Waren → Malchow <span class="km">30 km · optional</span></h3>
-          <p>Wer noch einen Tag dranhängen möchte: entspannte Etappe zum Plauer See und der hübschen Inselstadt Malchow. Naturcamping Malchow liegt direkt am Wasser. Rückreise per Bahn ab Waren (direkt auf der Berlin–Stralsund-Linie) oder ab Malchow/Plau am See.</p>
-          <span class="tag">Verlängerung</span>
+          <p>Entspannte Etappe nach Malchow. Ein echtes Highlight für deine kleine Schwester ist der Affenwald mit Sommerrodelbahn. Übernachtung: <a href="https://www.naturcamping-malchow.de" target="_blank">Naturcamping Malchow</a> (Tel: 039932 49907).</p>
+          <ul>
+            <li><b>Restaurant-Tipps:</b> <a href="https://www.lieferando.de/speisekarte/deutsches-haus-17213" target="_blank">Deutsches Haus Malchow</a> für fantastische Smash Burger & Schnitzel oder <a href="https://www.alportomalchow.de/" target="_blank">Al Porto</a> für Pizza direkt an der Drehbrücke am Hafen.</li>
+          </ul>
+          <span class="tag">Sommerrodelbahn · Affenwald</span>
         </div>
       </div>
     </div>
 
     <div class="map-wrap"><div id="map2" class="map"></div></div>
+    
+    <a href="https://www.google.com/maps/dir/Fürstenberg+Havel/Pension+%26+Restaurant+Mecklenburger+Hof,+Neue+Str.+1,+17258+Feldberger+Seenlandschaft/Pizza+%26+More,+Neustrelitz/Havelberge+Camping+Resort,+Userin/Restaurant+Auszeit,+Boeker+Str.+39a,+17248+Rechlin/Restaurant+Alt+Waren,+Zur+Steinmole+1,+17192+Waren+(Müritz)/Deutsches+Haus,+Malchow" target="_blank" class="gmaps-link">
+      📍 Route inkl. Restaurants auf Google Maps öffnen & teilen
+    </a>
 
     <div class="callout">
       <h4>Gut zu wissen</h4>
       <ul>
-        <li>Fahrradstellplätze im Zug frühzeitig reservieren – für 5&nbsp;E-Bikes sollte das nicht spontan passieren.</li>
-        <li>Beliebte Plätze (v.&nbsp;a. Havelberge, Ecktannen) im Sommer vorab buchen.</li>
-        <li>Die Region ist Teil des gut ausgeschilderten Radnetzes „Mecklenburgische Seenplatte" – Navigation ist auch ohne Detailkarte gut machbar.</li>
-        <li>Die meisten Plätze haben Stromanschluss – Akkus können über Nacht laden.</li>
+        <li>Fahrradstellplätze im Zug frühzeitig reservieren – für E-Bikes sollte das nicht spontan passieren.</li>
+        <li>Beliebte Plätze (v. a. Havelberge, Ecktannen) im Sommer vorab buchen.</li>
+        <li>Alle verlinkten Campingplätze bieten an den Stellplätzen CEE-Stromanschlüsse an – Akkus können problemlos über Nacht laden.</li>
       </ul>
     </div>
   </section>
@@ -394,17 +434,18 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
-  function buildMap(elId, stops, lineColor){
+  function buildMap(elId, stops, restaurants, lineColor){
     const map = L.map(elId, { scrollWheelZoom:false });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
-      attribution: '&copy; OpenStreetMap-Mitwirkende'
+      attribution: '© OpenStreetMap-Mitwirkende'
     }).addTo(map);
 
     const latlngs = stops.map(s => [s.lat, s.lng]);
 
     L.polyline(latlngs, { color: lineColor, weight: 4, opacity: 0.8, dashArray: '1,8', lineCap:'round' }).addTo(map);
 
+    // Route markers
     stops.forEach((s, i) => {
       const isOptional = !!s.optional;
       const marker = L.circleMarker([s.lat, s.lng], {
@@ -418,22 +459,43 @@
       marker.bindPopup('<b>' + s.name + '</b><br>' + s.note);
     });
 
+    // Restaurant markers
+    restaurants.forEach((r, i) => {
+      const marker = L.circleMarker([r.lat, r.lng], {
+        radius: 6,
+        weight: 2,
+        color: '#2E7C8C',
+        fillColor: '#2E7C8C',
+        fillOpacity: 1
+      }).addTo(map);
+      marker.bindPopup('<b>🍽️ ' + r.name + '</b><br>' + r.note);
+    });
+
     map.fitBounds(latlngs, { padding: [30,30] });
     return map;
   }
 
   const trip2 = [
     { lat:53.1685, lng:13.1439, name:"Fürstenberg/Havel", note:"Ankunft mit dem Zug, Start der Radtour." },
-    { lat:53.3453, lng:13.4566, name:"Campingplatz Feldberg", note:"Tag 1 · ~35 km. Direkt an der Haussee." },
-    { lat:53.3323, lng:13.1194, name:"Neustrelitz", note:"Tag 2 · ~38 km. Schlossgarten &amp; Zierker See." },
+    { lat:53.3453, lng:13.4566, name:"Camping am Bauernhof Feldberg", note:"Tag 1 · ~35 km. Direkt an der Haussee." },
+    { lat:53.3323, lng:13.1194, name:"Neustrelitz", note:"Tag 2 · ~38 km. Schlossgarten & Zierker See." },
     { lat:53.3087, lng:13.0027, name:"Havelberge Camping Resort, Userin", note:"Tag 3 (Pausentag) · ~28 km. Klettergarten, Trampoline." },
-    { lat:53.3958, lng:12.7876, name:"Campingplatz „Boek“, Rechlin", note:"Tag 4 · ~35 km. Eingang Müritz-Nationalpark." },
-    { lat:53.5149, lng:12.6834, name:"Müritzeum, Waren", note:"Tag 5, Zwischenstopp. Natur- &amp; Aquarium-Museum." },
+    { lat:53.3958, lng:12.7876, name:"Campingplatz „Boek“ C16, Rechlin", note:"Tag 4 · ~35 km. Eingang Müritz-Nationalpark." },
+    { lat:53.5149, lng:12.6834, name:"Müritzeum, Waren", note:"Tag 5, Zwischenstopp. Natur- & Aquarium-Museum." },
     { lat:53.4993, lng:12.6634, name:"CampingPlatz Ecktannen, Waren", note:"Tag 5 Ziel · ~40 km ab Rechlin." },
     { lat:53.4922, lng:12.3725, name:"Naturcamping Malchow", note:"Tag 6 (optional) · ~30 km. Plauer See, Inselstadt.", optional:true }
   ];
 
-  const map2 = buildMap('map2', trip2, '#2E7C8C');
+  const restaurants = [
+    { lat:53.3361, lng:13.4358, name:"Mecklenburger Hof (Feldberg)", note:"Schnitzel & Hausmannskost." },
+    { lat:53.3630, lng:13.0632, name:"Pizza & More (Neustrelitz)", note:"Pizza & Burger." },
+    { lat:53.3087, lng:13.0027, name:"Restaurant Havelberge (Userin)", note:"Burger, Pizza, Eis." },
+    { lat:53.3950, lng:12.7850, name:"Toscana & Auszeit (Rechlin)", note:"Pizza, Pasta, Burger." },
+    { lat:53.5130, lng:12.6880, name:"Alt Waren & Roma (Waren)", note:"Schnitzel & Pizza." },
+    { lat:53.4750, lng:12.4230, name:"Deutsches Haus & Al Porto (Malchow)", note:"Smash Burger, Schnitzel & Pizza." }
+  ];
+
+  const map2 = buildMap('map2', trip2, restaurants, '#2E7C8C');
 
   setTimeout(() => { map2.invalidateSize(); }, 200);
 </script>
