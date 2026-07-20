@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureNode AI — Souveräne KI-Infrastruktur für Kanzleien</title>
+    <style>
+        :root {
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --emerald-600: #16a34a;
+            --red-600: #dc2626;
+            --border: #e2e8f0;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--slate-50);
+            color: var(--slate-900);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--blue-600);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--slate-600);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--blue-600);
+            background-color: var(--slate-100);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background-color: var(--slate-900);
+            transition: var(--transition);
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            padding-top: 110px;
+            padding-bottom: 5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.25rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            color: var(--slate-900);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--slate-600);
+            margin-bottom: 2.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--blue-600);
+            color: white;
+            padding: 0.85rem 1.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: var(--blue-700);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--slate-700);
+            border: 1px solid var(--border);
+            margin-left: 1rem;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--slate-100);
+            color: var(--slate-900);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.05);
+            border-color: var(--blue-600);
+        }
+
+        .feature-card h3 {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+            color: var(--slate-900);
+        }
+
+        .feature-card p {
+            color: var(--slate-600);
+            font-size: 0.95rem;
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.75px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--slate-600);
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.1rem;
+        }
+
+        .workflow-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            padding-left: 2.5rem;
+        }
+
+        .workflow-timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 5px;
+            bottom: 5px;
+            width: 2px;
+            background-color: var(--border);
+        }
+
+        .workflow-node {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .workflow-node::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--blue-600);
+            border: 4px solid var(--slate-50);
+            box-shadow: 0 0 0 2px var(--blue-600);
+        }
+
+        .workflow-node h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .workflow-node p {
+            color: var(--slate-600);
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .specs-table th, .specs-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .specs-table th {
+            background-color: var(--slate-100);
+            font-weight: 600;
+            color: var(--slate-800);
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            align-items: stretch;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .product-card.premium {
+            border-color: var(--blue-600);
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.08);
+            position: relative;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background-color: var(--blue-600);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+        }
+
+        .product-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 1.5rem 0;
+        }
+
+        .product-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--slate-600);
+        }
+
+        .product-features {
+            list-style: none;
+            margin-bottom: 2.5rem;
+            flex-grow: 1;
+        }
+
+        .product-features li {
+            margin-bottom: 0.85rem;
+            color: var(--slate-600);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            color: var(--emerald-600);
+            font-weight: bold;
+        }
+
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .about-text p {
+            color: var(--slate-600);
+            margin-bottom: 1rem;
+        }
+
+        .profile-box {
+            background-color: white;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+        }
+
+        .profile-entry {
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-entry:last-child {
+            padding-bottom: 0;
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .profile-entry h4 {
+            font-size: 1.15rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-entry p {
+            color: var(--slate-600);
+            font-size: 0.9rem;
+        }
+
+        .disclaimer-box {
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            border-left: 4px solid var(--red-600);
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 3rem;
+        }
+
+        .disclaimer-box h3 {
+            color: #991b1b;
+            margin-bottom: 0.75rem;
+        }
+
+        .disclaimer-box p, .disclaimer-box li {
+            color: #7f1d1d;
+            font-size: 0.95rem;
+        }
+
+        .disclaimer-box ul {
+            margin-left: 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .legal-text h3 {
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .legal-text p {
+            color: var(--slate-600);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background-color: var(--slate-900);
+            color: var(--slate-100);
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--slate-800);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-info p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .footer-column h5 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: white;
+                border-bottom: 1px solid var(--border);
+                padding: 1.5rem 2rem;
+                gap: 1rem;
+                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo" onclick="switchPage('home')">
+                SecureNode<span>AI</span>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a onclick="switchPage('home')" id="link-home" class="active">Home</a></li>
+                <li><a onclick="switchPage('workflow')" id="link-workflow">Workflow</a></li>
+                <li><a onclick="switchPage('shop')" id="link-shop">Systeme</a></li>
+                <li><a onclick="switchPage('about')" id="link-about">Über uns</a></li>
+                <li><a onclick="switchPage('legal')" id="link-legal">Rechtliches</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="home" class="page active">
+        <section class="hero">
+            <h1>Souveräne Post- & Dokumenten-KI</h1>
+            <p>Vollautomatisierte Erfassung, Strukturierung und rechtssichere Archivierung sensibler Dokumente. Betrieben auf lokaler High-End-Hardware in Ihren eigenen Räumen. Absolut DSGVO-konform.</p>
+            <div>
+                <button class="btn" onclick="switchPage('shop')">System konfigurieren</button>
+                <button class="btn btn-outline" onclick="switchPage('workflow')">Funktionsweise ansehen</button>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Entwickelt für höchste Datenschutz-Ansprüche</h2>
+            <p class="section-subtitle">Kanzleien, Notariate und Betreuungsbüros verarbeiten hochsensible Mandantendaten. SecureNode AI eliminiert das Risiko von Drittanbieter-Clouds vollständig.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>0% Cloud-Abhängigkeit</h3>
+                    <p>Sämtliche Sprachmodelle (LLMs) und OCR-Pipelines laufen autark offline auf dedizierter Enterprise-Hardware in Ihrer Kanzlei. Keine Daten verlassen Ihr Haus.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Eigensicheres Interface</h3>
+                    <p>Ein minimalistisches, extrem schnelles Web-Interface stellt KI-Analysen übersichtlich dar. Die finale Freigabe erfolgt stets durch qualifiziertes Personal.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Automatisierte Workflows</h3>
+                    <p>Dank n8n-Orchestrierung verknüpft das System physische Scanner, lokale KI-Verarbeitung und verschlüsselte Massenspeicher nahtlos zu einer autonomen Einheit.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="workflow" class="page">
+        <h2 class="section-title">Der Verarbeitungs-Prozess</h2>
+        <p class="section-subtitle">Vom Papiereingang zur strukturierten Datenbank in Sekunden — vollautomatisch gesteuert via n8n.</p>
+        
+        <div class="workflow-timeline">
+            <div class="workflow-node">
+                <h3>1. Physischer Scan & Ingestion</h3>
+                <p>Eingehende Dokumente werden über den Hochleistungsscanner digitalisiert. Die Datei wird direkt via verschlüsseltem lokalen Netzwerk-Protokoll auf das interne JBOD-Speichersystem übertragen und triggert den n8n-Eingangsknoten.</p>
+            </div>
+            <div class="workflow-node">
+                <h3>2. Lokale OCR & Text-Extraktion</h3>
+                <p>Eine serverseitige, spezialisierte OCR-Engine extrahiert den gesamten Textinhalt des Dokuments in Millisekunden. Formatierungen und Tabellenstrukturen bleiben erhalten.</p>
+            </div>
+            <div class="workflow-node">
+                <h3>3. KI-Analyse & Metadaten-Erfassung</h3>
+                <p>Das lokale LLM (betrieben auf NVIDIA VRAM-Clustern) analysiert den Text. Es extrahiert selbstständig Absender, Fristen, rechtliche Relevanz, Aktenzeichen und erstellt eine prägnante Zusammenfassung.</p>
+            </div>
+            <div class="workflow-node">
+                <h3>4. Validierung im Custom-Interface</h3>
+                <p>Die extrahierten Daten werden im webbasierten Kanzlei-Interface übersichtlich neben dem Dokumenten-PDF visualisiert. Fehlerhafte Erkennungen können im "Human-in-the-Loop"-Verfahren sofort manuell korrigiert werden.</p>
+            </div>
+            <div class="workflow-node">
+                <h3>5. Strukturierte Langzeitarchivierung</h3>
+                <p>Nach der Bestätigung benennt das System die Datei automatisch nach Ihren Kanzleirichtlinien um, sortiert sie in die entsprechende digitale Akte auf dem JBOD-Verbund ein und aktualisiert interne Aufgabenlisten.</p>
+            </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 4rem;">Technische Spezifikationen</h2>
+        <p class="section-subtitle">Skalierbare Enterprise-Komponenten für kompromisslose Performance.</p>
+        <table class="specs-table">
+            <thead>
+                <tr>
+                    <th>Komponente</th>
+                    <th>Standard-Konfiguration</th>
+                    <th>Zweck</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Compute-Cluster</strong></td>
+                    <td>NVIDIA RTX A6000 Ada / NVIDIA A100 Tensor Core</td>
+                    <td>Ultraschnelle lokale Ausführung von LLMs & OCR-Pipelines</td>
+                </tr>
+                <tr>
+                    <td><strong>Speicherarchitektur</strong></td>
+                    <td>ZFS-gesteuerter Enterprise JBOD-Verbund (SAS3, 12G)</td>
+                    <td>Ausfallsichere, lokale Langzeit-Dokumentenablage</td>
+                </tr>
+                <tr>
+                    <td><strong>Software-Core</strong></td>
+                    <td>n8n Workflow Engine (Self-Hosted, Docker)</td>
+                    <td>Visuelle, flexible Steuerung und Erweiterung aller Workflows</td>
+                </tr>
+                <tr>
+                    <td><strong>Bedienung</strong></td>
+                    <td>Custom Web-UI (HTML5, Responsive, Light/Dark)</td>
+                    <td>Intuitive Validierung und Steuerung für alle Kanzleiangestellten</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="shop" class="page">
+        <h2 class="section-title">Schlüsselfertige Systemlösungen</h2>
+        <p class="section-subtitle">Wählen Sie die passende Leistungsstufe für Ihr Dokumentenaufkommen. Alle Systeme werden einsatzbereit geliefert.</p>
+        
+        <div class="shop-grid">
+            <div class="product-card">
+                <h3>SecureNode Workgroup</h3>
+                <p>Optimiert für kleinere Kanzleien und selbstständige Betreuer.</p>
+                <div class="product-price">14.990 € <span>netto</span></div>
+                <ul class="product-features">
+                    <li>1x NVIDIA RTX A6000 GPU (48GB VRAM)</li>
+                    <li>24TB Brutto-Speicherkapazität (RAID-Z2 Verbund)</li>
+                    <li>n8n Core-Workflow vorinstalliert</li>
+                    <li>Dokumenten-Interface für bis zu 5 Arbeitsplätze</li>
+                    <li>6 Monate dedizierter Hard- & Software-Support</li>
+                </ul>
+                <button class="btn" style="margin-top:auto;">Angebot anfordern</button>
+            </div>
+
+            <div class="product-card premium">
+                <div class="product-badge">Bestseller</div>
+                <h3>SecureNode Pro</h3>
+                <p>Ausgelegt für mittlere Kanzleien mit hohem Postaufkommen.</p>
+                <div class="product-price">24.990 € <span>netto</span></div>
+                <ul class="product-features">
+                    <li>2x NVIDIA RTX A6000 GPU Cluster (96GB VRAM)</li>
+                    <li>64TB Brutto-Speicherkapazität (Enterprise JBOD)</li>
+                    <li>Erweiterte KI-Modelle für komplexe juristische Texte</li>
+                    <li>Unbegrenzte Kanzlei-Arbeitsplätze</li>
+                    <li>6 Monate dedizierter Hard- & Software-Support</li>
+                </ul>
+                <button class="btn" style="margin-top:auto;">Angebot anfordern</button>
+            </div>
+
+            <div class="product-card">
+                <h3>SecureNode Custom Enterprise</h3>
+                <p>Maximale Performance für Großkanzleien und Klinikverbünde.</p>
+                <div class="product-price">Auf Anfrage</div>
+                <ul class="product-features">
+                    <li>NVIDIA A100 Tensor Core Compute-Einheiten</li>
+                    <li>Skalierbare JBOD-Strukturen über 100TB+</li>
+                    <li>Anbindung an bestehende Kanzleisoftware (Schnittstellen)</li>
+                    <li>High-Availability Ausfallsicherheits-Setup</li>
+                    <li>Individuelle Support- und Wartungsverträge</li>
+                </ul>
+                <button class="btn btn-outline" style="margin-top:auto;">Vertrieb kontaktieren</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="about" class="page">
+        <h2 class="section-title">Wer wir sind</h2>
+        <p class="section-subtitle">Souveräne Infrastruktur-Architekten für das digitale Zeitalter.</p>
+        
+        <div class="about-container">
+            <div class="about-text">
+                <h3>Unsere Vision</h3>
+                <p>Wir glauben, dass die Nutzung moderner künstlicher Intelligenz nicht zulasten des Berufsgeheimnisses und des Datenschutzes gehen darf. Cloud-Lösungen sind für hochsensible Mandanten- und Patientendaten oft unzulässig oder stellen ein unkalkulierbares Risiko dar.</p>
+                <p>SecureNode AI wurde gegründet, um Kanzleien und Behörden die volle Kontrolle über ihre Daten zurückzugeben. Wir kombinieren State-of-the-Art Enterprise-Hardware mit Open-Source-KI-Strukturen zu einem schlüsselfertigen Produkt.</p>
+            </div>
+            
+            <div class="profile-box">
+                <div class="profile-entry">
+                    <h4>Simon Lukas Köper</h4>
+                    <p>Co-Founder & System Architect</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--slate-600);">Spezialisiert auf lokale LLM-Infrastrukturen, Workflow-Orchestrierung via n8n und die Entwicklung responsiver Custom-Schnittstellen.</p>
+                </div>
+                <div class="profile-entry">
+                    <h4>Jakob</h4>
+                    <p>Co-Founder & Hardware Engineer</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--slate-600);">Verantwortlich für die Konzeption, Assemblierung und thermische Optimierung der GPU-Rechenknoten und JBOD-Speichersysteme.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="legal" class="page">
+        <div class="disclaimer-box">
+            <h3>Rechtliche Hinweise & Haftungsausschluss (Wichtig)</h3>
+            <p>Für den Betrieb unserer Systeme gelten zwingend folgende Bedingungen, die Bestandteil jedes Kaufvertrags werden:</p>
+            <ul>
+                <li><strong>Keine Haftung für KI-Ergebnisse:</strong> Künstliche Intelligenz und generative Modelle können fehlerhafte Ergebnisse liefern oder halluzinieren. Das System ist strikt als Assistenzsystem konzipiert. Wir übernehmen keinerlei Haftung für die Richtigkeit der extrahierten Daten, verpasste Fristen, Fehlfunktionen des Systems oder daraus resultierende Folgeschäden. Die Letztverantwortung und inhaltliche Überprüfung verbleibt vollständig beim Endnutzer (Human-in-the-Loop).</li>
+                <li><strong>Supportbeschränkung:</strong> Im System-Kaufpreis ist ein technischer Support für einen Zeitraum von exakt 6 Monaten (0,5 Jahre) ab dem Zeitpunkt der dokumentierten Inbetriebnahme enthalten. Nach Ablauf dieses Zeitraums endet die Supportverpflichtung unsererseits. Der Weiterbetrieb erfolgt in Eigenregie des Kunden, sofern kein optionaler, kostenpflichtiger Wartungsvertrag abgeschlossen wird.</li>
+            </ul>
+        </div>
+
+        <div class="legal-text">
+            <h2>Impressum</h2>
+            <p>Angaben gemäß § 5 TMG:</p>
+            <h3>SecureNode AI GmbH (in Gründung)</h3>
+            <p>
+                PLZ 16259<br>
+                Deutschland
+            </p>
+            
+            <h3>Vertreten durch:</h3>
+            <p>Simon Lukas Köper<br>Jakob</p>
+
+            <h3>Kontakt:</h3>
+            <p>E-Mail: kontakt@securenode-ai.local (Simulierte Adresse)<br>Telefon: Ohne Angabe</p>
+
+            <h3>Registereintrag:</h3>
+            <p>Gesellschaft in Gründung (i.G.). Einzeltrails und rechtliche Registrierung folgen vor finalem Vertriebsstart.</p>
+
+            <h3>Umsatzsteuer-ID:</h3>
+            <p>In Beantragung.</p>
+
+            <h3>Verbraucherstreitbeilegung/Universalschlichtungsstelle:</h3>
+            <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h4>SecureNode AI</h4>
+                <p>100% lokale KI-Systeme für das Berufsgeheimnis.</p>
+                <p style="margin-top: 1rem; font-size: 0.8rem; color: #64748b;">© 2026 SecureNode AI GmbH (i.G.). Alle Rechte vorbehalten.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h5>Navigation</h5>
+                    <ul>
+                        <li><a onclick="switchPage('home')">Home</a></li>
+                        <li><a onclick="switchPage('workflow')">Workflow</a></li>
+                        <li><a onclick="switchPage('shop')">Systeme</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h5>Unternehmen</h5>
+                    <ul>
+                        <li><a onclick="switchPage('about')">Über uns</a></li>
+                        <li><a onclick="switchPage('legal')">Rechtliches & Impressum</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function switchPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            const links = document.querySelectorAll('.nav-links a');
+            
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            links.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            const targetLink = document.getElementById('link-' + pageId);
+            if (targetLink) {
+                targetLink.classList.add('active');
+            }
+
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks.classList.contains('open')) {
+                navLinks.classList.remove('open');
+            }
+        }
+
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+    </script>
+</body>
+</html>
