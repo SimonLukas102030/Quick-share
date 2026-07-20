@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureNode AI</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-muted: #475569;
+            --border: #e2e8f0;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --accent: #16a34a;
+            --accent-bg: #dcfce7;
+            --accent-border: #bbf7d0;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --danger-border: #fee2e2;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            --transition-fast: all 0.2s ease;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #090d16;
+                --surface: #121826;
+                --text: #f8fafc;
+                --text-muted: #94a3b8;
+                --border: #1e293b;
+                --primary: #3b82f6;
+                --primary-hover: #2563eb;
+                --danger-bg: #291414;
+                --danger-border: #4a1c1c;
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+                --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            padding-top: 75px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(var(--surface), 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            height: 75px;
+            transition: var(--transition-smooth);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.75px;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+            background-color: var(--border);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background-color: var(--text);
+            transition: var(--transition-fast);
+            border-radius: 2px;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px) scale(0.99);
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 6rem 1rem;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 0.95rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+            margin-left: 1rem;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--border);
+            transform: translateY(-2px);
+            box-shadow: none;
+        }
+
+        .calculator-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 4rem 2rem;
+            margin-bottom: 5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .calculator-box {
+            max-width: 480px;
+            margin: 2.5rem auto 0 auto;
+        }
+
+        .calculator-input {
+            width: 100%;
+            padding: 1.25rem;
+            font-size: 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: var(--transition-smooth);
+            text-align: center;
+            font-weight: 700;
+            color: var(--text);
+            background-color: var(--bg);
+            font-family: inherit;
+        }
+
+        .calculator-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .calculator-result {
+            margin-top: 2.5rem;
+            padding: 1.75rem;
+            border-radius: var(--radius-md);
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            display: none;
+            font-size: 1.05rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 4rem auto;
+            font-size: 1.15rem;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            align-items: stretch;
+            margin-top: 3rem;
+        }
+
+        .product-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .product-card.premium {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.15);
+        }
+
+        .product-card.highlighted {
+            border-color: var(--primary);
+            box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+            transform: scale(1.02);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .product-price {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text);
+            margin: 1.5rem 0;
+            letter-spacing: -1px;
+        }
+
+        .product-price span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .product-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .product-features li {
+            margin-bottom: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .custom-builder {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            margin-top: 3rem;
+            box-shadow: var(--shadow);
+        }
+
+        .custom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .form-select, .form-input {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition-fast);
+        }
+
+        .form-select:focus, .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .custom-summary {
+            background: var(--bg);
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-price-display {
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+
+        .checkout-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .checkout-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .checkout-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 75px;
+                left: 0;
+                right: 0;
+                background-color: var(--surface);
+                border-bottom: 1px solid var(--border);
+                padding: 2rem;
+                gap: 1.25rem;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .custom-grid, .checkout-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .custom-summary {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo" onclick="switchPage('home')">
+                SecureNode<span>AI</span>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a onclick="switchPage('home')" id="link-home" class="active">Home</a></li>
+                <li><a onclick="switchPage('shop')" id="link-shop">Systeme</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="home" class="page active">
+        <section class="hero">
+            <h1>Souveräne Post- & Dokumenten-KI</h1>
+            <p>Vollautomatisierte Erfassung, Strukturierung und rechtssichere Archivierung sensibler Dokumente. Betrieben auf lokaler High-End-Hardware.</p>
+            <div>
+                <button class="btn" onclick="switchPage('shop')">System konfigurieren</button>
+            </div>
+        </section>
+    </div>
+
+    <div id="shop" class="page">
+        <h2 class="section-title">Bedarfs-Konfigurator</h2>
+        <div class="calculator-section">
+            <div class="calculator-box">
+                <input type="number" id="companySize" class="calculator-input" placeholder="Mitarbeiteranzahl" oninput="calculatePlan()">
+                <div id="calcResult" class="calculator-result"></div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Standard Modelle</h2>
+        <div class="shop-grid">
+            
+            <div class="product-card" id="card-base">
+                <h3>Base</h3>
+                <p>Einstieg für kleine Büros.</p>
+                <div class="product-price">9.980 € <span>netto</span></div>
+                <ul class="product-features">
+                    <li>1x NVIDIA RTX 4090 (24GB)</li>
+                    <li>32TB Speicher</li>
+                    <li>Bis 5 Arbeitsplätze</li>
+                </ul>
+                <button class="btn" style="margin-top:auto;" onclick="startCheckout('SecureNode Base', 9980)">Kaufen</button>
+            </div>
+
+            <div class="product-card" id="card-pro">
+                <h3>Pro</h3>
+                <p>Für aufstrebende Kanzleien.</p>
+                <div class="product-price">19.980 € <span>netto</span></div>
+                <ul class="product-features">
+                    <li>1x NVIDIA RTX A6000 (48GB)</li>
+                    <li>64TB Speicher</li>
+                    <li>Bis 15 Arbeitsplätze</li>
+                </ul>
+                <button class="btn" style="margin-top:auto;" onclick="startCheckout('SecureNode Pro', 19980)">Kaufen</button>
+            </div>
+
+            <div class="product-card premium" id="card-max">
+                <div class="product-badge">Bestseller</div>
+                <h3>Max</h3>
+                <p>Der Branchenstandard.</p>
+                <div class="product-price">29.980 € <span>netto</span></div>
+                <ul class="product-features">
+                    <li>2x NVIDIA RTX A6000 (96GB)</li>
+                    <li>128TB Speicher</li>
+                    <li>Bis 25 Arbeitsplätze</li>
+                </ul>
+                <button class="btn" style="margin-top:auto;" onclick="startCheckout('SecureNode Max', 29980)">Kaufen</button>
+            </div>
+
+            <div class="product-card" id="card-enterprise">
+                <h3>Enterprise</h3>
+                <p>Maximale Skalierung.</p>
+                <div class="product-price">89.980 € <span>netto</span></div>
+                <ul class="product-features">
+                    <li>4x NVIDIA A100 (320GB)</li>
+                    <li>1PB+ Speicher</li>
+                    <li>Unlimitiert</li>
+                </ul>
+                <button class="btn" style="margin-top:auto;" onclick="startCheckout('SecureNode Enterprise', 89980)">Kaufen</button>
+            </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 5rem;">Custom Build</h2>
+        <p class="section-subtitle">Konfigurieren Sie Ihr eigenes System. Für Custom-Setups berechnen wir 1% Assemblierungs-Aufschlag.</p>
+        
+        <div class="custom-builder">
+            <div class="custom-grid">
+                <div class="form-group">
+                    <label>GPU Konfiguration</label>
+                    <select id="customGpu" class="form-select" onchange="updateCustomPrice()">
+                        <option value="5000">1x RTX 4090 (+5.000 €)</option>
+                        <option value="12000">1x RTX A6000 (+12.000 €)</option>
+                        <option value="23000">2x RTX A6000 (+23.000 €)</option>
+                        <option value="60000">4x A100 (+60.000 €)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Speicherlösung (JBOD)</label>
+                    <select id="customStorage" class="form-select" onchange="updateCustomPrice()">
+                        <option value="2000">32TB HDD (+2.000 €)</option>
+                        <option value="4000">64TB HDD (+4.000 €)</option>
+                        <option value="8000">128TB HDD (+8.000 €)</option>
+                        <option value="25000">1PB Enterprise (+25.000 €)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="custom-summary">
+                <div>
+                    <h4 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Gesamtpreis (inkl. 1% Custom-Fee)</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Basis-Plattform: 3.000 €</p>
+                </div>
+                <div style="text-align: right;">
+                    <div class="custom-price-display" id="customPriceText">10.100 €</div>
+                    <button class="btn" style="margin-top: 1rem;" onclick="checkoutCustom()">Custom System Kaufen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkout" class="page">
+        <div class="checkout-container" id="checkoutFormContainer">
+            <div class="checkout-header">
+                <h2>Kasse / Offizielle Bestellung</h2>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Gewähltes System: <strong id="checkoutProductName"></strong> (<span id="checkoutProductPrice"></span>)</p>
+            </div>
+            <form onsubmit="processCheckout(event)">
+                <div class="checkout-form-grid">
+                    <div class="form-group full-width">
+                        <label>Firma / Kanzlei</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Vorname</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nachname</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Straße & Hausnummer</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>PLZ</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stadt</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>E-Mail Adresse</label>
+                        <input type="email" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group full-width" style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Zahlungsdetails (SEPA Lastschrift)</h3>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Kontoinhaber</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>IBAN</label>
+                        <input type="text" class="form-input" required placeholder="DE..">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>BIC</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group full-width" style="flex-direction: row; align-items: center; gap: 1rem; margin-top: 1rem;">
+                        <input type="checkbox" required id="agb" style="width: 20px; height: 20px;">
+                        <label for="agb" style="font-weight: 400;">Ich bestätige die Richtigkeit der Angaben und bestelle zahlungspflichtig.</label>
+                    </div>
+                    
+                    <div class="form-group full-width" style="margin-top: 1rem;">
+                        <button type="submit" class="btn" style="width: 100%; font-size: 1.2rem; padding: 1.2rem;">Kauf abschließen</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="checkout-container success-message" id="checkoutSuccess">
+            <div class="success-icon">✓</div>
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;">Bestellung erfolgreich</h2>
+            <p style="font-size: 1.2rem; color: var(--text-muted);">Vielen Dank für Ihr Vertrauen.</p>
+            <p style="font-size: 1.2rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 600;">Das System wird in 2 Wochen fertig sein.</p>
+            <button class="btn" style="margin-top: 3rem;" onclick="switchPage('home')">Zurück zur Startseite</button>
+        </div>
+    </div>
+
+    <script>
+        const baseSystemPrice = 3000;
+        let currentCustomPrice = 0;
+
+        function switchPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            const links = document.querySelectorAll('.nav-links a');
+            
+            pages.forEach(page => page.classList.remove('active'));
+            links.forEach(link => link.classList.remove('active'));
+
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            const targetLink = document.getElementById('link-' + pageId);
+            if (targetLink) {
+                targetLink.classList.add('active');
+            }
+
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks.classList.contains('open')) {
+                navLinks.classList.remove('open');
+            }
+        }
+
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        function calculatePlan() {
+            const input = document.getElementById('companySize');
+            const result = document.getElementById('calcResult');
+            const cards = ['card-base', 'card-pro', 'card-max', 'card-enterprise'];
+            const value = parseInt(input.value);
+
+            cards.forEach(id => document.getElementById(id).classList.remove('highlighted'));
+
+            if (isNaN(value) || value <= 0) {
+                result.style.display = 'none';
+                return;
+            }
+
+            result.style.display = 'block';
+
+            if (value <= 5) {
+                document.getElementById('card-base').classList.add('highlighted');
+                result.innerHTML = 'Empfehlung: <strong>Base</strong>';
+            } else if (value <= 15) {
+                document.getElementById('card-pro').classList.add('highlighted');
+                result.innerHTML = 'Empfehlung: <strong>Pro</strong>';
+            } else if (value <= 25) {
+                document.getElementById('card-max').classList.add('highlighted');
+                result.innerHTML = 'Empfehlung: <strong>Max</strong>';
+            } else {
+                document.getElementById('card-enterprise').classList.add('highlighted');
+                result.innerHTML = 'Empfehlung: <strong>Enterprise</strong>';
+            }
+        }
+
+        function updateCustomPrice() {
+            const gpuPrice = parseInt(document.getElementById('customGpu').value);
+            const storagePrice = parseInt(document.getElementById('customStorage').value);
+            const subtotal = baseSystemPrice + gpuPrice + storagePrice;
+            currentCustomPrice = subtotal * 1.01;
+            
+            const formattedPrice = currentCustomPrice.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            document.getElementById('customPriceText').innerText = formattedPrice + ' €';
+        }
+
+        function checkoutCustom() {
+            updateCustomPrice();
+            startCheckout('SecureNode Custom Build', currentCustomPrice);
+        }
+
+        function startCheckout(productName, price) {
+            switchPage('checkout');
+            document.getElementById('checkoutFormContainer').style.display = 'block';
+            document.getElementById('checkoutSuccess').style.display = 'none';
+            document.getElementById('checkoutProductName').innerText = productName;
+            document.getElementById('checkoutProductPrice').innerText = price.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' €';
+        }
+
+        function processCheckout(event) {
+            event.preventDefault();
+            document.getElementById('checkoutFormContainer').style.display = 'none';
+            document.getElementById('checkoutSuccess').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        updateCustomPrice();
+    </script>
+</body>
+</html>
