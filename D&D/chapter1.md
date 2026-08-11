@@ -29,7 +29,7 @@
   - Kann ich euch noch ein Getränk anbieten? Was darfs sein? Du - Was willst du? Heut ist ein gutes Angebot, das DU ausnutzen soltest. 2 Radler für den Preis von einem!
   - Davorn ist noch ein Tisch frei. Am besten nehmt Ihr den sofort ein, ansonsten ist der Weg!
 - **Spieler setzten an Tisch:**
-  - Der Tisch hat in der mitte ein stofftuch, auf dem ein Halter für saverten sind und ein paar Blumen. Die Stüle haben angenehme Polzter ausgestofft mit SChafwolle.
+  - Der Tisch hat in der mitte ein stofftuch, auf dem ein Halter für saverten sind und ein paar Blumen. Die Stüle haben angenehme Polzter ausgestofft mit Schafwolle.
   - Spieler Überhören Baradun an der Kasse:
     - Baradun: „Hab überhört, da sein ein Radler angebot? (:“
     - Greg: “Ja. Aber nicht für dich. Du würdst mir die Radler wegtrinken wie ein bekloppter, Aye.
