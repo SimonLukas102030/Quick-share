@@ -6,4 +6,12 @@
 - Wirt und Besitzer der Taverne „Zum Goldhorn“
 ### Aussehen: ###
 - Lederhemt
-- 
+- Langes Gesicht
+- Große Nase
+- Kein Bart
+- 1.79m
+### Stimme: ###
+- Britischer Aczent
+- Nutzt oft “Aye“
+### Backstory: ###
+- NULL
