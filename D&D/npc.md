@@ -5,4 +5,5 @@
 ### Job: ###
 - Wirt und Besitzer der Taverne „Zum Goldhorn“
 ### Aussehen: ###
+- Lederhemt
 - 
