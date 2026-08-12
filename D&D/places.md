@@ -8,7 +8,7 @@
 
 **Vandoria** ist ein stolzer, aufblühender Insel-Stadtstaat. Einst eine unbewohnte, von dichten Wäldern und steilen Klippen geprägte Insel, wandelte sich Vandoria durch die Entdeckung reichhaltiger Erz- und Mineralienadern im zentralen Bergmassiv schlagartig. 
 
-Was als einfaches Feldlager von Bergleuten begann, entwickelte sich dank der strategischen Lage und des Geschicks der Handelsgilden zu einem prunkvollen Knotenpunkt der Frührenaissance. Heute ist Vandoria bekannt für seine beeindruckende Architektur aus steinerner Pracht, rot leuchtenden Ziegeln und den charakteristischen, smaragdgrünen Kuppeldächern, die Seefahrern schon aus weiter Ferne den Weg weisen.
+Was als einfaches Feldlager von Bergleuten begann, entwickelte sich dank der strategischen Lage und des Geschicks der Handelsgilden zu einem prunkvollen Knotenpunkt. Heute ist Vandoria bekannt für seine beeindruckende Architektur aus steinerner Pracht, rot leuchtenden Ziegeln und den charakteristischen, smaragdgrünen Kuppeldächern, die Seefahrern schon aus weiter Ferne den Weg weisen.
 
 ---
 
