@@ -13,6 +13,13 @@
 - Spieler kennen sich nicht —> Vorstellungsrunde
 ### Yarris
 - Viele Sachen verschwinden - Besonders Gold
+- Sie haben Ihm seine Goldkette gestohlen
+- **Yarris Goldkette**
+  - Kette ist Magisch
+  - Kette der Stärke
+  - Kette hat einen Rubin in der Mitte
+  - Eigentlich kostet die 2gp 5bp aber sie hat weit aus größeren Wert für Ihn
+  - War ein Geschenk von seinem Vater bevor er gestorben war.
 - Vermutet Goblins
 #### Für preis: 2 bronze
 - Scheinen erher taktisch vor zu gehen
