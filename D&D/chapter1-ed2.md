@@ -5,6 +5,7 @@
 #### Taverne
 - Name: Zum Goldhorn
 - Location: In der nähe vom Markt beim Rahthaus von Vandoria
+—-
 ### Spieler gehen zur Taverne
 - Taverne sehr voll
 - Werden begrüßt von Wirt Greg
