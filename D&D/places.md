@@ -33,3 +33,96 @@ Vom Hafen führt eine breite Prachttreppe hinauf zum städtischen Leben.
 
 ### 4. Der Schrein-See (Das unberührte Land)
 Südwestlich des geschäftigen Hafens liegt ein abgelegener, kristallklarer Waldsee. In seiner Mitte befindet sich eine kleine Insel mit einer uralten, geschwungenen Palme. Die Bewohner der Stadt meiden den Ort meist aus Respekt vor der Natur.
+weisen.
+
+---
+
+## Die Bezirke & Lore
+
+### 1. Port Vandoria
+Das schlagende Herz der Insel. Hier legen Handelsflotten und Gildenboote an. Die massiven Steinkais trotzen jeder rauen See.
+
+* **Lore & Atmosphäre:** Belebter Seefahrer- und Umschlagplatz. Es riecht nach Salz, Holz und fischigen Gewürzen. Der Übergang zwischen Seefahrern, Händlern und Hafenarbeitern prägt das Straßenbild.
+* **Wichtige Gebäude & Orte:**
+  * **Der Kartograph:** Eine kleine, in die Kaimauer eingelassene Nische am Dock, in der Seekarten und Informationen verkauft werden.
+  * **Der Hafenpalast (Das Großlager):** Mächtiges Zunfthaus mit prächtigen Arkaden und grünen Dächern. Hier lagern kostbare Exporte unter strenger Bewachung.
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 2. Mount Aris
+Das mächtige Bergmassiv im Nordwesten der Insel.
+
+* **Lore & Atmosphäre:** Schroff, steil und felsig. Es dominiert die Skyline der Insel und beherbergt das reiche Erzgestein, das Vandoria erst zu seinem Wohlstand verholfen hat.
+* **Wichtige Gebäude & Orte:**
+  * **Der Berggipfel / Aussichtspunkt:** *[Lore / Beschreibung eintragen]*
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 3. Minas
+Das Minenareal am Fuße und Hangeingang von Mount Aris.
+
+* **Lore & Atmosphäre:** Ein staubiger, vernebelter Bezirk voller Förderanlagen, Arbeiterunterkünfte und Schienenstränge. Hier herrscht rund um die Uhr Betrieb.
+* **Wichtige Gebäude & Orte:**
+  * **Die Erzmine & Das Transportsystem:** Der Haupteingang zur tiefen Mine. Über Schienen und Holzrutschen wird gefördertes Erz direkt zum Hafen transportiert.
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 4. Forum Vandoria
+Das politische und gesellschaftliche Zentrum der Stadt.
+
+* **Lore & Atmosphäre:** Vom Hafen führt eine breite Prachttreppe hinauf in diesen zentralen Bezirk. Das administrative Herzstück, wo Gesetze beschlossen und Stadtfeste gefeiert werden.
+* **Wichtige Gebäude & Orte:**
+  * **Das Rathaus von Vandoria:** Das monumentalste Bauwerk der Insel. Mit venezianisch anmutenden Bögen, zwei hohen Glockentürmen und imposanter Front; Sitz des Rats der Stadt und des Gildenmeisters.
+  * **Der Prachtbrunnen:** Ein runder, kunstvoller Altarbrunnen surrounded by Rosensträuchern. Haupttreffpunkt der Bürger.
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 5. Arkadia
+Sehr zentrales, prachtvolles Handelsviertel.
+
+* **Lore & Atmosphäre:** Dicht bebaut, geschäftig und repräsentativ. Hier reiht sich ein Geschäft an das nächste. Wohnraum ist rar und nur für Wohlhabende erschwinglich.
+* **Wichtige Gebäude & Orte:**
+  * **Der Marktplatz:** Neben dem Brunnen erstreckend; mit bunten Ständen für feine Stoffe, Werkzeuge und seltene Waren.
+  * **Das L-förmige Gildenhaus:** Rahmt den Marktplatz ein und dient als Hauptsitz bedeutender Handels- und Handwerksgilden.
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 6. Belvedere
+Ruhiges Wohnviertel im Nordosten auf den Klippen.
+
+* **Lore & Atmosphäre:** Noch nicht vollständig zugepflastert. Bietet viele Freiflächen, frische Meeresbrise und einen Panoramablick auf die Küste.
+* **Wichtige Gebäude & Orte:**
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 7. Terra Solaria
+Südliches Wohnviertel im Grünen.
+
+* **Lore & Atmosphäre:** Ähnlich wie Belvedere noch locker bebaut und von Grünflächen durchzogen. Ein entspanntes Wohngebiet für die Bürger der Stadt.
+* **Wichtige Gebäude & Orte:**
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 8. Chronos
+Das historische Viertel im Übergang und Wandel.
+
+* **Lore & Atmosphäre:** Ein eher ruhigerer Bezirk, in dem der architektonische Wandel der Insel sichtbar wird. Klassische, rustikale Mittelalterbauten werden nach und nach im Stil der Frühen Renaissance aus- und umgebaut.
+* **Wichtige Gebäude & Orte:**
+  * *[Eigenes Gebäude hier eintragen]*
+
+---
+
+### 9. Mystica Insulas
+Die vorgelagerte Inselgruppe im Westen.
+
+* **Lore & Atmosphäre:** Ein abgelegenes, unberührtes Naturareal. Die Bewohner der Stadt meiden diese Inseln meist aus Respekt vor den natürlichen und mystischen Kräften.
+* **Wichtige Gebäude & Orte:**
+  * **Der Schrein-See:** Ein kristallklarer Waldsee mit einer kleinen Insel in der Mitte, auf der eine uralte, geschwungene Palme wächst.
+  * *[Eigenes Gebäude / Schrein hier eintragen]*
