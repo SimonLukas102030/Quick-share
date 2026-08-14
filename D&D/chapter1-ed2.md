@@ -29,6 +29,10 @@
   - Verschlossen hinter tür mit fettem schloss - unknackbar
   - in der nähe von der Haupt-Mine (da wo Gold abgebaut wird)
   - vermutet, das da ein versteck sein könnte.
+#### Preis Ablehnen
+- Dann sag ich euch nicht alles, aber da ich immernoch meine Kette wieder will, sag ich euch das:
+- Weißt auf alte Mine
+- Vermutet Versteck
 #### Abschluss
 - Geht und holt sich Radler
 ## Spieler Verlassen Taverne
