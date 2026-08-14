@@ -1,6 +1,9 @@
 # Vandoria
 ## Map
+### General Map
 ![Map of Vandoria](../Assets/D&D/Places/vandoria.PNG)
+### Districs
+![Map of Vandoria Districs](../Assets/D&D/Places/vandoria-districs.jpeg)
 
 ---
 
