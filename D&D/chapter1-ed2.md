@@ -46,3 +46,16 @@
 ### Spieler Verfolgen nicht
 - Bekommen halt nd den Reward…
 ## Spieler erkunden Mine
+- Spieler Bewegen sich zur Mine
+- Spieler kommen an, aber dort ist ein Fettes Schloss - Unknackbar (2D20 >= 45)
+#### Inspection
+- Wurf > 0
+  - Sie bemerken das Logo - Willys Meißer Schlösserei
+- Wo ist das?
+#### Inteligenz
+- Wurf <= 12
+  - Wissen nicht
+  - müssen zum Map Shop
+- Wurf <= 15
+  - Wissen das die Schlösserei ungefähr in der nähe von
+- Wurf >= 18
