@@ -106,7 +106,7 @@ Das historische Viertel im architektonischen Wandel.
 
 ### 9. Mystica Insulas
 Die unberührte Insel- und Naturzone im Westen.
-* **Kurzform:** Abgelegener Naturraum, der von den Bürgern gemieden wird.
+* **Kurzform:** Mytischer boden für Zauberpflanzen
 * **Atmosphäre:** Mystisch, still, naturbelassen und isoliert.
 * **Wichtige Orte:**
   * **Der Schrein-See:**
