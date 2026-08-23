@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Share Hub</title>
+
+    <style>
+        :root {
+            --bg: #0a0f18;
+            --bg-deep: #060a11;
+            --panel: #111827;
+            --panel-2: #151d2e;
+            --panel-hover: #1a2438;
+            --border: #263249;
+            --border-soft: rgba(124, 156, 255, .12);
+            --accent: #7aa2f7;
+            --accent-2: #bb9af7;
+            --cyan: #7dcfff;
+            --green: #9ece6a;
+            --yellow: #e0af68;
+            --red: #f7768e;
+            --text: #c0caf5;
+            --text-bright: #d5dcf8;
+            --muted: #7983a5;
+            --shadow: 0 30px 80px rgba(0, 0, 0, .45);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { min-height: 100%; }
+
+        body {
+            margin: 0;
+            padding: 28px 20px 98px;
+            color: var(--text);
+            font-family: "JetBrains Mono", "Cascadia Code", "SFMono-Regular",
+                         Consolas, "Liberation Mono", monospace;
+            background:
+                radial-gradient(circle at 8% 8%, rgba(122, 162, 247, .09), transparent 24%),
+                radial-gradient(circle at 92% 12%, rgba(187, 154, 247, .07), transparent 22%),
+                linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 55%, #0b111d 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), transparent 80%);
+        }
+
+        .wrapper {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 20px;
+            margin-bottom: 14px;
+        }
+
+        .title-wrap h1 {
+            margin: 0;
+            color: var(--text-bright);
+            font-size: clamp(1.7rem, 4vw, 2.55rem);
+            font-weight: 750;
+            letter-spacing: -0.07em;
+            text-shadow: 0 0 28px rgba(122, 162, 247, .14);
+        }
+
+        .title-wrap h1::before {
+            content: "╭─ ";
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        .title-wrap p {
+            margin: 5px 0 0 30px;
+            color: var(--muted);
+            font-size: .82rem;
+        }
+
+        .title-wrap p::before {
+            content: "root@omarchy:~$ ";
+            color: var(--green);
+        }
+
+        .repo-pill {
+            padding: 7px 11px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(17, 24, 39, .82);
+            color: var(--muted);
+            font-size: .72rem;
+            box-shadow: inset 0 1px rgba(255,255,255,.025);
+        }
+
+        .repo-pill::before {
+            content: "●";
+            margin-right: 7px;
+            color: var(--green);
+            text-shadow: 0 0 10px rgba(158,206,106,.65);
+        }
+
+        .browser {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: rgba(13, 19, 31, .94);
+            box-shadow:
+                var(--shadow),
+                0 0 0 1px rgba(122,162,247,.02),
+                0 0 70px rgba(122,162,247,.055);
+        }
+
+        .browser-head {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 14px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, #121a2a, #0f1726);
+        }
+
+        .traffic {
+            display: flex;
+            gap: 7px;
+            padding-right: 2px;
+        }
+
+        .traffic span {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,.07);
+        }
+
+        .traffic span:nth-child(1) { background: var(--red); }
+        .traffic span:nth-child(2) { background: var(--yellow); }
+        .traffic span:nth-child(3) { background: var(--green); }
+
+        .path-label {
+            min-width: 0;
+            color: var(--cyan);
+            font-size: .78rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .path-label::before {
+            content: "~/Quick-share";
+            color: var(--muted);
+            margin-right: 8px;
+        }
+
+        #file-list {
+            margin: 0;
+            padding: 10px;
+            list-style: none;
+        }
+
+        .tree-item { margin: 1px 0; }
+
+        .tree-row {
+            min-height: 43px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 10px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: var(--text);
+            cursor: pointer;
+            user-select: none;
+            transition:
+                background .12s ease,
+                border-color .12s ease,
+                transform .08s ease;
+        }
+
+        .tree-row:hover {
+            background: var(--panel-hover);
+            border-color: var(--border-soft);
+        }
+
+        .tree-row:hover .name {
+            color: var(--text-bright);
+            text-shadow: 0 0 12px rgba(122,162,247,.12);
+        }
+
+        .tree-row:active { transform: translateX(1px); }
+
+        .tree-row.folder .name {
+            color: #c9d7ff;
+            font-weight: 700;
+        }
+
+        .caret {
+            width: 14px;
+            flex: 0 0 14px;
+            color: var(--muted);
+            text-align: center;
+            font-size: .8rem;
+            transition: transform .13s ease;
+        }
+
+        .folder.open > .tree-row .caret {
+            transform: rotate(90deg);
+            color: var(--accent);
+        }
+
+        .icon {
+            width: 20px;
+            flex: 0 0 20px;
+            display: grid;
+            place-items: center;
+            filter: saturate(.85);
+            font-size: .98rem;
+        }
+
+        .name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: .70rem;
+            white-space: nowrap;
+            opacity: .8;
+        }
+
+        .share-btn {
+            width: 30px;
+            height: 30px;
+            flex: 0 0 30px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            font: inherit;
+            font-size: .9rem;
+            opacity: .7;
+            transition: background .12s ease, border-color .12s ease, color .12s ease, opacity .12s ease;
+        }
+
+        .share-btn:hover {
+            opacity: 1;
+            color: var(--cyan);
+            background: rgba(125, 207, 255, .08);
+            border-color: rgba(125, 207, 255, .16);
+            text-shadow: 0 0 12px rgba(125, 207, 255, .3);
+        }
+
+        .share-btn.copied {
+            color: var(--green);
+            background: rgba(158, 206, 106, .08);
+            border-color: rgba(158, 206, 106, .16);
+        }
+
+        .locked-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(187,154,247,.18);
+            background: rgba(187,154,247,.08);
+            color: var(--accent-2);
+            font-size: .64rem;
+            font-weight: 700;
+        }
+
+        .children {
+            display: none;
+            margin-left: 18px;
+            padding-left: 11px;
+            border-left: 1px solid #2b3852;
+        }
+
+        .folder.open > .children {
+            display: block;
+            animation: reveal .13s ease-out;
+        }
+
+        .children > .tree-item > .tree-row::before {
+            content: "├─";
+            color: #3c4b67;
+            margin-right: 1px;
+            font-size: .68rem;
+        }
+
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(-2px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status {
+            padding: 28px 18px;
+            color: var(--muted);
+            text-align: center;
+            font-size: .8rem;
+        }
+
+        .status::before {
+            content: "[ ";
+            color: var(--accent);
+        }
+
+        .status::after {
+            content: " ]";
+            color: var(--accent);
+        }
+
+        .status.error {
+            color: var(--red);
+        }
+
+        #debug-bar {
+            position: fixed;
+            left: 20px;
+            right: 20px;
+            bottom: 15px;
+            z-index: 100;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 8px;
+            padding: 8px 11px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(7, 11, 18, .95);
+            box-shadow: 0 14px 45px rgba(0,0,0,.42);
+            color: var(--muted);
+            font-size: .68rem;
+        }
+
+        .debug-item {
+            min-width: 0;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .debug-item::before {
+            color: var(--accent);
+            content: ">";
+        }
+
+        .debug-val {
+            min-width: 0;
+            color: #9eb8ff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        @media (max-width: 680px) {
+            body { padding: 20px 12px 92px; }
+            .hero { align-items: flex-start; }
+            .repo-pill { display: none; }
+            .meta { display: none; }
+            #debug-bar {
+                left: 10px;
+                right: 10px;
+                bottom: 9px;
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="hero">
+            <div class="title-wrap">
+                <h1>Quick Share Hub</h1>
+                <p>Dateien und Ordner aus dem Repository</p>
+            </div>
+            <div class="repo-pill">● GitHub Repository</div>
+        </div>
+
+        <section class="browser" aria-label="Datei-Browser">
+            <div class="browser-head">
+                <div class="traffic" aria-hidden="true"><span></span><span></span><span></span></div>
+                <div class="path-label" id="path-label">/</div>
+            </div>
+            <ul id="file-list">
+                <li class="status">Initialisiere...</li>
+            </ul>
+        </section>
+    </div>
+
+    <div id="debug-bar">
+        <div class="debug-item"><span>Eingabe:</span><span id="last-input" class="debug-val">-</span></div>
+        <div class="debug-item"><span>SHA-256:</span><span id="generated-hash" class="debug-val">-</span></div>
+    </div>
+
+    <script>
+        const USER = "simonlukas102030";
+        const REPO = "Quick-share";
+        const BRANCH = "main";
+        const API_ROOT = `https://api.github.com/repos/${USER}/${REPO}/contents`;
+        const RAW_ROOT = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}`;
+
+        let passwords = {};
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, "0")).join("").toLowerCase();
+        }
+
+        function getIcon(file) {
+            if (file.type === "dir") return "📁";
+
+            const ext = (file.name.split(".").pop() || "").toLowerCase();
+            const icons = {
+                html: "🌐", htm: "🌐",
+                css: "🎨", scss: "🎨",
+                js: "🟨", mjs: "🟨", cjs: "🟨",
+                ts: "🔷", jsx: "⚛️", tsx: "⚛️",
+                json: "🧩", xml: "🗂️", yaml: "📝", yml: "📝",
+                md: "📘", txt: "📄", csv: "📊",
+                pdf: "📕", doc: "📘", docx: "📘",
+                xls: "📗", xlsx: "📗",
+                ppt: "📙", pptx: "📙",
+                zip: "🗜️", rar: "🗜️", "7z": "🗜️",
+                exe: "⚙️", msi: "⚙️", bat: "⌨️", cmd: "⌨️",
+                ps1: "🔷", sh: "🐚",
+                png: "🖼️", jpg: "🖼️", jpeg: "🖼️", gif: "🖼️", webp: "🖼️", svg: "🖼️",
+                mp3: "🎵", wav: "🎵", flac: "🎵",
+                mp4: "🎬", mkv: "🎬", mov: "🎬", avi: "🎬",
+                iso: "💿"
+            };
+            return icons[ext] || "📄";
+        }
+
+        function formatSize(bytes) {
+            if (!Number.isFinite(bytes)) return "";
+            const units = ["B", "KB", "MB", "GB"];
+            let value = bytes;
+            let unit = 0;
+            while (value >= 1024 && unit < units.length - 1) {
+                value /= 1024;
+                unit++;
+            }
+            return `${value < 10 && unit > 0 ? value.toFixed(1) : Math.round(value)} ${units[unit]}`;
+        }
+
+        function isHiddenFile(file) {
+            return file.name.toLowerCase() === "passwords.json";
+        }
+
+        function passwordHashFor(path, fileName) {
+            // Unterstützt sowohl "ordner/datei.ext" als auch "datei.ext".
+            return passwords[path] ?? passwords[fileName];
+        }
+
+
+        async function shareFile(file, fullPath, button) {
+            const link = new URL(file.download_url || `${RAW_ROOT}/${fullPath}`, window.location.href).href;
+            const message = `Open ${file.name} via Quick Share Hub using the following link: ${link}`;
+
+            try {
+                await navigator.clipboard.writeText(message);
+            } catch (error) {
+                // Fallback for browsers/contexts where Clipboard API is unavailable.
+                const textarea = document.createElement("textarea");
+                textarea.value = message;
+                textarea.style.position = "fixed";
+                textarea.style.opacity = "0";
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                document.execCommand("copy");
+                textarea.remove();
+            }
+
+            const oldText = button.textContent;
+            button.textContent = "✓";
+            button.classList.add("copied");
+            button.title = "Share message copied";
+
+            setTimeout(() => {
+                button.textContent = oldText;
+                button.classList.remove("copied");
+                button.title = "Share";
+            }, 1400);
+        }
+
+        function makeFileRow(file, fullPath) {
+            const li = document.createElement("li");
+            li.className = "tree-item";
+
+            const row = document.createElement("div");
+            row.className = "tree-row";
+            row.dataset.path = fullPath;
+
+            const caret = document.createElement("span");
+            caret.className = "caret";
+            caret.textContent = "›";
+
+            const icon = document.createElement("span");
+            icon.className = "icon";
+            icon.textContent = getIcon(file);
+
+            const name = document.createElement("span");
+            name.className = "name";
+            name.textContent = file.name;
+
+            const passwordHash = passwordHashFor(fullPath, file.name);
+            const meta = document.createElement("span");
+            meta.className = "meta";
+
+            if (file.type !== "dir" && file.size != null) {
+                meta.textContent = formatSize(file.size);
+            }
+
+            row.append(caret, icon, name);
+
+            if (passwordHash) {
+                const badge = document.createElement("span");
+                badge.className = "locked-badge";
+                badge.textContent = "🔒 geschützt";
+                row.appendChild(badge);
+            }
+
+            // Share button: copies a ready-to-paste Quick Share Hub message.
+            if (file.type !== "dir") {
+                const shareButton = document.createElement("button");
+                shareButton.type = "button";
+                shareButton.className = "share-btn";
+                shareButton.textContent = "⤴";
+                shareButton.title = "Share";
+                shareButton.setAttribute("aria-label", `Share ${file.name}`);
+                shareButton.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    shareFile(file, fullPath, shareButton);
+                });
+                row.appendChild(shareButton);
+            }
+
+            row.appendChild(meta);
+            li.appendChild(row);
+
+            if (file.type === "dir") {
+                li.classList.add("folder");
+
+                const children = document.createElement("div");
+                children.className = "children";
+                children.innerHTML = `<div class="status">Lade Ordner...</div>`;
+                li.appendChild(children);
+
+                let loaded = false;
+                row.addEventListener("click", async () => {
+                    li.classList.toggle("open");
+
+                    if (li.classList.contains("open")) {
+                        document.getElementById("path-label").textContent = "/" + fullPath + "/";
+                    }
+
+                    if (loaded) return;
+
+                    try {
+                        const items = await fetchContents(fullPath);
+                        children.innerHTML = "";
+                        renderItems(items, children, fullPath);
+                        loaded = true;
+                    } catch (error) {
+                        children.innerHTML = `<div class="status error">Ordner konnte nicht geladen werden.</div>`;
+                        console.error(error);
+                    }
+                });
+            } else {
+                row.addEventListener("click", () => openFile(file, fullPath, passwordHash));
+            }
+
+            return li;
+        }
+
+        function renderItems(items, container, parentPath = "") {
+            if (!items.length) {
+                container.innerHTML = '<div class="status">Dieser Ordner ist leer.</div>';
+                return;
+            }
+
+            const sorted = [...items]
+                .filter(file => !isHiddenFile(file))
+                .sort((a, b) => {
+                    if (a.type !== b.type) return a.type === "dir" ? -1 : 1;
+                    return a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true });
+                });
+
+            for (const file of sorted) {
+                const fullPath = parentPath ? `${parentPath}/${file.name}` : file.name;
+                container.appendChild(makeFileRow(file, fullPath));
+            }
+        }
+
+        async function fetchContents(path = "") {
+            const url = `${API_ROOT}${path ? "/" + path : ""}`;
+            const response = await fetch(`${url}?t=${Date.now()}`);
+            if (!response.ok) throw new Error(`GitHub API: ${response.status}`);
+            const data = await response.json();
+            return Array.isArray(data) ? data : [data];
+        }
+
+        async function openFile(file, fullPath, passwordHash) {
+            const hashOutput = document.getElementById("generated-hash");
+            const lastInputDisplay = document.getElementById("last-input");
+
+            if (passwordHash) {
+                const pw = prompt(`Passwort erforderlich für ${fullPath}:`);
+                if (!pw) return;
+
+                const hashedInput = await sha256(pw);
+
+                // Debug-Bar wie in der ursprünglichen Version beibehalten.
+                lastInputDisplay.textContent = pw;
+                hashOutput.textContent = hashedInput;
+
+                if (hashedInput !== String(passwordHash).toLowerCase().trim()) {
+                    alert("Falsches Passwort!");
+                    return;
+                }
+            }
+
+            // Dateien im Repository direkt öffnen.
+            // Das funktioniert auch für Nicht-HTML-Dateien; der Browser lädt sie entsprechend
+            // bzw. startet den zugehörigen Download.
+            window.location.href = file.download_url || `${RAW_ROOT}/${fullPath}`;
+        }
+
+        async function init() {
+            const list = document.getElementById("file-list");
+
+            try {
+                const pRes = await fetch(`${RAW_ROOT}/passwords.json?t=${Date.now()}`);
+                if (pRes.ok) {
+                    passwords = await pRes.json();
+                }
+
+                const files = await fetchContents("");
+                list.innerHTML = "";
+                renderItems(files, list);
+                document.getElementById("path-label").textContent = "/";
+            } catch (e) {
+                console.error(e);
+                list.innerHTML = '<li class="status error">Fehler beim Laden der Dateien aus dem GitHub Repository.</li>';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
