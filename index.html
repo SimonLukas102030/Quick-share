@@ -371,6 +371,120 @@
             font-family: inherit;
         }
 
+
+        .viewer-shell {
+            min-height: 70vh;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: rgba(13,19,31,.96);
+            box-shadow: var(--shadow), 0 0 70px rgba(122,162,247,.05);
+        }
+
+        .viewer-head {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 14px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, #121a2a, #0f1726);
+        }
+
+        .back-btn {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: #111827;
+            color: var(--text);
+            cursor: pointer;
+            font: inherit;
+            font-size: .72rem;
+        }
+
+        .back-btn:hover {
+            border-color: rgba(122,162,247,.3);
+            color: var(--accent);
+        }
+
+        .viewer-title {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-bright);
+            font-size: .8rem;
+        }
+
+        .code-viewer {
+            min-height: 65vh;
+            margin: 0;
+            padding: 22px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: #0a0f18;
+            color: #bcc8ea;
+            font: .82rem/1.65 "JetBrains Mono", "Cascadia Code", monospace;
+        }
+
+        .markdown-viewer {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 30px;
+            color: #c0caf5;
+            line-height: 1.75;
+            overflow-wrap: anywhere;
+        }
+
+        .markdown-viewer h1,
+        .markdown-viewer h2,
+        .markdown-viewer h3 {
+            color: #d5dcf8;
+            letter-spacing: -.035em;
+        }
+
+        .markdown-viewer h1 {
+            padding-bottom: .35em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .markdown-viewer a { color: var(--cyan); }
+        .markdown-viewer code {
+            padding: .13em .35em;
+            border-radius: 4px;
+            background: #151d2e;
+            color: var(--accent-2);
+        }
+
+        .markdown-viewer pre {
+            padding: 16px;
+            overflow: auto;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: #0a0f18;
+        }
+
+        .markdown-viewer blockquote {
+            margin-left: 0;
+            padding-left: 15px;
+            border-left: 3px solid var(--accent);
+            color: var(--muted);
+        }
+
+        .markdown-viewer img { max-width: 100%; height: auto; }
+
+        .markdown-viewer table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .markdown-viewer th,
+        .markdown-viewer td {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+        }
+
         @media (max-width: 680px) {
             body { padding: 20px 12px 92px; }
             .hero { align-items: flex-start; }
@@ -410,6 +524,9 @@
         <div class="debug-item"><span>Eingabe:</span><span id="last-input" class="debug-val">-</span></div>
         <div class="debug-item"><span>SHA-256:</span><span id="generated-hash" class="debug-val">-</span></div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 
     <script>
         const USER = "simonlukas102030";
@@ -465,7 +582,8 @@
         }
 
         function isHiddenFile(file) {
-            return file.name.toLowerCase() === "passwords.json";
+            const name = file.name.toLowerCase();
+            return name === "passwords.json" || name === "index.html";
         }
 
         function passwordHashFor(path, fileName) {
@@ -475,7 +593,20 @@
 
 
         async function shareFile(file, fullPath, button) {
-            const link = new URL(file.download_url || `${RAW_ROOT}/${fullPath}`, window.location.href).href;
+            const ext = getExtension(file.name);
+            let link;
+
+            if (WEB_PAGE_EXTENSIONS.has(ext)) {
+                link = getGitHubPagesUrl(fullPath);
+            } else if (ext === "md" || ext === "markdown") {
+                link = makeViewerUrl("markdown", fullPath, file.name);
+            } else if (VIEWER_EXTENSIONS.has(ext)) {
+                link = makeViewerUrl("text", fullPath, file.name);
+            } else {
+                link = file.download_url ||
+                    `${RAW_ROOT}/${fullPath.split("/").map(encodeURIComponent).join("/")}`;
+            }
+
             const message = `Open ${file.name} via Quick Share Hub using the following link: ${link}`;
 
             try {
@@ -623,6 +754,116 @@
             return Array.isArray(data) ? data : [data];
         }
 
+        function getGitHubPagesUrl(fullPath) {
+            const encodedPath = fullPath.split("/").map(encodeURIComponent).join("/");
+            return `https://${USER}.github.io/${REPO}/${encodedPath}`;
+        }
+
+        function getExtension(fileName) {
+            const clean = fileName.split("?")[0].split("#")[0];
+            const dot = clean.lastIndexOf(".");
+            return dot >= 0 ? clean.slice(dot + 1).toLowerCase() : "";
+        }
+
+        const WEB_PAGE_EXTENSIONS = new Set(["html", "htm", "xhtml"]);
+
+        const VIEWER_EXTENSIONS = new Set([
+            "txt", "log", "json", "xml", "csv", "css",
+            "js", "mjs", "cjs", "ts", "tsx", "jsx",
+            "py", "java", "c", "h", "cpp", "hpp", "cs", "go",
+            "rs", "php", "rb", "sh", "bash", "zsh", "fish",
+            "ps1", "bat", "cmd", "sql", "yaml", "yml", "toml",
+            "ini", "conf", "env"
+        ]);
+
+        const DOWNLOAD_EXTENSIONS = new Set([
+            "zip", "rar", "7z", "tar", "gz", "bz2", "xz",
+            "exe", "msi", "deb", "rpm", "appimage", "dmg", "iso",
+            "doc", "docx", "xls", "xlsx", "ppt", "pptx",
+            "odt", "ods", "odp", "apk", "jar", "bin", "dll",
+            "so", "dylib"
+        ]);
+
+        const IMAGE_EXTENSIONS = new Set([
+            "png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico", "avif"
+        ]);
+
+        const MEDIA_EXTENSIONS = new Set([
+            "mp3", "wav", "ogg", "oga", "m4a", "aac", "flac",
+            "mp4", "webm", "ogv", "mov", "m4v"
+        ]);
+
+        function makeViewerUrl(mode, fullPath, title) {
+            const viewerUrl = new URL(window.location.href);
+            viewerUrl.search = "";
+            viewerUrl.hash = "";
+            viewerUrl.searchParams.set("view", mode);
+            viewerUrl.searchParams.set("path", fullPath);
+            viewerUrl.searchParams.set("title", title);
+            return viewerUrl.href;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        async function renderViewerMode() {
+            const params = new URLSearchParams(window.location.search);
+            const mode = params.get("view");
+            const requestedPath = params.get("path");
+
+            if (!mode || !requestedPath) return false;
+
+            const wrapper = document.querySelector(".wrapper");
+            const debugBar = document.getElementById("debug-bar");
+            if (debugBar) debugBar.style.display = "none";
+
+            const fileName = requestedPath.split("/").pop();
+            const rawUrl = `${RAW_ROOT}/${requestedPath.split("/").map(encodeURIComponent).join("/")}`;
+
+            wrapper.innerHTML = `
+                <div class="viewer-shell">
+                    <div class="viewer-head">
+                        <button class="back-btn" id="back-btn">← back</button>
+                        <div class="viewer-title">${mode === "markdown" ? "📘" : "📄"} ${escapeHtml(fileName)}</div>
+                    </div>
+                    ${mode === "markdown"
+                        ? '<article class="markdown-viewer" id="viewer-content"><div class="status">Lade Markdown...</div></article>'
+                        : '<pre class="code-viewer" id="viewer-content"><span class="status">Lade Datei...</span></pre>'}
+                </div>
+            `;
+
+            document.getElementById("back-btn").onclick = () => history.back();
+
+            try {
+                const response = await fetch(rawUrl);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const source = await response.text();
+                const content = document.getElementById("viewer-content");
+
+                if (mode === "markdown") {
+                    if (window.marked && window.DOMPurify) {
+                        content.innerHTML = DOMPurify.sanitize(marked.parse(source));
+                    } else {
+                        content.textContent = source;
+                    }
+                } else {
+                    content.textContent = source;
+                }
+            } catch (error) {
+                document.getElementById("viewer-content").innerHTML =
+                    '<div class="status error">Datei konnte nicht geladen werden.</div>';
+                console.error(error);
+            }
+
+            return true;
+        }
+
         async function openFile(file, fullPath, passwordHash) {
             const hashOutput = document.getElementById("generated-hash");
             const lastInputDisplay = document.getElementById("last-input");
@@ -632,8 +873,6 @@
                 if (!pw) return;
 
                 const hashedInput = await sha256(pw);
-
-                // Debug-Bar wie in der ursprünglichen Version beibehalten.
                 lastInputDisplay.textContent = pw;
                 hashOutput.textContent = hashedInput;
 
@@ -643,10 +882,43 @@
                 }
             }
 
-            // Dateien im Repository direkt öffnen.
-            // Das funktioniert auch für Nicht-HTML-Dateien; der Browser lädt sie entsprechend
-            // bzw. startet den zugehörigen Download.
-            window.location.href = file.download_url || `${RAW_ROOT}/${fullPath}`;
+            const ext = getExtension(file.name);
+            const rawUrl = file.download_url ||
+                `${RAW_ROOT}/${fullPath.split("/").map(encodeURIComponent).join("/")}`;
+
+            // HTML is served by GitHub Pages as a real web page.
+            if (WEB_PAGE_EXTENSIONS.has(ext)) {
+                window.location.href = getGitHubPagesUrl(fullPath);
+                return;
+            }
+
+            // Markdown is rendered by this Quick Share Hub viewer.
+            if (ext === "md" || ext === "markdown") {
+                window.location.href = makeViewerUrl("markdown", fullPath, file.name);
+                return;
+            }
+
+            // Source/config/text files are rendered in a readable code viewer.
+            if (VIEWER_EXTENSIONS.has(ext)) {
+                window.location.href = makeViewerUrl("text", fullPath, file.name);
+                return;
+            }
+
+            // PDF, images, audio and video can be handled by the browser itself.
+            if (ext === "pdf" || IMAGE_EXTENSIONS.has(ext) || MEDIA_EXTENSIONS.has(ext)) {
+                window.location.href = rawUrl;
+                return;
+            }
+
+            // Other binary formats: use GitHub's raw file URL, letting the browser
+            // download/open it according to the file type and OS.
+            if (DOWNLOAD_EXTENSIONS.has(ext)) {
+                window.location.href = rawUrl;
+                return;
+            }
+
+            // Best-effort fallback for unknown file types.
+            window.location.href = rawUrl;
         }
 
         async function init() {
@@ -668,7 +940,11 @@
             }
         }
 
-        init();
+        (async () => {
+            if (!(await renderViewerMode())) {
+                await init();
+            }
+        })();
     </script>
 </body>
 </html>
