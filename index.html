@@ -93,6 +93,77 @@
             color: var(--green);
         }
 
+
+        .repo-switcher { position: relative; }
+        .repo-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(17, 24, 39, .92);
+            color: var(--muted);
+            font: inherit;
+            font-size: .72rem;
+            cursor: pointer;
+        }
+        .repo-pill:hover, .repo-pill[aria-expanded="true"] {
+            border-color: rgba(122,162,247,.3);
+            color: var(--text-bright);
+            background: #151f31;
+        }
+        .repo-dot { color: var(--green); text-shadow: 0 0 10px rgba(158,206,106,.65); }
+        .repo-chevron { color: var(--muted); font-size: .65rem; }
+        .repo-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 200;
+            width: min(380px, calc(100vw - 24px));
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #0d1523;
+            box-shadow: 0 25px 80px rgba(0,0,0,.55), 0 0 40px rgba(122,162,247,.06);
+        }
+        .repo-menu-title { padding: 8px 9px 7px; color: var(--muted); font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; }
+        .repo-option, .repo-add {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text);
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+        }
+        .repo-option:hover, .repo-option.active, .repo-add:hover { border-color: rgba(122,162,247,.15); background: #151f31; }
+        .repo-option-dot { width: 16px; flex: 0 0 16px; color: var(--accent); }
+        .repo-option strong { display: block; color: var(--text-bright); font-size: .72rem; }
+        .repo-option small { display: block; margin-top: 2px; max-width: 305px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: .63rem; }
+        .repo-divider { height: 1px; margin: 6px 0; background: var(--border); }
+        .repo-add { color: var(--cyan); font-size: .7rem; }
+        .repo-empty { padding: 8px 9px; color: var(--muted); font-size: .66rem; }
+        .repo-help { margin: 8px 0 2px; padding: 10px; border: 1px solid rgba(122,162,247,.10); border-radius: 6px; background: rgba(122,162,247,.035); color: var(--muted); font-size: .64rem; line-height: 1.55; }
+        .repo-help strong { display: block; margin-bottom: 4px; color: var(--text); }
+        .repo-help code { color: var(--accent); }
+        .file-actions { display: inline-flex; gap: 4px; margin-left: 6px; }
+        .download-btn, .share-btn {
+            width: 30px; height: 30px; flex: 0 0 30px;
+            display: grid; place-items: center; padding: 0;
+            border: 1px solid transparent; border-radius: 5px;
+            background: transparent; color: var(--muted); cursor: pointer;
+            font: inherit; font-size: .9rem; opacity: .72;
+        }
+        .download-btn:hover { opacity: 1; color: var(--accent); background: rgba(122,162,247,.08); border-color: rgba(122,162,247,.16); }
+        .share-btn:hover { opacity: 1; color: var(--cyan); background: rgba(125,207,255,.08); border-color: rgba(125,207,255,.16); }
+        .download-btn.copied, .share-btn.copied { color: var(--green); background: rgba(158,206,106,.08); border-color: rgba(158,206,106,.16); }
+
         .repo-pill {
             padding: 7px 11px;
             border: 1px solid var(--border);
@@ -506,7 +577,28 @@
                 <h1>Quick Share Hub</h1>
                 <p>Dateien und Ordner aus dem Repository</p>
             </div>
-            <div class="repo-pill">● GitHub Repository</div>
+            <div class="repo-switcher">
+                <button class="repo-pill" id="repo-pill" type="button" aria-haspopup="menu" aria-expanded="false">
+                    <span class="repo-dot">●</span>
+                    <span id="repo-pill-label">GitHub Repository</span>
+                    <span class="repo-chevron">▾</span>
+                </button>
+                <div class="repo-menu" id="repo-menu" role="menu" hidden>
+                    <div class="repo-menu-title">Repository auswählen</div>
+                    <button class="repo-option active" id="repo-main-option" type="button">
+                        <span class="repo-option-dot">●</span>
+                        <span><strong>Quick Share Hub</strong><small>Dein Standard-Repository</small></span>
+                    </button>
+                    <div class="repo-divider"></div>
+                    <div id="custom-repo-list"></div>
+                    <button class="repo-add" id="repo-add" type="button">＋ Eigenes GitHub Pages Repository</button>
+                    <div class="repo-help">
+                        <strong>Wo finde ich den Link?</strong>
+                        <span>GitHub → <code>Settings → Pages → Visit site</code><br>
+                        Beispiel: <code>https://name.github.io/repository/</code></span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <section class="browser" aria-label="Datei-Browser">
@@ -529,13 +621,98 @@
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 
     <script>
-        const USER = "simonlukas102030";
-        const REPO = "Quick-share";
-        const BRANCH = "main";
-        const API_ROOT = `https://api.github.com/repos/${USER}/${REPO}/contents`;
-        const RAW_ROOT = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}`;
+        const DEFAULT_REPO = {
+            id: "default",
+            label: "Quick Share Hub",
+            pages: "https://simonlukas102030.github.io/Quick-share/",
+            api: "https://api.github.com/repos/simonlukas102030/Quick-share/contents",
+            raw: "https://raw.githubusercontent.com/simonlukas102030/Quick-share/main",
+            editable: false
+        };
+
+        const REPO_STORAGE_KEY = "quick-share-hub.repositories.v1";
+        const ACTIVE_REPO_KEY = "quick-share-hub.activeRepository.v1";
 
         let passwords = {};
+        let activeRepo = DEFAULT_REPO;
+
+        function normalisePagesUrl(value) {
+            let url = String(value || "").trim();
+            if (!url) return "";
+            if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+            if (!url.endsWith("/")) url += "/";
+            return url;
+        }
+
+        function repoFromPagesUrl(pagesUrl, label = "") {
+            const pages = normalisePagesUrl(pagesUrl);
+            try {
+                const parsed = new URL(pages);
+                const match = parsed.hostname.match(/^([^.]+)\.github\.io$/i);
+                if (!match) return null;
+
+                const user = match[1];
+                const segments = parsed.pathname.split("/").filter(Boolean);
+                const repoName = segments[0] || `${user}.github.io`;
+
+                return {
+                    id: (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`),
+                    label: label || `${user}/${repoName}`,
+                    pages,
+                    api: `https://api.github.com/repos/${user}/${repoName}/contents`,
+                    raw: `https://raw.githubusercontent.com/${user}/${repoName}/main`,
+                    editable: true,
+                    user,
+                    repo: repoName
+                };
+            } catch {
+                return null;
+            }
+        }
+
+        function getCustomRepositories() {
+            try {
+                const repos = JSON.parse(localStorage.getItem(REPO_STORAGE_KEY) || "[]");
+                return Array.isArray(repos) ? repos : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveCustomRepositories(repos) {
+            localStorage.setItem(REPO_STORAGE_KEY, JSON.stringify(repos));
+        }
+
+        function saveActiveRepository(repo) {
+            localStorage.setItem(ACTIVE_REPO_KEY, JSON.stringify({ id: repo.id, pages: repo.pages }));
+        }
+
+        function loadActiveRepository() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(ACTIVE_REPO_KEY) || "null");
+                if (!saved) return DEFAULT_REPO;
+                if (saved.id === DEFAULT_REPO.id || saved.pages === DEFAULT_REPO.pages) return DEFAULT_REPO;
+                return getCustomRepositories().find(repo => repo.id === saved.id || repo.pages === saved.pages) || DEFAULT_REPO;
+            } catch {
+                return DEFAULT_REPO;
+            }
+        }
+
+        function isDefaultRepository() {
+            return activeRepo.id === DEFAULT_REPO.id;
+        }
+
+        function getApiRoot() {
+            return activeRepo.api;
+        }
+
+        function getRawRoot() {
+            return activeRepo.raw;
+        }
+
+        function getPagesRoot() {
+            return activeRepo.pages;
+        }
 
         async function sha256(message) {
             const msgBuffer = new TextEncoder().encode(message);
@@ -582,6 +759,7 @@
         }
 
         function isHiddenFile(file) {
+            if (!isDefaultRepository()) return false;
             const name = file.name.toLowerCase();
             return name === "passwords.json" || name === "index.html";
         }
@@ -591,6 +769,34 @@
             return passwords[path] ?? passwords[fileName];
         }
 
+
+        async function downloadFile(file, fullPath, button) {
+            const rawUrl = file.download_url ||
+                `${getRawRoot()}/${fullPath.split("/").map(encodeURIComponent).join("/")}`;
+
+            try {
+                const response = await fetch(rawUrl);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const anchor = document.createElement("a");
+                anchor.href = url;
+                anchor.download = file.name;
+                document.body.appendChild(anchor);
+                anchor.click();
+                anchor.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+                button.classList.add("copied");
+                button.textContent = "✓";
+                setTimeout(() => {
+                    button.classList.remove("copied");
+                    button.textContent = "↓";
+                }, 1200);
+            } catch (error) {
+                window.location.href = rawUrl;
+            }
+        }
 
         async function shareFile(file, fullPath, button) {
             const ext = getExtension(file.name);
@@ -604,7 +810,7 @@
                 link = makeViewerUrl("text", fullPath, file.name);
             } else {
                 link = file.download_url ||
-                    `${RAW_ROOT}/${fullPath.split("/").map(encodeURIComponent).join("/")}`;
+                    `${getRawRoot()}/${fullPath.split("/").map(encodeURIComponent).join("/")}`;
             }
 
             const message = `Open ${file.name} via Quick Share Hub using the following link: ${link}`;
@@ -675,6 +881,21 @@
 
             // Share button: copies a ready-to-paste Quick Share Hub message.
             if (file.type !== "dir") {
+                const actions = document.createElement("span");
+                actions.className = "file-actions";
+
+                const downloadButton = document.createElement("button");
+                downloadButton.type = "button";
+                downloadButton.className = "download-btn";
+                downloadButton.textContent = "↓";
+                downloadButton.title = "Download";
+                downloadButton.setAttribute("aria-label", `Download ${file.name}`);
+                downloadButton.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    downloadFile(file, fullPath, downloadButton);
+                });
+
                 const shareButton = document.createElement("button");
                 shareButton.type = "button";
                 shareButton.className = "share-btn";
@@ -686,7 +907,9 @@
                     event.stopPropagation();
                     shareFile(file, fullPath, shareButton);
                 });
-                row.appendChild(shareButton);
+
+                actions.append(downloadButton, shareButton);
+                row.appendChild(actions);
             }
 
             row.appendChild(meta);
@@ -747,7 +970,7 @@
         }
 
         async function fetchContents(path = "") {
-            const url = `${API_ROOT}${path ? "/" + path : ""}`;
+            const url = `${getApiRoot()}${path ? "/" + path : ""}`;
             const response = await fetch(`${url}?t=${Date.now()}`);
             if (!response.ok) throw new Error(`GitHub API: ${response.status}`);
             const data = await response.json();
@@ -756,7 +979,7 @@
 
         function getGitHubPagesUrl(fullPath) {
             const encodedPath = fullPath.split("/").map(encodeURIComponent).join("/");
-            return `https://${USER}.github.io/${REPO}/${encodedPath}`;
+            return `${getPagesRoot()}${encodedPath}`;
         }
 
         function getExtension(fileName) {
@@ -824,7 +1047,7 @@
             if (debugBar) debugBar.style.display = "none";
 
             const fileName = requestedPath.split("/").pop();
-            const rawUrl = `${RAW_ROOT}/${requestedPath.split("/").map(encodeURIComponent).join("/")}`;
+            const rawUrl = `${getRawRoot()}/${requestedPath.split("/").map(encodeURIComponent).join("/")}`;
 
             wrapper.innerHTML = `
                 <div class="viewer-shell">
@@ -884,7 +1107,7 @@
 
             const ext = getExtension(file.name);
             const rawUrl = file.download_url ||
-                `${RAW_ROOT}/${fullPath.split("/").map(encodeURIComponent).join("/")}`;
+                `${getRawRoot()}/${fullPath.split("/").map(encodeURIComponent).join("/")}`;
 
             // HTML is served by GitHub Pages as a real web page.
             if (WEB_PAGE_EXTENSIONS.has(ext)) {
@@ -921,13 +1144,138 @@
             window.location.href = rawUrl;
         }
 
+
+        function updateRepositoryButton() {
+            const label = document.getElementById("repo-pill-label");
+            if (label) label.textContent = isDefaultRepository() ? "GitHub Repository" : activeRepo.label;
+        }
+
+        function renderRepositoryMenu() {
+            const list = document.getElementById("custom-repo-list");
+            if (!list) return;
+            list.innerHTML = "";
+
+            const repos = getCustomRepositories();
+            for (const repo of repos) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "repo-option" + (activeRepo.id === repo.id ? " active" : "");
+                button.innerHTML = `
+                    <span class="repo-option-dot">${activeRepo.id === repo.id ? "●" : "○"}</span>
+                    <span>
+                        <strong>${escapeHtml(repo.label)}</strong>
+                        <small>${escapeHtml(repo.pages)}</small>
+                    </span>`;
+                button.addEventListener("click", () => selectRepository(repo));
+                list.appendChild(button);
+            }
+
+            if (!repos.length) {
+                const empty = document.createElement("div");
+                empty.className = "repo-empty";
+                empty.textContent = "Noch kein eigenes Repository gespeichert.";
+                list.appendChild(empty);
+            }
+
+            const main = document.getElementById("repo-main-option");
+            if (main) {
+                main.classList.toggle("active", isDefaultRepository());
+                main.querySelector(".repo-option-dot").textContent = isDefaultRepository() ? "●" : "○";
+            }
+        }
+
+        async function selectRepository(repo) {
+            activeRepo = repo;
+            saveActiveRepository(repo);
+            updateRepositoryButton();
+            renderRepositoryMenu();
+
+            const menu = document.getElementById("repo-menu");
+            const pill = document.getElementById("repo-pill");
+            if (menu) menu.hidden = true;
+            if (pill) pill.setAttribute("aria-expanded", "false");
+
+            window.history.replaceState({}, "", window.location.pathname);
+            document.getElementById("path-label").textContent = "/";
+            await init();
+        }
+
+        function openRepositoryDialog() {
+            const pagesInput = prompt(
+                "GitHub Pages URL deines Repositories:\\n\\n" +
+                "Beispiel:\\nhttps://DEINNAME.github.io/MEIN-REPO/\\n\\n" +
+                "Du findest sie in GitHub unter:\\nSettings → Pages → Visit site",
+                ""
+            );
+
+            if (pagesInput === null) return;
+
+            const pages = normalisePagesUrl(pagesInput);
+            const parsed = repoFromPagesUrl(pages);
+
+            if (!parsed) {
+                alert("Bitte eine GitHub-Pages-URL wie https://name.github.io/repository/ eingeben.");
+                return;
+            }
+
+            const label = prompt("Name für dieses Repository:", parsed.label);
+            if (label === null) return;
+            parsed.label = label.trim() || parsed.label;
+
+            const repos = getCustomRepositories();
+            const existingIndex = repos.findIndex(repo => repo.pages === parsed.pages);
+
+            if (existingIndex >= 0) {
+                parsed.id = repos[existingIndex].id;
+                repos[existingIndex] = parsed;
+            } else {
+                repos.push(parsed);
+            }
+
+            saveCustomRepositories(repos);
+            selectRepository(parsed);
+        }
+
+        function setupRepositorySwitcher() {
+            activeRepo = loadActiveRepository();
+            updateRepositoryButton();
+            renderRepositoryMenu();
+
+            const pill = document.getElementById("repo-pill");
+            const menu = document.getElementById("repo-menu");
+            const add = document.getElementById("repo-add");
+            const main = document.getElementById("repo-main-option");
+
+            pill.addEventListener("click", (event) => {
+                event.stopPropagation();
+                menu.hidden = !menu.hidden;
+                pill.setAttribute("aria-expanded", String(!menu.hidden));
+                renderRepositoryMenu();
+            });
+
+            add.addEventListener("click", (event) => {
+                event.stopPropagation();
+                openRepositoryDialog();
+            });
+
+            main.addEventListener("click", () => selectRepository(DEFAULT_REPO));
+
+            document.addEventListener("click", (event) => {
+                if (!event.target.closest(".repo-switcher")) {
+                    menu.hidden = true;
+                    pill.setAttribute("aria-expanded", "false");
+                }
+            });
+        }
+
         async function init() {
             const list = document.getElementById("file-list");
 
             try {
-                const pRes = await fetch(`${RAW_ROOT}/passwords.json?t=${Date.now()}`);
-                if (pRes.ok) {
-                    passwords = await pRes.json();
+                passwords = {};
+                if (isDefaultRepository()) {
+                    const pRes = await fetch(`${getRawRoot()}/passwords.json?t=${Date.now()}`);
+                    if (pRes.ok) passwords = await pRes.json();
                 }
 
                 const files = await fetchContents("");
@@ -941,6 +1289,7 @@
         }
 
         (async () => {
+            setupRepositorySwitcher();
             if (!(await renderViewerMode())) {
                 await init();
             }
