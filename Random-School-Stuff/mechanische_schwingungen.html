@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanische Schwingungen - Grundlagen & Interaktive Simulationen</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --primary: #38bdf8;
+            --primary-hover: #0284c7;
+            --accent: #10b981;
+            --accent-warning: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin: 16px 0 8px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .formula-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 4px solid var(--primary);
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        .formula-box span.math {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--primary);
+        }
+
+        .sim-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 900px) {
+            .sim-container {
+                grid-template-columns: 280px 1fr;
+            }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .control-group label span.val {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--primary);
+            color: #0f172a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button.reset {
+            background-color: var(--card-border);
+            color: var(--text-main);
+        }
+
+        button.reset:hover {
+            background-color: var(--text-muted);
+        }
+
+        .canvas-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        canvas {
+            width: 100%;
+            background: #090d16;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            display: block;
+        }
+
+        .visual-card {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: var(--primary);
+            color: #0f172a;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mechanische Schwingungen</h1>
+        <p>Grundlagen, Interaktive Simulationen, Visualisierung & Messverfahren</p>
+    </header>
+
+    <div class="container">
+
+        <section class="card">
+            <h2>1. Grundlagen der mechanischen Schwingungen</h2>
+            <p>
+                Eine <strong>mechanische Schwingung</strong> (Oszillation) ist eine zeitlich periodische Bewegung eines Körpers um seine stabile Gleichgewichtslage. Sie entsteht, wenn ein ausgelenkter Körper durch eine rücktreibende Kraft wieder in Richtung des Ruhepunkts beschleunigt wird.
+            </p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Wichtige Kenngrößen</h3>
+                    <ul>
+                        <li><strong>Auslenkung / Elongation <span class="math">x(t)</span>:</strong> Momentaner Abstand zur Gleichgewichtslage.</li>
+                        <li><strong>Amplitude <span class="math">A</span>:</strong> Maximale Auslenkung aus der Ruhelage.</li>
+                        <li><strong>Periodendauer <span class="math">T</span>:</strong> Zeitdauer für eine vollständige Schwingung (in Sekunden <span class="math">s</span>).</li>
+                        <li><strong>Frequenz <span class="math">f</span>:</strong> Anzahl der Schwingungen pro Sekunde (in Hertz <span class="math">Hz</span>). Es gilt: <span class="math">f = 1 / T</span>.</li>
+                        <li><strong>Eigenkreisfrequenz <span class="math">ω</span>:</strong> Winkelgeschwindigkeit der Schwingung (<span class="math">ω = 2π f</span>).</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Schwingungstypen</h3>
+                    <ul>
+                        <li><strong>Ungedämpfte freie Schwingung:</strong> Energie bleibt erhalten, Amplitude bleibt konstant.</li>
+                        <li><strong>Gedämpfte Schwingung:</strong> Reibungskräfte entziehen dem System Energie, Amplitude nimmt exponentiell ab.</li>
+                        <li><strong>Erzwungene Schwingung:</strong> Ein äußerer Erreger führt dem System periodisch Energie zu. Bei Übereinstimmung der Erregerfrequenz mit der Eigenfrequenz kommt es zur <strong>Resonanz</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <strong>Bewegungsgleichung des harmonischen Schwingers:</strong><br>
+                <span class="math">x(t) = A · cos(ω · t + φ₀)</span>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>2. Interaktive Simulation: Feder-Masse-Schwinger</h2>
+            <p>
+                Hier kannst du das Verhalten eines klassischen Feder-Masse-Schwingers untersuchen. Verändere Masse, Federsteifigkeit und Dämpfung, um die Auswirkung auf Schwingungsdauer und Abklingverhalten in Echtzeit zu beobachten.
+            </p>
+
+            <div class="sim-container">
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Masse <span class="math">m</span>: <span id="val-mass" class="val">2.0 kg</span></label>
+                        <input type="range" id="param-mass" min="0.5" max="5.0" step="0.1" value="2.0">
+                    </div>
+                    <div class="control-group">
+                        <label>Federkonstante <span class="math">k</span>: <span id="val-spring" class="val">25 N/m</span></label>
+                        <input type="range" id="param-spring" min="5" max="100" step="1" value="25">
+                    </div>
+                    <div class="control-group">
+                        <label>Dämpfung <span class="math">c</span>: <span id="val-damping" class="val">0.2 Ns/m</span></label>
+                        <input type="range" id="param-damping" min="0" max="3.0" step="0.05" value="0.2">
+                    </div>
+                    <div class="control-group">
+                        <label>Startauslenkung <span class="math">x₀</span>: <span id="val-init" class="val">80 px</span></label>
+                        <input type="range" id="param-init" min="20" max="140" step="5" value="80">
+                    </div>
+                    <div class="button-group">
+                        <button id="btn-spring-toggle">Pause</button>
+                        <button id="btn-spring-reset" class="reset">Reset</button>
+                    </div>
+                </div>
+                <div class="canvas-area">
+                    <canvas id="canvas-spring" height="320"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>3. Interaktive Simulation: Metronom (Pendelschwinger)</h2>
+            <p>
+                Ein Metronom nutzt das Prinzip des Schwerependels bzw. des inversen Doppelpendels. Über das Verschieben des Gewichtes wird das Trägheitsmoment verändert, was das Tempo (Beats Per Minute) steuert.
+            </p>
+
+            <div class="sim-container">
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Tempo (BPM): <span id="val-bpm" class="val">120</span></label>
+                        <input type="range" id="param-bpm" min="40" max="208" step="1" value="120">
+                    </div>
+                    <div class="control-group">
+                        <label>Pendeldämpfung: <span id="val-pend-damping" class="val">0.05</span></label>
+                        <input type="range" id="param-pend-damping" min="0" max="0.3" step="0.01" value="0.05">
+                    </div>
+                    <div class="control-group">
+                        <label>Antrieb (Taktgeber): <span id="val-drive" class="val">Aktiv</span></label>
+                        <input type="range" id="param-drive" min="0" max="1" step="1" value="1">
+                    </div>
+                    <div class="button-group">
+                        <button id="btn-pend-toggle">Pause</button>
+                        <button id="btn-pend-reset" class="reset">Reset</button>
+                    </div>
+                </div>
+                <div class="canvas-area">
+                    <canvas id="canvas-pendulum" height="320"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>4. Wie kann man Schwingungen „sehen“?</h2>
+            <p>
+                Da viele mechanische Schwingungen sehr schnell oder extrem klein sind, nutzt man physikalische und optische Effekte zur Visualisierung:
+            </p>
+            <div class="grid-2">
+                <div class="visual-card">
+                    <h3><span class="badge">Optisch</span>Chladnische Klangfiguren</h3>
+                    <p>
+                        Streut man feinen Sand auf eine Metallplatte und versetzt diese mit einem Geigenbogen oder Lautsprecher in Schwingung, sammelt sich der Sand an den <strong>Schwingungsknoten</strong> (Orte ohne Bewegung). Es entstehen faszinierende symmetrische Muster.
+                    </p>
+                </div>
+                <div class="visual-card">
+                    <h3><span class="badge">Optisch</span>Stroboskopie</h3>
+                    <p>
+                        Blitzt ein Licht in exakt derselben Frequenz wie die Schwingung des Objekts, erscheint das Objekt für das menschliche Auge als <strong>erstarrt</strong>. Weicht die Blitzfrequenz leicht ab, sieht man die Schwingung in Zeitlupe.
+                    </p>
+                </div>
+                <div class="visual-card">
+                    <h3><span class="badge">Laser</span>Laser-Doppler-Vibrometrie (LDV)</h3>
+                    <p>
+                        Ein Laserstrahl wird auf das schwingende Objekt gerichtet. Durch die Bewegung verändert sich die Frequenz des reflektierten Lichts (Doppler-Effekt). Dadurch lassen sich Schwingungsamplituden im Nanometerbereich berührungslos sichtbar machen.
+                    </p>
+                </div>
+                <div class="visual-card">
+                    <h3><span class="badge">Digital</span>Oszilloskop & High-Speed-Kameras</h3>
+                    <p>
+                        Kameras mit mehreren tausend Bildern pro Sekunde ermöglichen die verlangsamte Wiedergabe. Oszilloskope wandeln mechanische Signale über Sensoren in elektrische Spannungskurven um und stellen sie als Funktion der Zeit dar.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>5. Wie misst man mechanische Schwingungen?</h2>
+            <p>
+                Um Schwingungen quantitativ zu analysieren (z. B. für Maschinenüberwachung oder Fahrzeugakustik), kommen spezialisierte Messketten zum Einsatz:
+            </p>
+            <ul>
+                <li><strong>Beschleunigungssensoren (Piezoelektrisch & MEMS):</strong> Nutzen die Trägheit einer inneren Masse. Bei Beschleunigung drückt die Masse auf einen Piezokristall, was eine proportionale elektrische Spannung erzeugt. Standard in der Industrie.</li>
+                <li><strong>Wirbelstrom- & Laser-Wegsensoren:</strong> Messen den exakten Abstand zum Objekt berührungslos, um Auslenkungen zeitlich hochpräzise zu erfassen.</li>
+                <li><strong>Frequenzanalyse (FFT - Fast Fourier Transformation):</strong> Ein mathematisches Verfahren, das ein komplexes Schwingungssignal in seine einzelnen Sinus-Frequenzen zerlegt. Damit lässt sich sofort erkennen, welches Bauteil (z. B. Unwucht einer Welle) eine Störung verursacht.</li>
+            </ul>
+        </section>
+
+    </div>
+
+    <script>
+        const canvasSpring = document.getElementById('canvas-spring');
+        const ctxSpring = canvasSpring.getContext('2d');
+        const paramMass = document.getElementById('param-mass');
+        const paramSpring = document.getElementById('param-spring');
+        const paramDamping = document.getElementById('param-damping');
+        const paramInit = document.getElementById('param-init');
+        const valMass = document.getElementById('val-mass');
+        const valSpring = document.getElementById('val-spring');
+        const valDamping = document.getElementById('val-damping');
+        const valInit = document.getElementById('val-init');
+        const btnSpringToggle = document.getElementById('btn-spring-toggle');
+        const btnSpringReset = document.getElementById('btn-spring-reset');
+
+        let springRunning = true;
+        let massPos = 80;
+        let massVel = 0;
+        let springHistory = [];
+
+        function updateSpringValues() {
+            valMass.textContent = parseFloat(paramMass.value).toFixed(1) + ' kg';
+            valSpring.textContent = paramSpring.value + ' N/m';
+            valDamping.textContent = parseFloat(paramDamping.value).toFixed(2) + ' Ns/m';
+            valInit.textContent = paramInit.value + ' px';
+        }
+
+        paramMass.addEventListener('input', updateSpringValues);
+        paramSpring.addEventListener('input', updateSpringValues);
+        paramDamping.addEventListener('input', updateSpringValues);
+        paramInit.addEventListener('input', () => {
+            updateSpringValues();
+            massPos = parseFloat(paramInit.value);
+            massVel = 0;
+            springHistory = [];
+        });
+
+        btnSpringToggle.addEventListener('click', () => {
+            springRunning = !springRunning;
+            btnSpringToggle.textContent = springRunning ? 'Pause' : 'Start';
+        });
+
+        btnSpringReset.addEventListener('click', () => {
+            massPos = parseFloat(paramInit.value);
+            massVel = 0;
+            springHistory = [];
+        });
+
+        function stepSpringPhysics() {
+            if (!springRunning) return;
+            const m = parseFloat(paramMass.value);
+            const k = parseFloat(paramSpring.value);
+            const c = parseFloat(paramDamping.value);
+            const dt = 0.016;
+
+            const forceSpring = -k * massPos;
+            const forceDamping = -c * massVel;
+            const accel = (forceSpring + forceDamping) / m;
+
+            massVel += accel * dt;
+            massPos += massVel * dt;
+
+            springHistory.push(massPos);
+            if (springHistory.length > 300) {
+                springHistory.shift();
+            }
+        }
+
+        function drawSpringSim() {
+            const w = canvasSpring.width;
+            const h = canvasSpring.height;
+            ctxSpring.clearRect(0, 0, w, h);
+
+            const anchorX = 120;
+            const eqY = h / 2;
+            const massY = eqY + massPos;
+
+            ctxSpring.strokeStyle = '#334155';
+            ctxSpring.setLineDash([4, 4]);
+            ctxSpring.beginPath();
+            ctxSpring.moveTo(20, eqY);
+            ctxSpring.lineTo(220, eqY);
+            ctxSpring.stroke();
+            ctxSpring.setLineDash([]);
+
+            ctxSpring.fillStyle = '#64748b';
+            ctxSpring.fillRect(anchorX - 40, 20, 80, 10);
+
+            ctxSpring.strokeStyle = '#38bdf8';
+            ctxSpring.lineWidth = 3;
+            ctxSpring.beginPath();
+            ctxSpring.moveTo(anchorX, 30);
+            
+            const coils = 14;
+            const startY = 30;
+            const endY = massY - 20;
+            const len = endY - startY;
+            for (let i = 0; i <= coils; i++) {
+                const y = startY + (len / coils) * i;
+                const x = anchorX + (i % 2 === 0 ? 15 : -15);
+                ctxSpring.lineTo(i === 0 || i === coils ? anchorX : x, y);
+            }
+            ctxSpring.stroke();
+
+            ctxSpring.fillStyle = '#10b981';
+            ctxSpring.fillRect(anchorX - 25, massY - 20, 50, 40);
+            ctxSpring.strokeStyle = '#f8fafc';
+            ctxSpring.lineWidth = 1;
+            ctxSpring.strokeRect(anchorX - 25, massY - 20, 50, 40);
+
+            ctxSpring.fillStyle = '#f8fafc';
+            ctxSpring.font = '12px sans-serif';
+            ctxSpring.textAlign = 'center';
+            ctxSpring.fillText('m', anchorX, massY + 4);
+
+            const graphStartX = 260;
+            const graphWidth = w - graphStartX - 20;
+
+            ctxSpring.strokeStyle = '#334155';
+            ctxSpring.beginPath();
+            ctxSpring.moveTo(graphStartX, eqY);
+            ctxSpring.lineTo(graphStartX + graphWidth, eqY);
+            ctxSpring.stroke();
+
+            ctxSpring.strokeStyle = '#38bdf8';
+            ctxSpring.lineWidth = 2;
+            ctxSpring.beginPath();
+            for (let i = 0; i < springHistory.length; i++) {
+                const x = graphStartX + (i / 300) * graphWidth;
+                const y = eqY + springHistory[i];
+                if (i === 0) ctxSpring.moveTo(x, y);
+                else ctxSpring.lineTo(x, y);
+            }
+            ctxSpring.stroke();
+
+            ctxSpring.fillStyle = '#94a3b8';
+            ctxSpring.font = '12px sans-serif';
+            ctxSpring.textAlign = 'left';
+            ctxSpring.fillText('Ruhelage', 30, eqY - 6);
+            ctxSpring.fillText('Zeit-Auslenkung-Diagramm x(t)', graphStartX, 30);
+        }
+
+        const canvasPend = document.getElementById('canvas-pendulum');
+        const ctxPend = canvasPend.getContext('2d');
+        const paramBpm = document.getElementById('param-bpm');
+        const paramPendDamping = document.getElementById('param-pend-damping');
+        const paramDrive = document.getElementById('param-drive');
+        const valBpm = document.getElementById('val-bpm');
+        const valPendDamping = document.getElementById('val-pend-damping');
+        const valDrive = document.getElementById('val-drive');
+        const btnPendToggle = document.getElementById('btn-pend-toggle');
+        const btnPendReset = document.getElementById('btn-pend-reset');
+
+        let pendRunning = true;
+        let pendAngle = 0.35;
+        let pendVel = 0;
+        let pendTime = 0;
+
+        function updatePendValues() {
+            valBpm.textContent = paramBpm.value;
+            valPendDamping.textContent = parseFloat(paramPendDamping.value).toFixed(2);
+            valDrive.textContent = paramDrive.value === '1' ? 'Aktiv' : 'Aus';
+        }
+
+        paramBpm.addEventListener('input', updatePendValues);
+        paramPendDamping.addEventListener('input', updatePendValues);
+        paramDrive.addEventListener('input', updatePendValues);
+
+        btnPendToggle.addEventListener('click', () => {
+            pendRunning = !pendRunning;
+            btnPendToggle.textContent = pendRunning ? 'Pause' : 'Start';
+        });
+
+        btnPendReset.addEventListener('click', () => {
+            pendAngle = 0.35;
+            pendVel = 0;
+            pendTime = 0;
+        });
+
+        function stepPendPhysics() {
+            if (!pendRunning) return;
+            const bpm = parseFloat(paramBpm.value);
+            const damp = parseFloat(paramPendDamping.value);
+            const driveActive = paramDrive.value === '1';
+            const dt = 0.016;
+            pendTime += dt;
+
+            const freqHz = bpm / 120;
+            const targetOmegaSq = Math.pow(2 * Math.PI * freqHz, 2);
+
+            let driveForce = 0;
+            if (driveActive) {
+                if (Math.abs(pendAngle) < 0.05) {
+                    driveForce = pendVel >= 0 ? 0.8 : -0.8;
+                }
+            }
+
+            const accel = -targetOmegaSq * Math.sin(pendAngle) - damp * pendVel + driveForce;
+            pendVel += accel * dt;
+            pendAngle += pendVel * dt;
+        }
+
+        function drawPendSim() {
+            const w = canvasPend.width;
+            const h = canvasPend.height;
+            ctxPend.clearRect(0, 0, w, h);
+
+            const pivotX = 140;
+            const pivotY = h - 40;
+            const armLen = 200;
+
+            ctxPend.fillStyle = '#1e293b';
+            ctxPend.beginPath();
+            ctxPend.moveTo(pivotX - 40, pivotY + 20);
+            ctxPend.lineTo(pivotX + 40, pivotY + 20);
+            ctxPend.lineTo(pivotX, pivotY - 220);
+            ctxPend.closePath();
+            ctxPend.fill();
+            ctxPend.strokeStyle = '#334155';
+            ctxPend.stroke();
+
+            const endX = pivotX + armLen * Math.sin(pendAngle);
+            const endY = pivotY - armLen * Math.cos(pendAngle);
+
+            ctxPend.strokeStyle = '#f59e0b';
+            ctxPend.lineWidth = 4;
+            ctxPend.beginPath();
+            ctxPend.moveTo(pivotX, pivotY);
+            ctxPend.lineTo(endX, endY);
+            ctxPend.stroke();
+
+            const bpm = parseFloat(paramBpm.value);
+            const weightRatio = (bpm - 40) / (208 - 40);
+            const weightDist = 40 + (1 - weightRatio) * 120;
+            const weightX = pivotX + weightDist * Math.sin(pendAngle);
+            const weightY = pivotY - weightDist * Math.cos(pendAngle);
+
+            ctxPend.fillStyle = '#38bdf8';
+            ctxPend.beginPath();
+            ctxPend.arc(weightX, weightY, 12, 0, Math.PI * 2);
+            ctxPend.fill();
+            ctxPend.strokeStyle = '#ffffff';
+            ctxPend.lineWidth = 1;
+            ctxPend.stroke();
+
+            ctxPend.fillStyle = '#f8fafc';
+            ctxPend.beginPath();
+            ctxPend.arc(pivotX, pivotY, 5, 0, Math.PI * 2);
+            ctxPend.fill();
+
+            const graphStartX = 280;
+            const graphWidth = w - graphStartX - 20;
+            const midY = h / 2;
+
+            ctxPend.strokeStyle = '#334155';
+            ctxPend.beginPath();
+            ctxPend.moveTo(graphStartX, midY);
+            ctxPend.lineTo(graphStartX + graphWidth, midY);
+            ctxPend.stroke();
+
+            ctxPend.strokeStyle = '#f59e0b';
+            ctxPend.lineWidth = 2;
+            ctxPend.beginPath();
+            const points = 100;
+            const freq = bpm / 120;
+            for (let i = 0; i < points; i++) {
+                const px = graphStartX + (i / points) * graphWidth;
+                const t = pendTime - (points - i) * 0.02;
+                const py = midY - Math.sin(2 * Math.PI * freq * t) * 60;
+                if (i === 0) ctxPend.moveTo(px, py);
+                else ctxPend.lineTo(px, py);
+            }
+            ctxPend.stroke();
+
+            ctxPend.fillStyle = '#94a3b8';
+            ctxPend.font = '12px sans-serif';
+            ctxPend.fillText('Winkel-Zeit-Verlauf', graphStartX, 30);
+            ctxPend.fillText('Soll-Takt: ' + bpm + ' BPM', graphStartX, 50);
+        }
+
+        function resizeCanvas() {
+            [canvasSpring, canvasPend].forEach(c => {
+                const rect = c.parentElement.getBoundingClientRect();
+                c.width = rect.width;
+            });
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function loop() {
+            stepSpringPhysics();
+            drawSpringSim();
+
+            stepPendPhysics();
+            drawPendSim();
+
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+</html>
