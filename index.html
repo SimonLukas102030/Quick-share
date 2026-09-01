@@ -5,20 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quick Share Hub</title>
 
-    <!-- Browser Tab & General Favicon -->
-    <link rel="icon" type="image/x-icon" href="Assets/Ico/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="Assets/Ico/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="Assets/Ico/favicon-16x16.png">
-    
-    <!-- Apple iOS / iPadOS -->
-    <link rel="apple-touch-icon" sizes="180x180" href="Assets/Ico/apple-touch-icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Android / Chrome / Windows Tiles -->
-    <link rel="icon" type="image/png" sizes="192x192" href="Assets/Ico/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="Assets/Ico/icon-512x512.png">
-
     <style>
         :root {
             --bg: #0a0f18;
@@ -457,6 +443,39 @@
         }
 
 
+
+        .jsx-viewer {
+            min-height: 70vh;
+            background: #0a0f18;
+        }
+
+        .jsx-frame {
+            width: 100%;
+            min-height: 68vh;
+            display: block;
+            border: 0;
+            background: #fff;
+        }
+
+        .jsx-error {
+            margin: 20px;
+            padding: 16px;
+            border: 1px solid rgba(247,118,142,.28);
+            border-radius: 7px;
+            background: rgba(247,118,142,.07);
+            color: #f7768e;
+            white-space: pre-wrap;
+            font: .78rem/1.6 "JetBrains Mono", "Cascadia Code", monospace;
+        }
+
+        .viewer-note {
+            padding: 8px 14px;
+            border-bottom: 1px solid var(--border);
+            background: #0f1726;
+            color: var(--muted);
+            font-size: .64rem;
+        }
+
         .viewer-shell {
             min-height: 70vh;
             overflow: hidden;
@@ -633,6 +652,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script>
         const DEFAULT_REPO = {
@@ -818,6 +840,8 @@
 
             if (WEB_PAGE_EXTENSIONS.has(ext)) {
                 link = getGitHubPagesUrl(fullPath);
+            } else if (JSX_EXTENSIONS.has(ext)) {
+                link = makeViewerUrl("jsx", fullPath, file.name);
             } else if (ext === "md" || ext === "markdown") {
                 link = makeViewerUrl("markdown", fullPath, file.name);
             } else if (VIEWER_EXTENSIONS.has(ext)) {
@@ -1006,12 +1030,14 @@
 
         const VIEWER_EXTENSIONS = new Set([
             "txt", "log", "json", "xml", "csv", "css",
-            "js", "mjs", "cjs", "ts", "tsx", "jsx",
+            "js", "mjs", "cjs", "ts",
             "py", "java", "c", "h", "cpp", "hpp", "cs", "go",
             "rs", "php", "rb", "sh", "bash", "zsh", "fish",
             "ps1", "bat", "cmd", "sql", "yaml", "yml", "toml",
             "ini", "conf", "env"
         ]);
+
+        const JSX_EXTENSIONS = new Set(["jsx", "tsx"]);
 
         const DOWNLOAD_EXTENSIONS = new Set([
             "zip", "rar", "7z", "tar", "gz", "bz2", "xz",
@@ -1049,6 +1075,138 @@
                 .replaceAll("'", "&#039;");
         }
 
+
+        function stripJsxModuleSyntax(source) {
+            let code = source;
+
+            // Remove import statements. React is supplied by the renderer.
+            code = code.replace(/^\s*import\s+[^;]+;?\s*$/gm, "");
+            code = code.replace(/\bexport\s+default\s+/g, "");
+            code = code.replace(/\bexport\s+(?=(function|class|const|let|var)\b)/g, "");
+
+            return code;
+        }
+
+        function detectReactComponentName(source) {
+            const patterns = [
+                /\bfunction\s+([A-Z][A-Za-z0-9_$]*)\s*\(/,
+                /\bclass\s+([A-Z][A-Za-z0-9_$]*)\s+extends\s+(?:React\.)?Component\b/,
+                /\bconst\s+([A-Z][A-Za-z0-9_$]*)\s*=/,
+                /\blet\s+([A-Z][A-Za-z0-9_$]*)\s*=/,
+                /\bvar\s+([A-Z][A-Za-z0-9_$]*)\s*=/
+            ];
+
+            for (const pattern of patterns) {
+                const match = source.match(pattern);
+                if (match) return match[1];
+            }
+            return null;
+        }
+
+        async function renderJsxFile(requestedPath, fileName) {
+            const rawUrl = `${getRawRoot()}/${requestedPath.split("/").map(encodeURIComponent).join("/")}`;
+
+            const wrapper = document.querySelector(".wrapper");
+            const debugBar = document.getElementById("debug-bar");
+            if (debugBar) debugBar.style.display = "none";
+
+            wrapper.innerHTML = `
+                <div class="viewer-shell jsx-viewer">
+                    <div class="viewer-head">
+                        <button class="back-btn" id="back-btn">← back</button>
+                        <div class="viewer-title">⚛️ ${escapeHtml(fileName)}</div>
+                    </div>
+                    <div class="viewer-note">JSX/TSX wird als React-Komponente gerendert</div>
+                    <iframe class="jsx-frame" id="jsx-frame" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+                </div>
+            `;
+
+            document.getElementById("back-btn").onclick = () => history.back();
+            const frame = document.getElementById("jsx-frame");
+
+            try {
+                const response = await fetch(rawUrl);
+                if (!response.ok) throw new Error(`Datei konnte nicht geladen werden (HTTP ${response.status}).`);
+
+                if (!window.Babel || !window.React || !window.ReactDOM) {
+                    throw new Error("React/Babel konnte nicht geladen werden.");
+                }
+
+                const source = await response.text();
+                const cleanSource = stripJsxModuleSyntax(source);
+                const componentName = detectReactComponentName(cleanSource);
+
+                let runtimeCode;
+
+                if (componentName) {
+                    runtimeCode = `
+                        ${cleanSource}
+                        const __QuickShareApp = ${componentName};
+                        ReactDOM.createRoot(document.getElementById("root")).render(
+                            React.createElement(__QuickShareApp)
+                        );
+                    `;
+                } else {
+                    runtimeCode = `
+                        function __QuickShareApp() {
+                            return (${cleanSource});
+                        }
+                        ReactDOM.createRoot(document.getElementById("root")).render(
+                            React.createElement(__QuickShareApp)
+                        );
+                    `;
+                }
+
+                const transformed = Babel.transform(runtimeCode, {
+                    presets: ["react", "env", "typescript"],
+                    sourceType: "script"
+                }).code;
+
+                const safeCode = transformed.replace(/<\/script/gi, "<\\/script");
+
+                frame.srcdoc = `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body,#root{margin:0;min-height:100%}
+body{font-family:Inter,system-ui,sans-serif;background:#fff;color:#111827}
+*,*::before,*::after{box-sizing:border-box}
+button,input,textarea,select{font:inherit}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+window.React = parent.React;
+window.ReactDOM = parent.ReactDOM;
+<\/script>
+<script>
+try {
+${safeCode}
+} catch (error) {
+    const root = document.getElementById("root");
+    root.innerHTML =
+        '<div style="padding:24px;font:14px/1.6 monospace;color:#b42318;background:#fff1f2;white-space:pre-wrap">' +
+        String(error && (error.stack || error.message) || error)
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') +
+        '</div>';
+}
+<\/script>
+</body>
+</html>`;
+            } catch (error) {
+                frame.srcdoc = `<!doctype html>
+<html><body style="margin:0;background:#0a0f18;color:#f7768e">
+<div style="padding:24px;font:14px/1.6 monospace;white-space:pre-wrap">${escapeHtml(
+    String(error && (error.stack || error.message) || error)
+)}</div>
+</body></html>`;
+                console.error(error);
+            }
+        }
+
         async function renderViewerMode() {
             const params = new URLSearchParams(window.location.search);
             const mode = params.get("view");
@@ -1062,6 +1220,11 @@
 
             const fileName = requestedPath.split("/").pop();
             const rawUrl = `${getRawRoot()}/${requestedPath.split("/").map(encodeURIComponent).join("/")}`;
+
+            if (mode === "jsx") {
+                await renderJsxFile(requestedPath, fileName);
+                return true;
+            }
 
             wrapper.innerHTML = `
                 <div class="viewer-shell">
@@ -1126,6 +1289,12 @@
             // HTML is served by GitHub Pages as a real web page.
             if (WEB_PAGE_EXTENSIONS.has(ext)) {
                 window.location.href = getGitHubPagesUrl(fullPath);
+                return;
+            }
+
+            // JSX/TSX are rendered as React, not displayed as source code.
+            if (JSX_EXTENSIONS.has(ext)) {
+                window.location.href = makeViewerUrl("jsx", fullPath, file.name);
                 return;
             }
 
