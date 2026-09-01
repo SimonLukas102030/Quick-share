@@ -1079,8 +1079,11 @@
         function stripJsxModuleSyntax(source) {
             let code = source;
 
-            // Remove import statements. React is supplied by the renderer.
-            code = code.replace(/^\s*import\s+[^;]+;?\s*$/gm, "");
+            // Remove imports that would otherwise require a bundler/Node.js.
+            // React itself is injected by the renderer.
+            code = code.replace(/^\s*import[\s\S]*?from\s+["'][^"']+["'];?\s*$/gm, "");
+            code = code.replace(/^\s*import\s+["'][^"']+["'];?\s*$/gm, "");
+            code = code.replace(/\brequire\s*\(\s*["'][^"']+["']\s*\)/g, "undefined");
             code = code.replace(/\bexport\s+default\s+/g, "");
             code = code.replace(/\bexport\s+(?=(function|class|const|let|var)\b)/g, "");
 
@@ -1158,7 +1161,7 @@
                 }
 
                 const transformed = Babel.transform(runtimeCode, {
-                    presets: ["react", "env", "typescript"],
+                    presets: ["react", "typescript"],
                     sourceType: "script"
                 }).code;
 
