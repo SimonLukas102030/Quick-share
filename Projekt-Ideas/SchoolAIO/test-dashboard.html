@@ -1,568 +1,2514 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1a1b26">
-<title>simonsstudios · Dashboard</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>School AIO</title>
+<!--
+  ============================================================================
+  School AIO — Dashboard Prototyp (Frontend, KEIN Backend)
+  ============================================================================
+  Hinweis für alle, die hier weiterarbeiten:
+  - Diese Datei ist bewusst EIN einzelnes HTML-File (per Doppelklick offenbar,
+    kein Build-Schritt, kein Server nötig). Sobald die echte Umsetzung mit
+    einem Backend beginnt (siehe Entwicklungsplan: NestJS + Next.js), wird
+    das hier 1:1 in echte Komponenten/Module aufgeteilt.
+  - Die Datei ist unten in klar mit Bannern markierte Abschnitte gegliedert
+    (CSS-Themes, State, Helpers, pro Modul ein Abschnitt, Router, Init).
+  - Alle Daten liegen aktuell nur im Arbeitsspeicher (kein localStorage,
+    kein Server) — ein Reload setzt alles zurück. Das ist so gewollt.
+  - Suche nach "TODO(backend)" für Stellen, an denen später eine echte
+    API angebunden werden muss.
+  ============================================================================
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
 <style>
-  :root{
-    --bg-deep:#1a1b26;
-    --bg-panel:#1f2335;
-    --bg-inset:#16161e;
-    --bg-hover:#292e42;
-    --border:#2d3149;
-    --text-primary:#c0caf5;
-    --text-muted:#8188b3;
-    --text-dim:#565f89;
-    --accent-blue:#7aa2f7;
-    --accent-purple:#bb9af7;
-    --accent-cyan:#7dcfff;
-    --accent-green:#9ece6a;
-    --accent-yellow:#e0af68;
-    --accent-red:#f7768e;
-    --shadow:0 18px 50px rgba(0,0,0,.22);
-  }
+/* ==========================================================================
+   1) THEMES — Tokyo Night (Standard), Clean Dark, Clean Light
+   Jedes Theme setzt nur Farb-/Radius-Variablen, keine Layout-Regeln.
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-  *{box-sizing:border-box}
-  html,body{margin:0;min-height:100%;background:var(--bg-deep)}
-  body{
-    color:var(--text-primary);
-    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  }
-  button,input,select,textarea{font:inherit}
-  button{cursor:pointer}
-  .app{min-height:100vh;display:flex;background:var(--bg-deep)}
-  .sidebar{
-    width:256px;flex:0 0 256px;display:flex;flex-direction:column;
-    background:var(--bg-panel);border-right:1px solid var(--border)
-  }
-  .brand{padding:20px;border-bottom:1px solid var(--border)}
-  .brand-name{font:600 15px/1 "JetBrains Mono",ui-monospace,monospace}
-  .brand-sub{font-size:12px;color:var(--text-dim);margin-top:7px}
-  .cursor{
-    display:inline-block;width:8px;height:1em;margin-left:2px;
-    background:var(--accent-green);vertical-align:-2px;
-    animation:blink 1.1s steps(1) infinite
-  }
-  @keyframes blink{50%{opacity:0}}
-  .nav{flex:1;overflow:auto;padding:16px 12px;display:flex;flex-direction:column;gap:3px}
-  .nav-btn{
-    display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;
-    border-radius:8px;border:1px solid transparent;background:transparent;
-    color:var(--text-muted);font-size:13.5px;text-align:left
-  }
-  .nav-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
-  .nav-btn.active{background:var(--bg-hover);color:var(--text-primary);border-color:var(--border)}
-  .nav-icon{width:17px;height:17px;flex:0 0 17px}
-  .nav-label{flex:1}
-  .dot{width:6px;height:6px;border-radius:50%;flex:0 0 6px}
-  .view-switch{
-    padding:16px 12px;border-top:1px solid var(--border)
-  }
-  .switch-title{
-    font-size:11.5px;color:var(--text-dim);margin:0 0 8px 2px
-  }
-  .switches{display:flex;gap:8px}
-  .group-btn{
-    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
-    padding:8px 6px;font-size:12.5px;border-radius:7px;border:1px solid var(--border);
-    background:var(--bg-inset);color:var(--text-muted)
-  }
-  .group-btn.active{
-    color:var(--bg-deep);background:var(--accent-cyan);border-color:var(--accent-cyan);font-weight:600
-  }
-  .main{flex:1;min-width:0;display:flex;flex-direction:column}
-  .topbar{
-    height:56px;display:flex;align-items:center;justify-content:space-between;
-    padding:0 24px;border-bottom:1px solid var(--border);background:var(--bg-deep)
-  }
-  .crumb{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-muted)}
-  .crumb-current{color:var(--text-primary)}
-  .theme-pill{
-    padding:4px 10px;border-radius:999px;border:1px solid var(--border);
-    color:var(--accent-purple);font:11.5px "JetBrains Mono",ui-monospace,monospace
-  }
-  .content{flex:1;overflow:auto;padding:32px}
-  .page{max-width:900px}
-  h1,h2,h3{margin:0}
-  .hero h1{font-size:26px;font-weight:600;margin-bottom:6px}
-  .hero p{color:var(--text-muted);font-size:14.5px;line-height:1.6;max-width:520px;margin:0}
-  .action-btn{
-    margin-top:20px;padding:10px 16px;border-radius:8px;border:1px solid var(--accent-green);
-    background:rgba(158,206,106,.1);color:var(--accent-green);font-size:13.5px;font-weight:600
-  }
-  .section-kicker{font-size:12.5px;color:var(--text-dim)}
-  .module-list{
-    margin-top:10px;border:1px solid var(--border);border-radius:10px;overflow:hidden
-  }
-  .module-item{
-    display:flex;align-items:center;gap:12px;padding:12px 14px;
-    background:var(--bg-panel);border-bottom:1px solid var(--border)
-  }
-  .module-item:last-child{border-bottom:0}
-  .module-name{flex:1;font-size:13.5px}
-  .planned{font:11px "JetBrains Mono",ui-monospace,monospace;color:var(--accent-yellow)}
-  .empty-state{max-width:440px;margin-top:60px}
-  .empty-icon{
-    width:44px;height:44px;display:grid;place-items:center;margin-bottom:16px;
-    border-radius:10px;background:var(--bg-panel);border:1px solid var(--border)
-  }
-  .empty-state h2{font-size:18px;font-weight:600;margin-bottom:6px}
-  .empty-state p{color:var(--text-muted);font-size:13.5px;line-height:1.6;margin:0}
-  .link-btn{
-    margin-top:14px;padding:0;border:0;background:transparent;color:var(--accent-green);font-size:12.5px
-  }
-  .settings{max-width:520px}
-  .settings h1{font-size:20px;font-weight:600;margin-bottom:18px}
-  .settings-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:26px}
-  .settings-row{
-    display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-panel);
-    border-bottom:1px solid var(--border)
-  }
-  .settings-row:last-child{border-bottom:0}
-  .swatch{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple))}
-  .settings-row span:nth-child(2){flex:1;font-size:13.5px}
-  .status-on{font:11px "JetBrains Mono",ui-monospace,monospace;color:var(--accent-green)}
-  .muted-row{opacity:.5}
-  .feedback-wrap{max-width:100%}
-  .feedback-head h1{font-size:22px;font-weight:600;margin-bottom:4px}
-  .feedback-head p{color:var(--text-muted);font-size:13.5px;margin:0 0 28px}
-  .feedback-grid{display:grid;grid-template-columns:2fr 3fr;gap:24px}
-  .form{display:flex;flex-direction:column;gap:14px}
-  .field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:6px}
-  .input,.select,.textarea{
-    width:100%;background:var(--bg-inset);border:1px solid var(--border);
-    color:var(--text-primary);border-radius:7px;padding:9px 11px;font-size:13.5px
-  }
-  .textarea{resize:vertical}
-  .input::placeholder,.textarea::placeholder{color:var(--text-dim)}
-  .input:focus,.select:focus,.textarea:focus{
-    outline:2px solid var(--accent-blue);outline-offset:1px;border-color:var(--accent-blue)
-  }
-  .chips{display:flex;gap:8px;flex-wrap:wrap}
-  .chip{
-    padding:6px 11px;border-radius:7px;font-size:12.5px;border:1px solid var(--border);
-    background:var(--bg-inset);color:var(--text-muted)
-  }
-  .chip.active{color:var(--bg-deep);font-weight:600}
-  .submit{
-    align-self:flex-start;padding:10px 18px;border-radius:8px;border:0;
-    background:var(--accent-blue);color:var(--bg-deep);font-weight:600;font-size:13.5px
-  }
-  .list-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px}
-  .toolbar-group{display:flex;gap:8px;flex-wrap:wrap}
-  .sort-btn{
-    padding:5px 10px;border-radius:6px;border:1px solid var(--border);
-    background:transparent;color:var(--text-dim);font-size:12px
-  }
-  .sort-btn.active{background:var(--bg-hover);color:var(--text-primary)}
-  .feedback-list{display:flex;flex-direction:column;gap:8px}
-  .feedback-card{
-    display:flex;gap:12px;padding:14px 14px 14px 12px;background:var(--bg-panel);
-    border-radius:9px;border-left:3px solid var(--accent-blue)
-  }
-  .feedback-main{flex:1;min-width:0}
-  .feedback-title{font-size:14px;font-weight:600;margin-bottom:4px}
-  .feedback-description{font-size:13px;color:var(--text-muted);line-height:1.5;margin:0 0 8px}
-  .feedback-meta{display:flex;align-items:center;gap:12px;font-size:11.5px;color:var(--text-dim);flex-wrap:wrap}
-  .vote-btn{
-    display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;
-    border-radius:8px;border:1px solid var(--border);background:var(--bg-inset);color:var(--text-muted)
-  }
-  .vote-btn.voted{border-color:var(--accent-blue);color:var(--accent-blue);background:rgba(122,162,247,.08)}
-  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
-  .hidden{display:none!important}
-  .error{color:var(--accent-red)!important}
-  @media (max-width:900px){
-    .sidebar{width:220px;flex-basis:220px}
-    .feedback-grid{grid-template-columns:1fr}
-  }
-  @media (max-width:680px){
-    .app{display:block}
-    .sidebar{width:auto;height:auto;display:block;border-right:0;border-bottom:1px solid var(--border)}
-    .nav{display:grid;grid-template-columns:1fr 1fr;max-height:260px}
-    .view-switch{border-top:1px solid var(--border)}
-    .content{padding:22px 16px}
-    .topbar{padding:0 16px}
-    .feedback-grid{grid-template-columns:1fr}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .cursor{animation:none;opacity:1}
-  }
+:root, html[data-theme="tokyo-night"] {
+  --bg-deep: #1a1b26; --bg-panel: #1f2335; --bg-inset: #16161e; --bg-hover: #292e42;
+  --border: #2d3149;
+  --text-primary: #c0caf5; --text-muted: #8188b3; --text-dim: #565f89;
+  --accent-blue: #7aa2f7; --accent-purple: #bb9af7; --accent-cyan: #7dcfff;
+  --accent-green: #9ece6a; --accent-yellow: #e0af68; --accent-red: #f7768e;
+  --radius: 12px;
+}
+html[data-theme="clean-dark"] {
+  --bg-deep: #18181b; --bg-panel: #202024; --bg-inset: #131316; --bg-hover: #28282d;
+  --border: #2c2c31;
+  --text-primary: #e6e6e9; --text-muted: #9a9aa3; --text-dim: #66666d;
+  --accent-blue: #5b8def; --accent-purple: #8c7ae6; --accent-cyan: #4fb3c9;
+  --accent-green: #5fae67; --accent-yellow: #c99a3f; --accent-red: #d1615c;
+  --radius: 8px;
+}
+html[data-theme="clean-light"] {
+  --bg-deep: #f7f7f8; --bg-panel: #ffffff; --bg-inset: #f0f0f2; --bg-hover: #e9e9ec;
+  --border: #e0e0e4;
+  --text-primary: #1c1c1f; --text-muted: #6b6b72; --text-dim: #9a9aa1;
+  --accent-blue: #3568d4; --accent-purple: #7952d1; --accent-cyan: #1f8ba7;
+  --accent-green: #3c8a48; --accent-yellow: #a8730b; --accent-red: #c2453f;
+  --radius: 8px;
+}
+
+/* ==========================================================================
+   2) BASE / RESET
+   ========================================================================== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--bg-deep); color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif; overflow: hidden;
+  transition: background-color .15s ease, color .15s ease;
+}
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+button, input, select, textarea { font-family: inherit; color: inherit; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--bg-hover); border-radius: 8px; }
+a { color: var(--accent-blue); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ==========================================================================
+   3) CLEAN ANIMATIONS — dezent, konsistent, ein Muster für alles
+   ========================================================================== */
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: scale(1); } }
+.page-enter { animation: fadeSlideIn .2s ease both; }
+
+/* ==========================================================================
+   4) APP SHELL / TOPBAR
+   ========================================================================== */
+#app { height: 100vh; display: flex; flex-direction: column; }
+
+#topbar {
+  height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; border-bottom: 1px solid var(--border); background: var(--bg-deep);
+  position: relative; z-index: 20;
+}
+#brand { font-size: 17px; font-weight: 600; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.btn {
+  padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border); background: var(--bg-panel); color: var(--text-primary);
+  transition: background-color .12s;
+}
+.btn:hover { background: var(--bg-hover); }
+.btn.primary { background: var(--accent-blue); color: var(--bg-deep); border-color: var(--accent-blue); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.small { padding: 5px 10px; font-size: 12px; }
+.btn.danger-outline { color: var(--accent-red); border-color: var(--accent-red); background: transparent; }
+
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: var(--bg-deep); font-weight: 700; font-size: 12.5px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; border: none;
+}
+
+#profile-menu {
+  position: absolute; top: 52px; right: 20px; width: 230px;
+  background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px; display: none; flex-direction: column; gap: 4px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.35); animation: popIn .12s ease;
+}
+#profile-menu.open { display: flex; }
+#profile-menu .pname { font-weight: 600; font-size: 14px; padding: 4px 6px 0; }
+#profile-menu .pmail { font-size: 11.5px; color: var(--text-dim); padding: 0 6px 8px; }
+.menu-item { padding: 8px 6px; font-size: 13px; border-radius: 6px; cursor: pointer; color: var(--text-muted); }
+.menu-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.menu-sep { height: 1px; background: var(--border); margin: 5px 2px; }
+
+/* KI-Assistent — Overlay-Panel von rechts, unabhängig vom Seiten-Router */
+#ki-overlay {
+  position: fixed; top: 56px; right: 0; bottom: 0; width: 380px; max-width: 92vw;
+  background: var(--bg-panel); border-left: 1px solid var(--border);
+  transform: translateX(100%); transition: transform .18s ease;
+  z-index: 85; display: flex; flex-direction: column;
+}
+#ki-overlay.open { transform: translateX(0); }
+.ki-ov-head { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.ki-ov-head .title { font-weight: 600; font-size: 14.5px; }
+.ki-ov-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.ki-ov-quick { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.ki-ov-quick button { text-align: left; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-inset); color: var(--text-muted); font-size: 12.5px; cursor: pointer; }
+.ki-ov-quick button:hover { color: var(--text-primary); background: var(--bg-hover); }
+.ki-ov-log { display: flex; flex-direction: column; gap: 8px; }
+.ki-ov-msg { padding: 9px 11px; border-radius: 9px; font-size: 12.5px; line-height: 1.5; max-width: 92%; }
+.ki-ov-msg.user { align-self: flex-end; background: var(--accent-blue); color: var(--bg-deep); }
+.ki-ov-msg.assistant { align-self: flex-start; background: var(--bg-inset); color: var(--text-primary); }
+.ki-ov-foot { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.ki-ov-foot input { flex: 1; background: var(--bg-inset); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: var(--text-primary); }
+
+/* ==========================================================================
+   0-b) KI-Overlay Ende
+   ========================================================================== */
+
+   5) LANDING (ausgeloggt)
+   ========================================================================== */
+#landing { flex: 1; display: flex; align-items: center; justify-content: center; }
+#landing.hidden { display: none; }
+#motto { font-size: 32px; font-weight: 600; min-height: 44px; text-align: center; }
+#motto .bar {
+  display: inline-block; width: 3px; height: 30px; background: var(--accent-cyan);
+  margin-left: 4px; vertical-align: -6px; animation: blink 0.9s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+#landing-sub { text-align: center; margin-top: 8px; color: var(--text-dim); font-size: 13.5px; }
+
+/* ==========================================================================
+   6) DASHBOARD LAYOUT (eingeloggt)
+   ========================================================================== */
+#dashboard { flex: 1; display: none; min-height: 0; }
+#dashboard.visible { display: flex; }
+
+#iconrail {
+  width: 56px; flex-shrink: 0; background: var(--bg-panel); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; padding: 14px 0;
+}
+.rail-scroll { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; overflow-y: auto; }
+.rail-btn {
+  width: 38px; height: 38px; border-radius: 9px; border: none; background: transparent;
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+  cursor: pointer; position: relative; color: var(--text-muted); opacity: .85;
+}
+.rail-btn:hover { background: var(--bg-hover); opacity: 1; color: var(--text-primary); }
+.rail-btn.active { background: var(--bg-hover); opacity: 1; color: var(--accent-blue); }
+.rail-btn .tip {
+  position: absolute; left: 50px; top: 50%; transform: translateY(-50%);
+  background: var(--bg-inset); border: 1px solid var(--border); color: var(--text-primary);
+  font-size: 12px; padding: 5px 10px; border-radius: 6px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .1s; z-index: 30;
+}
+.rail-btn:hover .tip { opacity: 1; }
+.rail-group-toggle { display: flex; flex-direction: column; gap: 4px; padding: 8px 8px 0; }
+.rail-group-btn {
+  width: 38px; height: 30px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg-inset);
+  color: var(--text-dim); font-size: 14px; cursor: pointer;
+}
+.rail-group-btn.active { color: var(--bg-deep); background: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+#main { flex: 1; min-width: 0; overflow-y: auto; padding: 28px 32px 60px; }
+#greeting { font-size: 24px; font-weight: 600; margin: 0 0 2px; }
+#greeting-date { color: var(--text-muted); font-size: 13.5px; margin-bottom: 22px; }
+
+.page-header { margin-bottom: 20px; }
+.page-title { font-size: 22px; font-weight: 600; margin: 0 0 4px; }
+.page-sub { color: var(--text-muted); font-size: 13.5px; }
+
+.notice-box {
+  border: 1px dashed var(--border); border-radius: var(--radius); padding: 16px 18px;
+  color: var(--text-muted); font-size: 13.5px; line-height: 1.6; max-width: 520px;
+}
+
+/* ==========================================================================
+   7) WIDGET GRID (nur Übersicht) — feste Slots
+   ========================================================================== */
+#widget-grid {
+  display: grid; grid-template-columns: 1fr 1.35fr 1fr; grid-template-rows: auto 1fr;
+  grid-template-areas: "slotA slotB slotD" "slotA slotC slotD"; gap: 16px;
+  min-height: calc(100vh - 200px);
+}
+@media (max-width: 880px) {
+  #widget-grid { grid-template-columns: 1fr; grid-template-rows: none;
+    grid-template-areas: "slotA" "slotB" "slotC" "slotD"; min-height: auto; }
+}
+.widget {
+  background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; display: flex; flex-direction: column; min-height: 0;
+}
+.widget-empty {
+  border: 1px dashed var(--border); border-radius: var(--radius); display: flex; align-items: center;
+  justify-content: center; color: var(--text-dim); font-size: 13px; cursor: pointer;
+  background: transparent; min-height: 90px; text-align: center; padding: 12px;
+}
+.widget-empty:hover { color: var(--text-primary); border-color: var(--text-dim); }
+.widget-head {
+  padding: 12px 14px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 13.5px;
+  display: flex; align-items: center; justify-content: space-between; cursor: default; flex-shrink: 0;
+}
+.widget-head.clickable { cursor: pointer; }
+.widget-head.clickable:hover { color: var(--accent-cyan); }
+.widget-body { padding: 12px 14px; overflow-y: auto; flex: 1; min-height: 0; }
+
+/* Nachrichten (Widget + volle Mail-Seite teilen sich diese Klassen) */
+.msg-item { padding: 9px 10px; border-radius: 8px; margin-bottom: 6px; cursor: pointer; background: var(--bg-inset); border: 1px solid transparent; }
+.msg-item:hover { border-color: var(--border); }
+.msg-item.active { border-color: var(--accent-blue); }
+.msg-item.unread .msg-sender::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); margin-right: 6px; }
+.msg-sender { font-size: 12.5px; font-weight: 600; display: flex; align-items: center; }
+.msg-item.unread .msg-sender { color: var(--text-primary); }
+.msg-item:not(.unread) .msg-sender { color: var(--text-dim); }
+.msg-source { font-size: 10px; color: var(--text-dim); margin-left: auto; }
+.msg-preview { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4;
+  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+.quick-btn { display: flex; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 8px; background: var(--bg-inset); border: 1px solid var(--border); color: var(--accent-cyan); font-size: 13px; cursor: pointer; margin-bottom: 6px; }
+.quick-btn:hover { background: var(--bg-hover); }
+
+/* Kalender */
+.cal-tabs { display: flex; gap: 4px; }
+.cal-tab { font-size: 11.5px; padding: 4px 9px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; }
+.cal-tab.active { background: var(--bg-hover); color: var(--text-primary); }
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cal-nav-btn { background: var(--bg-inset); border: 1px solid var(--border); color: var(--text-muted); width: 24px; height: 24px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.cal-nav-btn:hover { color: var(--text-primary); }
+.cal-month-label { font-size: 13px; font-weight: 600; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-weekday { font-size: 10.5px; color: var(--text-dim); text-align: center; padding-bottom: 4px; }
+.cal-day { aspect-ratio: 1; border-radius: 7px; background: var(--bg-inset); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; color: var(--text-muted); cursor: pointer; gap: 3px; }
+.cal-day:hover { background: var(--bg-hover); color: var(--text-primary); }
+.cal-day.empty { background: transparent; cursor: default; }
+.cal-day.today { border: 1px solid var(--accent-blue); color: var(--text-primary); font-weight: 600; }
+.cal-day .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent-cyan); }
+.cal-entry { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.cal-entry:last-child { border-bottom: none; }
+
+/* WebUntis / Stunden-Karten (Widget + Stundenplan-Seite) */
+.period { border-radius: 9px; overflow: hidden; margin-bottom: 10px; border: 1px solid var(--border); }
+.period-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 11px; font-weight: 600; font-size: 13.5px; color: var(--bg-deep); }
+.period-room { font-size: 11.5px; opacity: .85; }
+.period-body { background: var(--bg-inset); padding: 9px 11px; }
+.period-teacher { font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px; }
+.period-status { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+.status-dot { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--bg-deep); flex-shrink: 0; }
+.status-label { flex: 1; }
+.more-info { font-size: 11.5px; color: var(--accent-blue); cursor: pointer; text-decoration: underline; }
+
+/* ==========================================================================
+   8) MAIL-SEITE
+   ========================================================================== */
+.mail-layout { display: grid; grid-template-columns: 180px 300px 1fr; gap: 16px; height: calc(100vh - 190px); min-height: 400px; }
+.mail-folders { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
+.mail-folder { padding: 8px 10px; border-radius: 7px; font-size: 13px; cursor: pointer; color: var(--text-muted); display: flex; justify-content: space-between; }
+.mail-folder:hover { background: var(--bg-hover); }
+.mail-folder.active { background: var(--bg-hover); color: var(--text-primary); font-weight: 600; }
+.mail-folder .count { font-size: 11px; color: var(--text-dim); }
+.mail-list { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; overflow-y: auto; }
+.mail-reading { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; overflow-y: auto; }
+.mail-reading .subject { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.mail-reading .meta { font-size: 12px; color: var(--text-dim); margin-bottom: 18px; }
+.mail-reading .body { font-size: 13.5px; line-height: 1.7; color: var(--text-primary); white-space: pre-wrap; }
+.mail-empty { color: var(--text-dim); font-size: 13px; display: flex; align-items: center; justify-content: center; height: 100%; }
+
+/* ==========================================================================
+   8-b) CHATS-SEITE (WhatsApp-artig — Direktnachrichten & Gruppen)
+   ========================================================================== */
+.chat-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; height: calc(100vh - 190px); min-height: 400px; }
+.chat-list { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+.chat-list-item { padding: 9px 10px; border-radius: 8px; cursor: pointer; }
+.chat-list-item:hover { background: var(--bg-hover); }
+.chat-list-item.active { background: var(--bg-hover); }
+.chat-list-item .name { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.chat-list-item .last { font-size: 11.5px; color: var(--text-dim); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-conversation { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; min-height: 0; }
+.chat-conv-head { padding: 12px 16px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 13.5px; }
+.chat-conv-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.chat-bubble { max-width: 70%; padding: 9px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; }
+.chat-bubble.self { align-self: flex-end; background: var(--accent-blue); color: var(--bg-deep); border-bottom-right-radius: 3px; }
+.chat-bubble.other { align-self: flex-start; background: var(--bg-inset); color: var(--text-primary); border-bottom-left-radius: 3px; }
+.chat-bubble .meta { font-size: 10px; opacity: .7; margin-top: 3px; display: block; }
+.chat-conv-foot { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); }
+.chat-conv-foot input { flex: 1; background: var(--bg-inset); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: var(--text-primary); }
+
+/* ==========================================================================
+   9) STUNDENPLAN-SEITE (Wochenraster)
+   ========================================================================== */
+.tt-grid { display: grid; grid-template-columns: 56px repeat(5, 1fr); gap: 6px; }
+.tt-head { font-size: 12px; color: var(--text-dim); text-align: center; padding: 6px 0; }
+.tt-slot-label { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
+.tt-cell { min-height: 68px; border-radius: 8px; padding: 6px 8px; font-size: 11.5px; cursor: default; display: flex; flex-direction: column; gap: 3px; }
+.tt-cell.empty { background: var(--bg-inset); opacity: .35; }
+.tt-cell .tt-subject { font-weight: 700; font-size: 12.5px; }
+.tt-cell .tt-room { opacity: .85; }
+.tt-cell .tt-status { margin-top: auto; font-size: 10.5px; text-decoration: underline; cursor: pointer; }
+
+/* ==========================================================================
+   10) DOKUMENTE-SEITE
+   ========================================================================== */
+.docs-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); margin-bottom: 14px; flex-wrap: wrap; }
+.docs-breadcrumb span.seg { cursor: pointer; }
+.docs-breadcrumb span.seg:hover { color: var(--accent-blue); }
+.docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.docs-item { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 10px; text-align: center; cursor: pointer; }
+.docs-item:hover { background: var(--bg-hover); }
+.docs-item .icon { font-size: 26px; margin-bottom: 8px; }
+.docs-item .name { font-size: 12px; word-break: break-word; }
+
+/* ==========================================================================
+   11) NOTIZEN-SEITE (GoodNotes-artig: Textfelder auf einer Zeichenfläche)
+   ========================================================================== */
+.hs-layout { display: grid; grid-template-columns: 56px 1fr 130px; gap: 14px; height: calc(100vh - 190px); }
+.hs-tools { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 6px; }
+.hs-tool { width: 36px; height: 36px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 16px; cursor: pointer; }
+.hs-tool:hover { background: var(--bg-hover); color: var(--text-primary); }
+.hs-tool.active { background: var(--accent-blue); color: var(--bg-deep); }
+.hs-canvas {
+  position: relative; overflow: hidden;
+  background: repeating-linear-gradient(0deg, var(--bg-inset), var(--bg-inset) 27px, var(--bg-panel) 28px);
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+.hs-canvas-hint { position: absolute; bottom: 10px; left: 12px; color: var(--text-dim); font-size: 11px; pointer-events: none; }
+.hs-textbox { position: absolute; width: 220px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 7px; box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+.hs-textbox-handle { height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-dim); cursor: grab; border-bottom: 1px solid var(--border); user-select: none; }
+.hs-textbox-content { padding: 8px 10px; font-size: 12.5px; line-height: 1.5; color: var(--text-primary); min-height: 20px; outline: none; white-space: pre-wrap; }
+.hs-pages { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.hs-page-thumb { border: 1px solid var(--border); border-radius: 6px; background: var(--bg-inset); height: 90px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-dim); cursor: pointer; }
+.hs-page-thumb.active { border-color: var(--accent-blue); color: var(--text-primary); }
+.hs-add-page { border: 1px dashed var(--border); border-radius: 6px; text-align: center; padding: 8px; font-size: 11px; color: var(--text-dim); cursor: pointer; }
+
+.export-section { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+.export-section h4 { margin: 0 0 8px; font-size: 13px; }
+.export-format-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ==========================================================================
+   12) WIKI-SEITE (Collectives-Stil)
+   ========================================================================== */
+.wiki-collectives-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.wiki-collective-card { border-radius: var(--radius); padding: 18px 16px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-panel); }
+.wiki-collective-card:hover { background: var(--bg-hover); }
+.wiki-collective-card .dot { width: 12px; height: 12px; border-radius: 50%; margin-bottom: 10px; }
+.wiki-collective-card .name { font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
+.wiki-collective-card .meta { font-size: 11.5px; color: var(--text-dim); }
+.wiki-add-card { border: 1px dashed var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 13px; cursor: pointer; min-height: 90px; }
+.wiki-add-card:hover { color: var(--text-primary); border-color: var(--text-dim); }
+
+.wiki-layout { display: grid; grid-template-columns: 240px 1fr; gap: 16px; height: calc(100vh - 190px); }
+.wiki-tree { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; overflow-y: auto; }
+.wiki-tree-node { font-size: 13px; }
+.wiki-tree-row { display: flex; align-items: center; gap: 5px; padding: 6px 6px; border-radius: 6px; cursor: pointer; color: var(--text-muted); }
+.wiki-tree-row:hover { background: var(--bg-hover); }
+.wiki-tree-row.active { background: var(--bg-hover); color: var(--accent-blue); font-weight: 600; }
+.wiki-tree-toggle { width: 14px; text-align: center; color: var(--text-dim); font-size: 10px; }
+.wiki-tree-children { margin-left: 16px; border-left: 1px solid var(--border); padding-left: 4px; }
+.wiki-content { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; overflow-y: auto; }
+.wiki-content-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.wiki-content h1 { font-size: 20px; margin: 0 0 4px; }
+.wiki-md-view h1 { font-size: 19px; } .wiki-md-view h2 { font-size: 16.5px; } .wiki-md-view p { line-height: 1.7; font-size: 13.5px; }
+.wiki-md-edit { width: 100%; min-height: 320px; background: var(--bg-inset); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; padding: 12px; font-size: 13px; font-family: 'JetBrains Mono', monospace; line-height: 1.6; }
+.visibility-badge { font-size: 11px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); }
+
+/* ==========================================================================
+   13) KI-ASSISTENT — Restklasse, wird im Overlay (siehe Abschnitt 0-b) weiterverwendet
+   ========================================================================== */
+.ki-system-msg { align-self: center; font-size: 12.5px; color: var(--text-dim); background: var(--bg-inset); padding: 8px 14px; border-radius: 999px; }
+
+/* ==========================================================================
+   14) (frei — Cardy wurde entfernt, rechtlich nicht umsetzbar)
+   ========================================================================== */
+
+/* ==========================================================================
+   15) EINSTELLUNGEN-SEITE
+   ========================================================================== */
+.settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
+.settings-tabs { display: flex; flex-direction: column; gap: 2px; }
+.settings-tab { padding: 9px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; color: var(--text-muted); }
+.settings-tab:hover { background: var(--bg-hover); }
+.settings-tab.active { background: var(--bg-hover); color: var(--accent-blue); font-weight: 600; }
+.settings-panel { max-width: 620px; }
+.field-label { font-size: 12px; color: var(--text-dim); display: block; margin-bottom: 6px; margin-top: 16px; }
+.field-label:first-child { margin-top: 0; }
+.tn-input { width: 100%; background: var(--bg-inset); border: 1px solid var(--border); color: var(--text-primary); border-radius: 7px; padding: 9px 11px; font-size: 13.5px; }
+.theme-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 6px; }
+.theme-card { border: 2px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; }
+.theme-card.active { border-color: var(--accent-blue); }
+.theme-swatch { height: 46px; border-radius: 7px; margin-bottom: 8px; display: flex; align-items: center; padding: 0 8px; gap: 5px; }
+.theme-swatch i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.theme-card .tname { font-size: 12.5px; font-weight: 600; }
+.subject-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.subject-row .sname { flex: 1; font-size: 13px; }
+.swatch-btn { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+.swatch-btn.selected { border-color: var(--text-primary); }
+.mcp-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--bg-inset); border-radius: 7px; margin-bottom: 6px; font-size: 12.5px; }
+.mcp-row button { background: none; border: none; color: var(--accent-red); cursor: pointer; font-size: 13px; }
+
+/* ==========================================================================
+   16) FEEDBACK-SEITE
+   ========================================================================== */
+.fb-chip { padding: 6px 11px; border-radius: 7px; font-size: 12.5px; border: 1px solid var(--border); background: var(--bg-inset); color: var(--text-muted); cursor: pointer; }
+.fb-chip.active { color: var(--bg-deep); font-weight: 600; }
+.fb-vote { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-inset); color: var(--text-muted); cursor: pointer; }
+.fb-vote.voted { border-color: var(--accent-blue); color: var(--accent-blue); background: rgba(122,162,247,.08); }
+.fb-item { display: flex; gap: 12px; padding: 14px 14px 14px 12px; background: var(--bg-panel); border-radius: 9px; margin-bottom: 8px; }
+
+/* ==========================================================================
+   17) CONTEXT MENU / MODAL / TOAST (global)
+   ========================================================================== */
+#ctxmenu { position: fixed; z-index: 100; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 9px; padding: 6px; display: none; min-width: 170px; box-shadow: 0 12px 28px rgba(0,0,0,.4); animation: popIn .1s ease; }
+#ctxmenu.open { display: block; }
+.ctx-item { padding: 8px 10px; font-size: 12.5px; border-radius: 6px; cursor: pointer; color: var(--text-muted); }
+.ctx-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.ctx-item.danger:hover { color: var(--accent-red); }
+.ctx-sep { height: 1px; background: var(--border); margin: 5px 2px; }
+
+#modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; z-index: 90; animation: fadeIn .12s ease; }
+#modal-overlay.open { display: flex; }
+#modal-box { width: 440px; max-width: 90vw; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; max-height: 80vh; overflow-y: auto; animation: popIn .14s ease; }
+#modal-box h3 { margin: 0 0 4px; font-size: 16px; }
+#modal-box .modal-meta { font-size: 11.5px; color: var(--text-dim); margin-bottom: 14px; }
+#modal-box .modal-close { float: right; background: none; border: none; color: var(--text-dim); font-size: 18px; cursor: pointer; }
+
+#toast {
+  position: fixed; bottom: 22px; right: 22px; background: var(--bg-panel); border: 1px solid var(--border);
+  color: var(--text-primary); padding: 11px 16px; border-radius: 9px; font-size: 13px;
+  opacity: 0; transform: translateY(8px); transition: all .18s; z-index: 200; pointer-events: none; max-width: 320px;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-name">simonsstudios<span class="cursor"></span></div>
-      <div class="brand-sub">Dashboard · Entwurf</div>
+<div id="app">
+  <div id="topbar">
+    <div id="brand">School AIO</div>
+    <div class="topbar-actions" id="topbar-actions"></div>
+  </div>
+  <div id="profile-menu"></div>
+  <div id="ki-overlay"></div>
+
+  <div id="landing">
+    <div>
+      <div id="motto"><span id="motto-text"></span><span class="bar"></span></div>
+      <div id="landing-sub">Melde dich an, um dein Dashboard zu sehen.</div>
     </div>
+  </div>
 
-    <nav class="nav" id="main-nav"></nav>
-
-    <div class="view-switch">
-      <div class="switch-title">Ansicht für</div>
-      <div class="switches">
-        <button class="group-btn active" data-group="schule" type="button">🎓 Schule</button>
-        <button class="group-btn" data-group="privat" type="button">⌂ Privat</button>
-      </div>
-    </div>
-  </aside>
-
-  <div class="main">
-    <header class="topbar">
-      <div class="crumb">
-        <span>Dashboard</span><span aria-hidden="true">›</span><span class="crumb-current" id="crumb-current">Übersicht</span>
-      </div>
-      <div class="theme-pill">Tokyo Night</div>
-    </header>
-
-    <main class="content" id="content"></main>
+  <div id="dashboard">
+    <div id="iconrail"></div>
+    <div id="main"></div>
   </div>
 </div>
 
+<div id="ctxmenu"></div>
+<div id="modal-overlay"><div id="modal-box"></div></div>
+<div id="toast"></div>
+
 <script>
-(() => {
-  const NAV_ITEMS = [
-    {id:"uebersicht",label:"Übersicht",icon:"▦",group:"both",empty:null},
-    {id:"mail",label:"Mail",icon:"✉",group:"schule",empty:"Postfach folgt, sobald die IMAP-Anbindung an IServ steht."},
-    {id:"stundenplan",label:"Stundenplan",icon:"□",group:"schule",empty:"Zeigt deinen Stundenplan, sobald die WebUntis-Anbindung läuft."},
-    {id:"schulcloud",label:"schul.cloud",icon:"◌",group:"schule",empty:"Öffnet schul.cloud später direkt im Dashboard."},
-    {id:"dokumente",label:"Dokumente",icon:"▤",group:"both",empty:"Deine Dateien erscheinen hier, sobald Nextcloud angebunden ist."},
-    {id:"handschrift",label:"Handschrift",icon:"✎",group:"both",empty:"Der Handschrift-Editor kommt in einer der nächsten Ausbaustufen."},
-    {id:"wiki",label:"Wiki",icon:"▧",group:"both",empty:"Wissen zum Nachschlagen — folgt in einer späteren Phase."},
-    {id:"ki",label:"KI-Assistent",icon:"✦",group:"both",empty:"Hier hinterlegst du später deinen eigenen API-Schlüssel."},
-    {id:"cardy",label:"Cardy",icon:"▣",group:"schule",empty:"Digitales Ausgangsticket fürs Sekretariat — erste Version folgt."},
-    {id:"feedback",label:"Verbesserungsvorschläge",icon:"☼",group:"both",empty:null},
-    {id:"einstellungen",label:"Einstellungen",icon:"⚙",group:"both",empty:null}
-  ];
+/* ============================================================================
+   STATE — einzige Quelle der Wahrheit. Kein localStorage (siehe Regeln),
+   alles nur im Arbeitsspeicher. TODO(backend): all das wird später über
+   eine echte API geladen/gespeichert.
+   ============================================================================ */
+const state = {
+  loggedIn: false,
+  // "school" ist die Mandanten-Kennung: Nutzer verschiedener Schulen dürfen
+  // serverseitig NIE automatisch miteinander interagieren können (siehe
+  // Freunde-Modul unten — Vernetzung läuft ausschließlich über explizite,
+  // von beiden Seiten bestätigte Freundschaftsanfragen, nie automatisch).
+  user: { name: "Max Mustermann", initials: "MM", school: "Bertolt-Brecht-Gymnasium" },
+  theme: "tokyo-night",           // "tokyo-night" | "clean-dark" | "clean-light"
+  group: "schule",                // "schule" | "privat" — steuert sichtbare Module
+  activePage: "uebersicht",
+  settingsTab: "profil",
 
-  const CATEGORIES = [
-    {id:"idee",label:"Idee",color:"var(--accent-purple)"},
-    {id:"verbesserung",label:"Verbesserung",color:"var(--accent-green)"},
-    {id:"fehler",label:"Fehler",color:"var(--accent-red)"}
-  ];
+  apiKeys: { anthropic: "", openai: "", gemini: "" },
+  aiSettings: { notizenMode: "voll" }, // "voll" = zusammenfassen/vervollständigen/korrigieren, "einsortieren" = nur ablegen
+  kiOverlayOpen: false,
+  kiLog: [], // { role:"user"|"assistant", text }
+  mcpServers: [],                 // {name, url}
 
-  const MODULES_FOR_FEEDBACK = [
-    "Allgemein","Übersicht","Mail","Stundenplan","schul.cloud",
-    "Dokumente","Handschrift","Wiki","KI-Assistent","Cardy","Design / Theme"
-  ];
+  subjectColors: {},              // wird von getSubjectColor() befüllt/überschrieben
+  subjectsList: ["Mathematik","Deutsch","Physik","Englisch","Chemie","Biologie","Geschichte","Kunst","Sport","Latein"],
 
-  const SEED_FEEDBACK = [
-    {id:"f1",title:"Stundenplan als Karte auf der Startseite",category:"idee",module:"Übersicht",
-     description:"Die nächsten zwei Stunden direkt auf der Übersicht anzeigen, ohne extra klicken zu müssen.",votes:7,minutesAgo:190},
-    {id:"f2",title:"Radiergummi im Handschrift-Editor zu klein getroffen",category:"fehler",module:"Handschrift",
-     description:"Auf dem iPad braucht es mehrere Versuche, bis der Radiergummi-Modus richtig trifft.",votes:3,minutesAgo:60},
-    {id:"f3",title:"Suchfeld oben im Wiki fixieren",category:"verbesserung",module:"Wiki",
-     description:"Beim Scrollen durch lange Artikel wäre eine fixierte Suche praktisch.",votes:5,minutesAgo:20}
-  ];
+  calMonthOffset: 0,
+  stundenplanStyle: "bunt",   // "bunt" | "dezent" | "neutral" — in Einstellungen → Design änderbar
+  stundenplanHideFree: false, // Freistunden in der Wochenansicht ausblenden
+  calendarEntries: [
+    { offsetDays: 2,  label: "Mathe-Test — Bruchrechnung" },
+    { offsetDays: 4,  label: "Physik entfällt" },
+    { offsetDays: 9,  label: "Deutsch-Aufsatz Abgabe" },
+    { offsetDays: 16, label: "Chemie-Test — Redoxreaktionen" }
+  ],
 
-  const state = {
-    group:"schule",
-    active:"uebersicht",
-    feedback:SEED_FEEDBACK.map(x => ({...x})),
-    voted:{},
-    sortMode:"neu",
-    filterCat:null,
-    form:{title:"",category:"idee",module:"Allgemein",description:""}
-  };
+  // "Heute"-Liste fürs Übersicht-Widget
+  periods: [
+    { id:"p1", subject:"Mathematik", room:"r315", teacher:"Fr. Müller", status:"test", testId:"t1" },
+    { id:"p2", subject:"Deutsch", room:"r212", teacher:"Herr Bauer", status:null },
+    { id:"p3", subject:"Physik", room:"r315", teacher:"Herr Annemüller", status:"ausfall" },
+    { id:"p4", subject:"Mathematik", room:"r315", teacher:"Fr. Müller", status:"vertretung",
+      original:{ subject:"Sport", teacher:"Herr Keller", room:"Halle 2" } }
+  ],
 
-  const navEl = document.getElementById("main-nav");
-  const contentEl = document.getElementById("content");
-  const crumbEl = document.getElementById("crumb-current");
+  testSources: {
+    t1: { webuntis:{ description:"Bruchrechnung", date:"18.3." },
+          nextcloud:{ description:"Bruchrechnung Kapitel 4 – Addition, Subtraktion und gemischte Zahlen. Taschenrechner erlaubt.", date:"18.3." } },
+    t2: { webuntis:{ description:"Mechanik", date:"20.3." },
+          nextcloud:{ description:"Mechanik: Kräfte, Newtonsche Gesetze, Beispielaufgaben aus Kapitel 5.", date:"20.3." } }
+  },
 
-  function relativeTime(minutes){
-    if(minutes < 1) return "gerade eben";
-    if(minutes < 60) return `vor ${minutes} Min.`;
-    const hours = Math.floor(minutes/60);
-    if(hours < 24) return `vor ${hours} Std.`;
-    const days = Math.floor(hours/24);
-    return `vor ${days} Tag${days > 1 ? "en" : ""}`;
-  }
+  // Vollständiges Wochenraster für die Stundenplan-Seite
+  timetable: {
+    days: ["Mo","Di","Mi","Do","Fr"],
+    slots: [1,2,3,4,5,6],
+    lessons: [
+      { day:"Mo", slot:1, subject:"Mathematik", room:"r315", teacher:"Fr. Müller", status:"test", testId:"t1" },
+      { day:"Mo", slot:2, subject:"Deutsch", room:"r212", teacher:"Herr Bauer" },
+      { day:"Mo", slot:3, subject:"Physik", room:"r315", teacher:"Herr Annemüller", status:"ausfall" },
+      { day:"Mo", slot:4, subject:"Englisch", room:"r108", teacher:"Fr. Klein" },
+      { day:"Mo", slot:6, subject:"Sport", room:"Halle 1", teacher:"Herr Keller" },
 
-  function greeting(){
-    const h = new Date().getHours();
-    if(h < 11) return "Guten Morgen";
-    if(h < 18) return "Guten Tag";
-    return "Guten Abend";
-  }
+      { day:"Di", slot:1, subject:"Chemie", room:"r401", teacher:"Fr. Voss" },
+      { day:"Di", slot:2, subject:"Chemie", room:"r401", teacher:"Fr. Voss" },
+      { day:"Di", slot:3, subject:"Mathematik", room:"r315", teacher:"Fr. Müller", status:"vertretung",
+        original:{ subject:"Kunst", teacher:"Fr. Sommer", room:"r120" } },
+      { day:"Di", slot:4, subject:"Biologie", room:"r305", teacher:"Herr Lang" },
+      { day:"Di", slot:5, subject:"Deutsch", room:"r212", teacher:"Herr Bauer" },
 
-  function visibleNav(){
-    return NAV_ITEMS.filter(n => n.group === "both" || n.group === state.group);
-  }
+      { day:"Mi", slot:1, subject:"Englisch", room:"r108", teacher:"Fr. Klein" },
+      { day:"Mi", slot:2, subject:"Mathematik", room:"r315", teacher:"Fr. Müller" },
+      { day:"Mi", slot:3, subject:"Geschichte", room:"r210", teacher:"Herr Wolf" },
+      { day:"Mi", slot:4, subject:"Physik", room:"r315", teacher:"Herr Annemüller", status:"test", testId:"t2" },
+      { day:"Mi", slot:5, subject:"Kunst", room:"r120", teacher:"Fr. Sommer" },
 
-  function selectGroup(next){
-    state.group = next;
-    const stillVisible = NAV_ITEMS.find(n => n.id === state.active && (n.group === "both" || n.group === next));
-    if(!stillVisible) state.active = "uebersicht";
-    render();
-  }
+      { day:"Do", slot:1, subject:"Deutsch", room:"r212", teacher:"Herr Bauer" },
+      { day:"Do", slot:2, subject:"Deutsch", room:"r212", teacher:"Herr Bauer" },
+      { day:"Do", slot:3, subject:"Sport", room:"Halle 1", teacher:"Herr Keller" },
+      { day:"Do", slot:4, subject:"Mathematik", room:"r315", teacher:"Fr. Müller" },
+      { day:"Do", slot:5, subject:"Chemie", room:"r401", teacher:"Fr. Voss" },
 
-  function renderNav(){
-    navEl.innerHTML = "";
-    visibleNav().forEach(item => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "nav-btn" + (item.id === state.active ? " active" : "");
-      btn.innerHTML = `<span class="nav-icon" aria-hidden="true">${item.icon}</span>
-        <span class="nav-label"></span><span class="dot"></span>`;
-      btn.querySelector(".nav-label").textContent = item.label;
-      const color = item.group === "schule" ? "var(--accent-cyan)" :
-                    item.group === "privat" ? "var(--accent-green)" : "var(--accent-blue)";
-      btn.querySelector(".dot").style.background = color;
-      btn.addEventListener("click", () => { state.active = item.id; render(); });
-      navEl.appendChild(btn);
-    });
-    document.querySelectorAll(".group-btn").forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.group === state.group);
-      btn.onclick = () => selectGroup(btn.dataset.group);
-    });
-  }
+      { day:"Fr", slot:1, subject:"Biologie", room:"r305", teacher:"Herr Lang" },
+      { day:"Fr", slot:2, subject:"Englisch", room:"r108", teacher:"Fr. Klein" },
+      { day:"Fr", slot:3, subject:"Mathematik", room:"r315", teacher:"Fr. Müller" }
+    ]
+  },
 
-  function renderOverview(){
-    const cards = visibleNav().filter(n => n.empty);
-    contentEl.innerHTML = `
-      <div class="page hero">
-        <h1>${greeting()}, Simon</h1>
-        <p>Das ist ein erster Designentwurf für dein Dashboard. Die Navigation funktioniert schon vollständig — die Fachmodule kommen Schritt für Schritt dazu.</p>
-        <button class="action-btn" id="go-feedback" type="button">☼ Verbesserungsvorschlag einreichen</button>
+  mail: {
+    activeFolder: "inbox",
+    activeMessageId: null,
+    folders: [
+      { id:"inbox", label:"Posteingang", icon:"📥" },
+      { id:"sent", label:"Gesendet", icon:"📤" },
+      { id:"drafts", label:"Entwürfe", icon:"📝" },
+      { id:"archive", label:"Archiv", icon:"🗄️" },
+      { id:"trash", label:"Papierkorb", icon:"🗑️" }
+    ],
+    messages: [
+      { id:"m1", folder:"inbox", source:"IServ", sender:"Dirk Annemüller", subject:"Physik-Ergebnisse",
+        preview:"Hey, kannst du mir deine Ergebnisse für Physik schicken? Du hast noch die Auswertung von letzter Woche.",
+        body:"Hey,\n\nkannst du mir deine Ergebnisse für Physik schicken? Du hast noch die Auswertung von letzter Woche.\n\nDanke!\nDirk",
+        date:"Vor 3 Std.", read:false },
+      { id:"m2", folder:"inbox", source:"System", sender:"Feature-Update", subject:"Neu: Schnellzugriff",
+        preview:"Neu: Schnellzugriff auf Fach-Ordner ist jetzt verfügbar.",
+        body:"Neu: Schnellzugriff auf Fach-Ordner ist jetzt verfügbar.\n\nSchau in den Einstellungen vorbei, um deine Fächer zu verwalten.",
+        date:"Gestern", read:true },
+      { id:"m3", folder:"inbox", source:"Nextcloud", sender:"Nextcloud", subject:"Speicherplatz wird knapp",
+        preview:"Dein Speicher ist zu 80% voll. Bitte räume alte Dateien auf.",
+        body:"Dein Speicher ist zu 80% voll.\n\nBitte räume alte Dateien auf oder erweitere deinen Speicher in den Nextcloud-Einstellungen.",
+        date:"Gestern", read:false },
+      { id:"m4", folder:"inbox", source:"IServ", sender:"Dirk Annemüller", subject:"Physik-AG",
+        preview:"Bist du morgen auch in der Physik-AG?",
+        body:"Bist du morgen auch in der Physik-AG?\n\nWir wollten den Raketenversuch fertig machen.",
+        date:"Vor 2 Tagen", read:true },
+      { id:"m5", folder:"sent", source:"IServ", sender:"Max Mustermann", subject:"Re: Physik-Ergebnisse",
+        preview:"Klar, schicke ich dir heute Abend noch.",
+        body:"Klar, schicke ich dir heute Abend noch.\n\nViele Grüße\nMax",
+        date:"Vor 2 Std.", read:true },
+      { id:"m6", folder:"drafts", source:"IServ", sender:"Max Mustermann", subject:"(Ohne Betreff)",
+        preview:"Hey, wegen dem Referat wollte ich fragen …",
+        body:"Hey, wegen dem Referat wollte ich fragen, ob wir uns diese Woche noch treffen können …",
+        date:"Vor 5 Tagen", read:true },
+      { id:"m7", folder:"archive", source:"IServ", sender:"Sekretariat", subject:"Elternbrief Wandertag",
+        preview:"Anbei der Elternbrief zum Wandertag am 12.5.",
+        body:"Anbei der Elternbrief zum Wandertag am 12.5.\n\nBitte bis Freitag unterschrieben zurückgeben.",
+        date:"Vor 3 Wochen", read:true }
+    ]
+  },
 
-        <div style="margin-top:36px">
-          <div class="section-kicker">Module in Planung</div>
-          <div class="module-list" id="module-list"></div>
-        </div>
-      </div>`;
-    const list = document.getElementById("module-list");
-    cards.forEach(n => {
-      const row = document.createElement("div");
-      row.className = "module-item";
-      row.innerHTML = `<span aria-hidden="true">${n.icon}</span><span class="module-name"></span><span class="planned">geplant</span>`;
-      row.querySelector(".module-name").textContent = n.label;
-      row.addEventListener("click", () => { state.active = n.id; render(); });
-      list.appendChild(row);
-    });
-    document.getElementById("go-feedback").onclick = () => { state.active = "feedback"; render(); };
-  }
+  // Chats (WhatsApp-Stil) — Direktnachrichten und Gruppen. Kontakte kommen
+  // aus dem Freunde-System (siehe unten): nur bestätigte Freunde können
+  // angeschrieben werden.
+  chats: {
+    activeId: "c-lena",
+    conversations: [
+      { id:"c-lena", type:"dm", name:"Lena Wagner", members:["u-lena"],
+        messages: [
+          { from:"Lena Wagner", text:"Hast du die Matheaufgaben schon?", time:"09:14", self:false },
+          { from:"Max Mustermann", text:"Ja, schick ich dir gleich rüber.", time:"09:16", self:true }
+        ]},
+      { id:"c-tom", type:"dm", name:"Tom Brandt", members:["u-tom"],
+        messages: [
+          { from:"Tom Brandt", text:"Kommst du heute zur AG?", time:"Gestern", self:false }
+        ]},
+      { id:"c-physikag", type:"group", name:"Physik-AG", members:["u-lena","u-tom"],
+        messages: [
+          { from:"Tom Brandt", text:"Raketenversuch klappt jetzt endlich 🚀", time:"Gestern", self:false },
+          { from:"Lena Wagner", text:"Zeig mal!", time:"Gestern", self:false }
+        ]}
+    ]
+  },
 
-  function renderEmpty(item){
-    contentEl.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon" aria-hidden="true">${item.icon}</div>
-        <h2></h2>
-        <p></p>
-        <button class="link-btn" type="button">Ideen dazu einreichen</button>
-      </div>`;
-    contentEl.querySelector("h2").textContent = item.label;
-    contentEl.querySelector("p").textContent = item.empty;
-    contentEl.querySelector(".link-btn").onclick = () => { state.active = "feedback"; render(); };
-  }
+  // Notizen — GoodNotes-artig: Seiten mit Textfeldern + Zeichenfläche
+  // (Zeichnen bleibt vorerst Mockup, siehe Handschrift-Werkzeugleiste).
+  // TODO(backend): siehe notizen-und-ki-plan.md für die Export-Roadmap
+  // (u. a. echter GoodNotes-kompatibler Export).
+  notizen: {
+    title: "Neue Notiz",
+    activePage: 0,
+    pages: [
+      { id:"np1", textboxes: [
+        { id:"tb1", x: 40, y: 30, text: "# Physik – Mechanik\n\nKräfte und Newtonsche Gesetze." }
+      ]}
+    ]
+  },
 
-  function renderSettings(){
-    contentEl.innerHTML = `
-      <div class="settings">
-        <h1>Einstellungen</h1>
-        <div class="section-kicker">Design</div>
-        <div class="settings-card">
-          <div class="settings-row">
-            <div class="swatch"></div><span>Tokyo Night</span><span class="status-on">aktiv</span>
-          </div>
-          <div class="settings-row muted-row">
-            <div class="swatch" style="background:var(--bg-hover)"></div><span>Weitere Designs</span><span class="mono" style="font-size:11px;color:var(--text-dim)">bald</span>
-          </div>
-        </div>
-
-        <div class="section-kicker">Benutzergruppe</div>
-        <p style="font-size:13px;color:var(--text-muted);line-height:1.6">
-          Steuert, welche Module in der Seitenleiste sichtbar sind. Aktuell ausgewählt:
-          <strong id="selected-group" style="color:var(--text-primary)"></strong>.
-          Umschalten geht unten links in der Seitenleiste.
-        </p>
-      </div>`;
-    document.getElementById("selected-group").textContent = state.group === "schule" ? "Schule" : "Privat";
-  }
-
-  function renderFeedback(){
-    const counts = {idee:0,verbesserung:0,fehler:0};
-    state.feedback.forEach(f => counts[f.category] = (counts[f.category] || 0) + 1);
-
-    let list = state.filterCat ? state.feedback.filter(f => f.category === state.filterCat) : state.feedback.slice();
-    list = list.slice();
-    if(state.sortMode === "beliebt") list.sort((a,b) => b.votes - a.votes);
-    else list.sort((a,b) => a.minutesAgo - b.minutesAgo);
-
-    contentEl.innerHTML = `
-      <div class="feedback-wrap">
-        <div class="feedback-head">
-          <h1>Verbesserungsvorschläge</h1>
-          <p>Sammelstelle für Ideen, Verbesserungen und gemeldete Fehler — bewertbar per Stimme.</p>
-        </div>
-
-        <div class="feedback-grid">
-          <form class="form" id="feedback-form">
-            <div class="field">
-              <label for="fb-title">Titel</label>
-              <input class="input" id="fb-title" placeholder="Kurz und konkret" required>
-            </div>
-
-            <div class="field">
-              <label>Kategorie</label>
-              <div class="chips" id="category-chips"></div>
-            </div>
-
-            <div class="field">
-              <label for="fb-module">Bereich</label>
-              <select class="select" id="fb-module"></select>
-            </div>
-
-            <div class="field">
-              <label for="fb-description">Beschreibung</label>
-              <textarea class="textarea" id="fb-description" rows="4" placeholder="Was genau schlägst du vor?"></textarea>
-            </div>
-
-            <button class="submit" type="submit">Absenden</button>
-          </form>
-
-          <div>
-            <div class="list-toolbar">
-              <div class="toolbar-group" id="filter-chips"></div>
-              <div class="toolbar-group">
-                <button class="sort-btn ${state.sortMode === "neu" ? "active" : ""}" data-sort="neu" type="button">Neu</button>
-                <button class="sort-btn ${state.sortMode === "beliebt" ? "active" : ""}" data-sort="beliebt" type="button">Beliebt</button>
-              </div>
-            </div>
-            <div class="feedback-list" id="feedback-list"></div>
-          </div>
-        </div>
-      </div>`;
-
-    const title = document.getElementById("fb-title");
-    const desc = document.getElementById("fb-description");
-    title.value = state.form.title;
-    desc.value = state.form.description;
-
-    const moduleSelect = document.getElementById("fb-module");
-    MODULES_FOR_FEEDBACK.forEach(m => {
-      const option = document.createElement("option");
-      option.value = m; option.textContent = m;
-      option.selected = m === state.form.module;
-      moduleSelect.appendChild(option);
-    });
-
-    const catWrap = document.getElementById("category-chips");
-    CATEGORIES.forEach(c => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "chip" + (state.form.category === c.id ? " active" : "");
-      btn.textContent = c.label;
-      if(state.form.category === c.id){
-        btn.style.background = c.color;
-        btn.style.borderColor = c.color;
-      }
-      btn.onclick = () => { state.form.category = c.id; renderFeedback(); };
-      catWrap.appendChild(btn);
-    });
-
-    const filterWrap = document.getElementById("filter-chips");
-    CATEGORIES.forEach(c => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "chip" + (state.filterCat === c.id ? " active" : "");
-      btn.textContent = `${c.label} · ${counts[c.id] || 0}`;
-      if(state.filterCat === c.id){
-        btn.style.background = c.color;
-        btn.style.borderColor = c.color;
-      }
-      btn.onclick = () => {
-        state.filterCat = state.filterCat === c.id ? null : c.id;
-        renderFeedback();
-      };
-      filterWrap.appendChild(btn);
-    });
-
-    document.querySelectorAll(".sort-btn").forEach(btn => {
-      btn.onclick = () => { state.sortMode = btn.dataset.sort; renderFeedback(); };
-    });
-
-    document.getElementById("feedback-form").addEventListener("submit", e => {
-      e.preventDefault();
-      const titleText = title.value.trim();
-      if(!titleText) return;
-
-      state.feedback.unshift({
-        id:`f${Date.now()}`,
-        title:titleText,
-        category:state.form.category,
-        module:moduleSelect.value,
-        description:desc.value.trim(),
-        votes:0,
-        minutesAgo:0
-      });
-      state.form = {title:"",category:"idee",module:"Allgemein",description:""};
-      renderFeedback();
-    });
-
-    const listEl = document.getElementById("feedback-list");
-
-    if(!list.length){
-      const empty = document.createElement("div");
-      empty.style.cssText = "color:var(--text-dim);font-size:13px;padding:20px 0";
-      empty.textContent = "Noch nichts in dieser Kategorie.";
-      listEl.appendChild(empty);
+  docs: {
+    currentPathIds: ["root"],
+    tree: {
+      id:"root", name:"Persönlich", type:"folder", children: [
+        { id:"iserv", name:"IServ", type:"folder", children:[
+          { id:"iserv-f1", name:"Elternbrief_Wandertag.pdf", type:"file", kind:"pdf" },
+          { id:"iserv-f2", name:"Vertretungsplan_KW12.pdf", type:"file", kind:"pdf" }
+        ]},
+        { id:"mathematik", name:"Mathematik", type:"folder", children:[
+          { id:"m-f1", name:"Bruchrechnung_Merkblatt.pdf", type:"file", kind:"pdf" },
+          { id:"m-f2", name:"Hausaufgaben.docx", type:"file", kind:"docx" }
+        ]},
+        { id:"deutsch", name:"Deutsch", type:"folder", children:[
+          { id:"d-f1", name:"Aufsatz_Entwurf.docx", type:"file", kind:"docx" }
+        ]},
+        { id:"physik", name:"Physik", type:"folder", children:[
+          { id:"p-f1", name:"Mechanik_Formeln.pdf", type:"file", kind:"pdf" },
+          { id:"p-f2", name:"Messwerte.xlsx", type:"file", kind:"xlsx" }
+        ]},
+        { id:"sonstiges", name:"Sonstiges", type:"folder", children:[
+          { id:"s-f1", name:"Stundenplan.png", type:"file", kind:"image" }
+        ]}
+      ]
     }
+  },
 
-    list.forEach(item => {
-      const cat = CATEGORIES.find(c => c.id === item.category) || CATEGORIES[0];
-      const card = document.createElement("div");
-      card.className = "feedback-card";
-      card.style.borderLeftColor = cat.color;
-      card.innerHTML = `
-        <div class="feedback-main">
-          <div class="feedback-title"></div>
-          <p class="feedback-description"></p>
-          <div class="feedback-meta">
-            <span class="mono cat-name"></span>
-            <span class="module-name"></span>
-            <span class="mono time"></span>
-          </div>
-        </div>
-        <button class="vote-btn ${state.voted[item.id] ? "voted" : ""}" type="button" aria-label="Abstimmen">
-          <span style="font-size:14px">↑</span>
-          <span class="mono votes"></span>
-        </button>`;
-      card.querySelector(".feedback-title").textContent = item.title;
-      card.querySelector(".feedback-description").textContent = item.description;
-      card.querySelector(".cat-name").textContent = cat.label;
-      card.querySelector(".cat-name").style.color = cat.color;
-      card.querySelector(".module-name").textContent = item.module;
-      card.querySelector(".time").textContent = relativeTime(item.minutesAgo);
-      card.querySelector(".votes").textContent = item.votes;
-      card.querySelector(".vote-btn").onclick = () => {
-        const already = !!state.voted[item.id];
-        item.votes += already ? -1 : 1;
-        state.voted[item.id] = !already;
-        renderFeedback();
+  wiki: {
+    activeCollectiveId: null,
+    activePageId: null,
+    editMode: false,
+    collectives: [
+      { id:"mathematik", name:"Mathematik", colorVar:"--accent-cyan", visibility:"beide",
+        pages: [
+          { id:"m-algebra", title:"Algebra", md:"# Algebra\n\nÜbersicht der Algebra-Themen dieses Schuljahrs.", children:[
+            { id:"m-gleichungen", title:"Gleichungen", md:"# Gleichungen\n\nLineare und quadratische Gleichungen lösen.", children:[] }
+          ]}
+        ]},
+      { id:"latein", name:"Latein", colorVar:"--accent-purple", visibility:"schule",
+        pages: [
+          { id:"l-4", title:"4 Grammatik", md:"# Grammatik\n\nÜbersicht der Grammatik-Themen.", children:[
+            { id:"l-4-3", title:"4.3 Partizipien", md:"# Partizipien\n\nFormen und Verwendung der Partizipien im Lateinischen.", children:[
+              { id:"l-4-3-2", title:"4.3.2 PPA", md:"# PPA (Partizip Präsens Aktiv)\n\nDas PPA beschreibt eine **gleichzeitige** Handlung zur übergeordneten Verbform.\n\nBeispiel: *puer currens* — der laufende Junge.\n\n- Bildung: Präsensstamm + -ns / -ntis\n- Übersetzung oft mit \"während er/sie …\"", children:[] }
+            ]}
+          ]}
+        ]},
+      { id:"kunst", name:"Kunst", colorVar:"--accent-green", visibility:"beide",
+        pages: [
+          { id:"k-epochen", title:"Epochen", md:"# Kunstepochen\n\nÜberblick über die im Unterricht behandelten Epochen.", children:[] }
+        ]}
+    ]
+  },
+
+  // Freunde-System: Verbindung läuft IMMER über explizite Anfrage + Bestätigung,
+  // nie automatisch — auch nicht innerhalb derselben Schule. Erst nach
+  // Bestätigung lassen sich Wikis/Dateien mit dieser Person teilen.
+  // TODO(backend): Freundschaftsanfragen müssen serverseitig zusätzlich
+  // prüfen, dass niemand automatisiert Nutzer anderer Schulen durchsuchen kann.
+  friends: {
+    connections: [
+      { id:"u-lena", name:"Lena Wagner", school:"Bertolt-Brecht-Gymnasium" },
+      { id:"u-tom",  name:"Tom Brandt",  school:"Bertolt-Brecht-Gymnasium" }
+    ],
+    incoming: [
+      { id:"u-nina", name:"Nina Krüger", school:"Bertolt-Brecht-Gymnasium" }
+    ],
+    outgoing: [
+      { id:"u-jan", name:"Jan Peters", school:"Bertolt-Brecht-Gymnasium" }
+    ]
+  },
+
+  // Widgets auf der Übersicht — feste Slots (siehe Wireframe)
+  widgets: [
+    { id:"nachrichten",    title:"Nachrichten",    slot:"slotA", hidden:false },
+    { id:"schnellzugriff", title:"Schnellzugriff", slot:"slotB", hidden:false },
+    { id:"kalender",       title:"Kalender",       slot:"slotC", hidden:false },
+    { id:"webuntis",       title:"WebUntis",       slot:"slotD", hidden:false }
+  ]
+};
+
+/* ============================================================================
+   KONSTANTEN
+   ============================================================================ */
+// group: "both" = immer sichtbar, "schule"/"privat" = nur in dieser Gruppen-Ansicht
+const NAV_ITEMS = [
+  { id:"uebersicht",    icon:"🏠", label:"Übersicht",    group:"both" },
+  { id:"mail",          icon:"📥", label:"Mail",          group:"schule" },
+  { id:"chats",         icon:"🗨️", label:"Chats",         group:"both" },
+  { id:"stundenplan",   icon:"📅", label:"Stundenplan",   group:"schule" },
+  { id:"schulcloud",    icon:"💬", label:"schul.cloud",   group:"schule" },
+  { id:"dokumente",     icon:"📁", label:"Dokumente",     group:"both" },
+  { id:"notizen",       icon:"✏️", label:"Notizen",       group:"both" },
+  { id:"wiki",          icon:"📖", label:"Wiki",          group:"both" },
+  { id:"freunde",       icon:"🤝", label:"Freunde",       group:"both" },
+  { id:"einstellungen", icon:"⚙️", label:"Einstellungen", group:"both" }
+];
+// KI-Assistent ist absichtlich NICHT mehr Teil der Navigation — er lebt jetzt
+// als Overlay in der Topbar (siehe renderTopbar / KI-OVERLAY weiter unten).
+const MOTTOS = ["Die übersichtlichste Schul-App", "Alles in einem", "Dein Schulalltag, sortiert"];
+const WEEKDAYS = ["Mo","Di","Mi","Do","Fr","Sa","So"];
+const MONTH_NAMES = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+const COLOR_CYCLE = ["--accent-cyan","--accent-red","--accent-green","--accent-purple","--accent-yellow","--accent-blue"];
+const THEMES = [
+  { id:"tokyo-night", label:"Tokyo Night" },
+  { id:"clean-dark",  label:"Clean Dark" },
+  { id:"clean-light", label:"Clean Light" }
+];
+
+/* ============================================================================
+   HELPERS (generisch, überall genutzt)
+   ============================================================================ */
+function el(html) {
+  const t = document.createElement("template");
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(showToast._tm);
+  showToast._tm = setTimeout(() => t.classList.remove("show"), 2600);
+}
+function closeCtx() { document.getElementById("ctxmenu").classList.remove("open"); }
+function openModal(html) {
+  document.getElementById("modal-box").innerHTML = '<button class="modal-close" onclick="closeModal()">✕</button>' + html;
+  document.getElementById("modal-overlay").classList.add("open");
+}
+function closeModal() { document.getElementById("modal-overlay").classList.remove("open"); }
+function dateKey(d) { return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+
+const SUBJECT_ALIASES = {
+  mathe:"Mathematik", math:"Mathematik", matheh:"Mathematik", mathematik:"Mathematik",
+  deutsch:"Deutsch", de:"Deutsch",
+  physik:"Physik", phy:"Physik",
+  englisch:"Englisch", eng:"Englisch", en:"Englisch",
+  chemie:"Chemie", che:"Chemie",
+  bio:"Biologie", biologie:"Biologie",
+  latein:"Latein", la:"Latein"
+};
+function normalizeSubject(input) {
+  const key = input.trim().toLowerCase();
+  return SUBJECT_ALIASES[key] || (input.charAt(0).toUpperCase() + input.slice(1));
+}
+// Liefert die Fach-Farbe. Erst manuelle Einstellung (Fächer & Farben), sonst
+// automatisch zugewiesen (und dabei dauerhaft in state.subjectColors gemerkt,
+// damit sie in den Einstellungen editierbar wird).
+function getSubjectColor(subject) {
+  if (!state.subjectColors[subject]) {
+    const idx = Object.keys(state.subjectColors).length % COLOR_CYCLE.length;
+    state.subjectColors[subject] = COLOR_CYCLE[idx];
+  }
+  return `var(${state.subjectColors[subject]})`;
+}
+function docFolderIdForSubject(subject) {
+  // Ordner-Ids folgen im Prototyp direkt aus dem kleingeschriebenen Fachnamen.
+  // TODO(backend): durch echte Nextcloud-Ordner-Zuordnung ersetzen.
+  const known = ["mathematik","deutsch","physik"];
+  const id = subject.toLowerCase();
+  return known.includes(id) ? id : null;
+}
+// Erkennt anhand von Titel/Inhalt eines Texts, zu welchem bekannten Fach er
+// am ehesten passt (simple Stichwortsuche) — genutzt von der KI-Ablage für
+// Notizen (Nextcloud-Ordner + Wiki-Collective).
+function guessSubjectFromText(text) {
+  const lower = text.toLowerCase();
+  for (const subject of state.subjectsList) {
+    if (lower.includes(subject.toLowerCase())) return subject;
+  }
+  for (const alias of Object.keys(SUBJECT_ALIASES)) {
+    if (lower.includes(alias)) return SUBJECT_ALIASES[alias];
+  }
+  return null;
+}
+function guessWikiCollectiveId(subject) {
+  if (!subject) return null;
+  const match = state.wiki.collectives.find((c) => c.name.toLowerCase() === subject.toLowerCase());
+  return match ? match.id : null;
+}
+// Welcher KI-Anbieter ist aktuell nutzbar (erster hinterlegter Key)?
+function activeAIProvider() {
+  if (state.apiKeys.anthropic) return "Anthropic (Claude)";
+  if (state.apiKeys.openai) return "OpenAI";
+  if (state.apiKeys.gemini) return "Google Gemini";
+  return null;
+}
+// ZENTRALER Zustimmungs-Dialog: MUSS vor jedem Versand von Nachrichten,
+// Dateien oder sonstigen Nutzerinhalten an einen externen KI-Anbieter
+// aufgerufen werden — ausnahmslos, wie gewünscht. onConfirm läuft nur,
+// wenn der Nutzer aktiv bestätigt.
+function requestAIConsent(description, onConfirm) {
+  const provider = activeAIProvider() || "dem KI-Anbieter";
+  openModal(`
+    <h3>An ${provider} senden?</h3>
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;">${description}</p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn primary" id="ai-consent-yes">Ja, senden</button>
+      <button class="btn" id="ai-consent-no">Abbrechen</button>
+    </div>
+  `);
+  document.getElementById("ai-consent-yes").onclick = () => { closeModal(); onConfirm(); };
+  document.getElementById("ai-consent-no").onclick = () => closeModal();
+}
+// Baut das Inline-Style für eine Fach-/Stunden-Karte, je nach gewählter
+// Stundenplan-Darstellung (Einstellungen → Design). "bunt" = wie bisher
+// volle Fachfarbe, "dezent" = nur Akzent-Rand, "neutral" = neutrale Karte
+// mit kleinem Farbpunkt vor dem Fachnamen.
+function subjectCardStyle(colorExpr) {
+  const mode = state.stundenplanStyle;
+  if (mode === "dezent") return `background:var(--bg-inset);color:var(--text-primary);border-left:3px solid ${colorExpr};`;
+  if (mode === "neutral") return `background:var(--bg-inset);color:var(--text-primary);`;
+  return `background:${colorExpr};color:var(--bg-deep);`; // "bunt" (Standard)
+}
+function subjectDot(colorExpr) {
+  return state.stundenplanStyle === "neutral"
+    ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${colorExpr};margin-right:6px;"></span>`
+    : "";
+}
+function findDocNode(pathIds) {
+  let node = state.docs.tree;
+  for (let i = 1; i < pathIds.length; i++) {
+    node = (node.children || []).find((c) => c.id === pathIds[i]);
+    if (!node) return state.docs.tree;
+  }
+  return node;
+}
+function findFolderById(node, id) {
+  if (node.id === id) return node;
+  for (const child of node.children || []) {
+    if (child.type === "folder") {
+      const found = findFolderById(child, id);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+function addFileToFolder(folderId, name, kind) {
+  const folder = findFolderById(state.docs.tree, folderId) || findFolderById(state.docs.tree, "sonstiges");
+  folder.children.push({ id: "f" + Date.now(), name, type:"file", kind });
+  return folder;
+}
+function findWikiPage(pages, id, trail) {
+  for (const p of pages) {
+    const nextTrail = [...trail, p];
+    if (p.id === id) return nextTrail;
+    const found = findWikiPage(p.children, id, nextTrail);
+    if (found) return found;
+  }
+  return null;
+}
+
+// Grunddaten für alle bekannten Fächer beim Start registrieren, damit sie
+// sofort in den Einstellungen unter "Fächer & Farben" auftauchen.
+state.subjectsList.forEach((s) => getSubjectColor(s));
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#ctxmenu")) closeCtx();
+  if (!e.target.closest("#profile-menu") && !e.target.closest(".avatar")) {
+    document.getElementById("profile-menu").classList.remove("open");
+  }
+});
+document.addEventListener("contextmenu", (e) => { if (!e.target.closest(".widget")) closeCtx(); });
+document.getElementById("modal-overlay").addEventListener("click", (e) => {
+  if (e.target.id === "modal-overlay") closeModal();
+});
+
+/* ============================================================================
+   LANDING (ausgeloggter Zustand) — Motto-Typewriter
+   ============================================================================ */
+let mottoIdx = 0;
+function typeMotto() {
+  const target = MOTTOS[mottoIdx % MOTTOS.length];
+  const node = document.getElementById("motto-text");
+  let i = 0;
+  const typeStep = () => {
+    node.textContent = target.slice(0, i); i++;
+    if (i <= target.length) setTimeout(typeStep, 55); else setTimeout(eraseStep, 1600);
+  };
+  const eraseStep = () => {
+    if (i > 0) { i--; node.textContent = target.slice(0, i); setTimeout(eraseStep, 30); }
+    else { mottoIdx++; setTimeout(typeMotto, 300); }
+  };
+  typeStep();
+}
+
+/* ============================================================================
+   TOPBAR + PROFIL-MENÜ
+   Hinweis: Der KI-API-Schlüssel lebt NICHT hier — der wohnt unter
+   Einstellungen → KI (siehe renderEinstellungen). Hier gibt's nur den
+   Kurzweg dorthin.
+   ============================================================================ */
+function renderTopbar() {
+  const actions = document.getElementById("topbar-actions");
+  if (!state.loggedIn) {
+    actions.innerHTML = `<button class="btn" id="btn-register">Register</button><button class="btn primary" id="btn-login">Login</button>`;
+    document.getElementById("btn-register").onclick = () => showToast('Anfrage gesendet an Admin (Nextcloud-Konto "admin").');
+    document.getElementById("btn-login").onclick = () => {
+      state.loggedIn = true;
+      renderAll();
+      showToast("Angemeldet als " + state.user.name + " (Test-Login).");
+    };
+  } else {
+    actions.innerHTML = `<button class="btn small" id="btn-ki" title="KI-Assistent">✨</button><button class="avatar" id="btn-avatar">${state.user.initials}</button>`;
+    document.getElementById("btn-avatar").onclick = (e) => {
+      e.stopPropagation();
+      document.getElementById("profile-menu").classList.remove("open"); // sicherstellen, dass nicht beide offen sind
+      document.getElementById("profile-menu").classList.toggle("open");
+    };
+    document.getElementById("btn-ki").onclick = (e) => {
+      e.stopPropagation();
+      state.kiOverlayOpen = !state.kiOverlayOpen;
+      renderKIOverlay();
+    };
+  }
+  document.getElementById("profile-menu").innerHTML = `
+    <div class="pname">${state.user.name}</div>
+    <div class="pmail">max.mustermann@mol-frw-gym.de</div>
+    <div class="menu-sep"></div>
+    <div class="menu-item" id="menu-settings">Einstellungen</div>
+    <div class="menu-item" id="menu-feedback">Feedback an Admin senden</div>
+    <div class="menu-item" id="menu-logout" style="color:var(--accent-red)">Abmelden</div>
+  `;
+  const settingsItem = document.getElementById("menu-settings");
+  if (settingsItem) settingsItem.onclick = () => {
+    document.getElementById("profile-menu").classList.remove("open");
+    goTo("einstellungen", "profil");
+  };
+  const feedbackItem = document.getElementById("menu-feedback");
+  if (feedbackItem) feedbackItem.onclick = () => {
+    document.getElementById("profile-menu").classList.remove("open");
+    // Kein eigenes Modul — Feedback ist einfach eine Mail an den Admin-Account.
+    openComposeModal({ to: "admin", subject: "Feedback zum Dashboard" });
+  };
+  const logoutItem = document.getElementById("menu-logout");
+  if (logoutItem) logoutItem.onclick = () => {
+    state.loggedIn = false;
+    document.getElementById("profile-menu").classList.remove("open");
+    renderAll();
+  };
+}
+
+/* ============================================================================
+   KI-ASSISTENT — Overlay-Panel (Topbar). Unabhängig vom Seiten-Router: bleibt
+   offen, während man durchs Dashboard navigiert. Kontext-Aktionen richten
+   sich nach der gerade aktiven Seite (z. B. "Nachricht zusammenfassen" nur
+   auf der Mail-Seite mit geöffneter Nachricht).
+   WICHTIG: Jede Aktion, die Inhalte an den KI-Anbieter schickt, läuft über
+   requestAIConsent() — ausnahmslos, siehe Anforderung.
+   ============================================================================ */
+function renderKIOverlay() {
+  const panel = document.getElementById("ki-overlay");
+  panel.classList.toggle("open", state.kiOverlayOpen);
+  if (!state.kiOverlayOpen) { panel.innerHTML = ""; return; }
+
+  const provider = activeAIProvider();
+  panel.innerHTML = `
+    <div class="ki-ov-head">
+      <span class="title">✨ KI-Assistent</span>
+      <button class="modal-close" id="ki-ov-close" style="float:none;">✕</button>
+    </div>
+    <div class="ki-ov-body" id="ki-ov-body"></div>
+    <div class="ki-ov-foot" id="ki-ov-foot"></div>
+  `;
+  panel.querySelector("#ki-ov-close").onclick = () => { state.kiOverlayOpen = false; renderKIOverlay(); };
+
+  const body = panel.querySelector("#ki-ov-body");
+
+  if (!provider) {
+    body.appendChild(el(`
+      <div class="ki-system-msg" style="align-self:flex-start;">Keine API hinterlegt.</div>
+      <p style="font-size:12.5px;color:var(--text-muted);line-height:1.6;">
+        Hinterlege einen API-Schlüssel, um den Assistenten nutzen zu können.
+      </p>
+    `));
+    const goBtn = el(`<button class="btn primary small">Zu den Einstellungen</button>`);
+    goBtn.onclick = () => { state.kiOverlayOpen = false; renderKIOverlay(); goTo("einstellungen", "ki"); };
+    body.appendChild(goBtn);
+    panel.querySelector("#ki-ov-foot").remove();
+    return;
+  }
+
+  // Kontextbezogene Schnellaktionen je nach aktiver Seite
+  const quick = el(`<div class="ki-ov-quick"></div>`);
+  if (state.activePage === "mail" && state.mail.activeMessageId) {
+    const msg = state.mail.messages.find((m) => m.id === state.mail.activeMessageId);
+    const btn = el(`<button>📄 Diese Mail zusammenfassen</button>`);
+    btn.onclick = () => requestAIConsent(
+      `Der Inhalt der Nachricht „${msg.subject}" von ${msg.sender} wird an ${provider} gesendet.`,
+      () => {
+        pushKILog("user", `Fasse „${msg.subject}" zusammen.`);
+        pushKILog("assistant", `Zusammenfassung (simuliert): ${msg.sender} fragt nach „${msg.subject.toLowerCase()}" — kurze, klare Antwort genügt.`);
+      }
+    );
+    quick.appendChild(btn);
+  }
+  if (state.activePage === "notizen") {
+    const btn = el(`<button>📝 Aktuelle Notiz vervollständigen</button>`);
+    btn.onclick = () => requestAIConsent(
+      `Der Text der aktuellen Notizseite wird an ${provider} gesendet.`,
+      () => {
+        pushKILog("user", "Vervollständige meine aktuelle Notiz.");
+        pushKILog("assistant", 'Notiz ergänzt und Rechtschreibung korrigiert (simuliert). Nutze „Exportieren" in den Notizen, um das Ergebnis zu übernehmen.');
+      }
+    );
+    quick.appendChild(btn);
+  }
+  const searchBtn = el(`<button>🔎 Dashboard durchsuchen</button>`);
+  searchBtn.onclick = () => {
+    const q = prompt("Wonach suchen? (Mail, Wiki, Dokumente)");
+    if (!q) return;
+    const results = searchDashboard(q);
+    pushKILog("user", `Suche: „${q}"`);
+    pushKILog("assistant", results.length
+      ? "Gefunden: " + results.map((r) => r.label).join(" · ")
+      : "Nichts gefunden.");
+  };
+  quick.appendChild(searchBtn);
+  if (quick.children.length) body.appendChild(quick);
+
+  const log = el(`<div class="ki-ov-log"></div>`);
+  state.kiLog.forEach((entry) => log.appendChild(el(`<div class="ki-ov-msg ${entry.role}">${entry.text}</div>`)));
+  body.appendChild(log);
+  body.scrollTop = body.scrollHeight;
+
+  const foot = panel.querySelector("#ki-ov-foot");
+  const input = el(`<input placeholder="Frage stellen …" />`);
+  const send = el(`<button class="btn primary small">Senden</button>`);
+  const doSend = () => {
+    const val = input.value.trim();
+    if (!val) return;
+    requestAIConsent(`Deine Nachricht „${val}" wird an ${provider} gesendet.`, () => {
+      pushKILog("user", val);
+      pushKILog("assistant", "Antwort folgt in einer späteren Ausbaustufe (Chat-Funktion ist aktuell nur simuliert).");
+      input.value = "";
+    });
+  };
+  send.onclick = doSend;
+  input.onkeydown = (e) => { if (e.key === "Enter") doSend(); };
+  foot.appendChild(input); foot.appendChild(send);
+}
+function pushKILog(role, text) {
+  state.kiLog.push({ role, text });
+  renderKIOverlay();
+}
+// Rein lokale Dashboard-Suche — sendet NICHTS an einen KI-Anbieter, daher
+// ohne requestAIConsent(). Durchsucht Mail-Betreffs, Wiki-Seitentitel und
+// Dateinamen in Dokumente.
+function searchDashboard(query) {
+  const q = query.toLowerCase();
+  const results = [];
+  state.mail.messages.forEach((m) => { if (m.subject.toLowerCase().includes(q)) results.push({ label:`Mail: ${m.subject}` }); });
+  function walkWiki(pages, collectiveName) {
+    pages.forEach((p) => {
+      if (p.title.toLowerCase().includes(q)) results.push({ label:`Wiki (${collectiveName}): ${p.title}` });
+      walkWiki(p.children, collectiveName);
+    });
+  }
+  state.wiki.collectives.forEach((c) => walkWiki(c.pages, c.name));
+  function walkDocs(node) {
+    (node.children || []).forEach((n) => {
+      if (n.name.toLowerCase().includes(q)) results.push({ label:`Datei: ${n.name}` });
+      if (n.type === "folder") walkDocs(n);
+    });
+  }
+  walkDocs(state.docs.tree);
+  return results.slice(0, 8);
+}
+
+/* ============================================================================
+   ICON RAIL (linke Navigation) + Schule/Privat-Umschalter
+   ============================================================================ */
+function renderIconrail() {
+  const rail = document.getElementById("iconrail");
+  rail.innerHTML = "";
+  const scroll = el(`<div class="rail-scroll"></div>`);
+  NAV_ITEMS.filter((n) => n.group === "both" || n.group === state.group).forEach((item) => {
+    const btn = el(`<button class="rail-btn ${state.activePage === item.id ? "active" : ""}">${item.icon}<span class="tip">${item.label}</span></button>`);
+    btn.onclick = () => goTo(item.id);
+    scroll.appendChild(btn);
+  });
+  rail.appendChild(scroll);
+
+  const toggle = el(`
+    <div class="rail-group-toggle">
+      <button class="rail-group-btn ${state.group === "schule" ? "active" : ""}" title="Schule">🎓</button>
+      <button class="rail-group-btn ${state.group === "privat" ? "active" : ""}" title="Privat">🏠</button>
+    </div>
+  `);
+  toggle.children[0].onclick = () => setGroup("schule");
+  toggle.children[1].onclick = () => setGroup("privat");
+  rail.appendChild(toggle);
+}
+function setGroup(g) {
+  state.group = g;
+  const stillVisible = NAV_ITEMS.find((n) => n.id === state.activePage && (n.group === "both" || n.group === g));
+  if (!stillVisible) state.activePage = "uebersicht";
+  renderIconrail();
+  renderPage();
+}
+
+/* ============================================================================
+   ROUTER
+   ============================================================================ */
+let pageInterval = null; // generischer Cleanup-Hook für Module mit setInterval (z. B. Live-Timer)
+
+function goTo(pageId, settingsTab) {
+  state.activePage = pageId;
+  if (settingsTab) state.settingsTab = settingsTab;
+  renderIconrail();
+  renderPage();
+}
+
+const PAGE_RENDERERS = {}; // wird weiter unten pro Modul befüllt
+
+function renderPage() {
+  if (pageInterval) { clearInterval(pageInterval); pageInterval = null; }
+  const main = document.getElementById("main");
+  main.innerHTML = "";
+  main.classList.remove("page-enter");
+  const renderer = PAGE_RENDERERS[state.activePage] || PAGE_RENDERERS["uebersicht"];
+  renderer(main);
+  void main.offsetWidth; // Reflow erzwingen, damit die Enter-Animation jedes Mal neu läuft
+  main.classList.add("page-enter");
+}
+
+/* ============================================================================
+   MODUL: ÜBERSICHT (Widgets in festen Slots)
+   ============================================================================ */
+function renderUebersicht(main) {
+  const h = new Date().getHours();
+  const greet = h < 11 ? "Guten Morgen" : h < 18 ? "Guten Tag" : "Guten Abend";
+  const days = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+  const now = new Date();
+
+  main.appendChild(el(`<div id="greeting">${greet}, ${state.user.name}</div>`));
+  main.appendChild(el(`<div id="greeting-date">${days[now.getDay()]}, ${now.getDate()}. ${MONTH_NAMES[now.getMonth()].slice(0,3)}</div>`));
+
+  const grid = el(`<div id="widget-grid"></div>`);
+  main.appendChild(grid);
+  renderWidgets();
+}
+
+const WIDGET_BUILDERS = {
+  nachrichten: buildNachrichtenWidget,
+  schnellzugriff: buildSchnellzugriffWidget,
+  kalender: buildKalenderWidget,
+  webuntis: buildWebuntisWidget
+};
+const WIDGET_HEAD_CLICK = {
+  webuntis: () => { showToast("Öffne WebUntis in neuem Tab …"); window.open("https://webuntis.com", "_blank"); }
+};
+
+function buildNachrichtenWidget() {
+  const box = document.createElement("div");
+  const inboxMsgs = state.mail.messages.filter((m) => m.folder === "inbox").slice(0, 4);
+  inboxMsgs.forEach((m) => {
+    const item = el(`
+      <div class="msg-item ${m.read ? "" : "unread"}">
+        <div class="msg-sender">${m.sender}<span class="msg-source">${m.source}</span></div>
+        <div class="msg-preview">${m.preview}</div>
+      </div>
+    `);
+    item.addEventListener("click", () => {
+      state.mail.activeFolder = "inbox";
+      state.mail.activeMessageId = m.id;
+      m.read = true;
+      goTo("mail");
+    });
+    item.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      m.read = !m.read;
+      renderWidgets();
+      showToast(m.read ? "Als gelesen markiert." : "Als ungelesen markiert.");
+    });
+    box.appendChild(item);
+  });
+  return box;
+}
+
+function buildSchnellzugriffWidget() {
+  const box = document.createElement("div");
+  const currentSubjectRaw = "mathe"; // simuliert: aktuelles Fach laut Stundenplan
+  const canonical = normalizeSubject(currentSubjectRaw);
+  const btn = el(`<div class="quick-btn">📁 Fach-Ordner ${canonical}</div>`);
+  btn.onclick = () => {
+    const folderId = docFolderIdForSubject(canonical);
+    if (folderId) { state.docs.currentPathIds = ["root", folderId]; goTo("dokumente"); }
+    else showToast(`Kein Ordner für „${canonical}" hinterlegt.`);
+  };
+  box.appendChild(btn);
+  box.appendChild(el(`<div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Erkennt auch „Mathe", „math", „Mathematik" usw. als denselben Ordner.</div>`));
+  return box;
+}
+
+function buildKalenderWidget() {
+  const box = document.createElement("div");
+  const tabs = el(`<div class="cal-tabs" style="margin-bottom:10px;"></div>`);
+  ["Tag","Woche","Monat","Jahr"].forEach((v) => {
+    const t = el(`<button class="cal-tab ${v === "Monat" ? "active" : ""}">${v}</button>`);
+    t.onclick = () => { if (v !== "Monat") showToast(v + "-Ansicht folgt später — hier erstmal die Monatsansicht."); };
+    tabs.appendChild(t);
+  });
+  box.appendChild(tabs);
+
+  const base = new Date();
+  base.setDate(1);
+  base.setMonth(base.getMonth() + state.calMonthOffset);
+  const nav = el(`
+    <div class="cal-nav">
+      <button class="cal-nav-btn" id="cal-prev">‹</button>
+      <span class="cal-month-label">${MONTH_NAMES[base.getMonth()]} ${base.getFullYear()}</span>
+      <button class="cal-nav-btn" id="cal-next">›</button>
+    </div>
+  `);
+  box.appendChild(nav);
+  nav.querySelector("#cal-prev").onclick = () => { state.calMonthOffset--; renderWidgets(); };
+  nav.querySelector("#cal-next").onclick = () => { state.calMonthOffset++; renderWidgets(); };
+
+  const calendarByKey = {};
+  state.calendarEntries.forEach((entry) => {
+    const d = new Date(); d.setDate(d.getDate() + entry.offsetDays);
+    const key = dateKey(d);
+    (calendarByKey[key] = calendarByKey[key] || []).push({ label: entry.label });
+  });
+
+  const grid = el(`<div class="cal-grid"></div>`);
+  WEEKDAYS.slice(0,7).forEach((w) => grid.appendChild(el(`<div class="cal-weekday">${w}</div>`)));
+  const firstOfMonth = new Date(base.getFullYear(), base.getMonth(), 1);
+  const leadingBlanks = (firstOfMonth.getDay() + 6) % 7;
+  const daysInMonth = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate();
+  const today = new Date();
+  for (let i = 0; i < leadingBlanks; i++) grid.appendChild(el(`<div class="cal-day empty"></div>`));
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(base.getFullYear(), base.getMonth(), day);
+    const key = dateKey(d);
+    const isToday = dateKey(today) === key;
+    const entries = calendarByKey[key] || [];
+    const cell = el(`<div class="cal-day ${isToday ? "today" : ""}"><span>${day}</span>${entries.length ? '<span class="dot"></span>' : ""}</div>`);
+    cell.onclick = () => {
+      if (entries.length === 0) { showToast("Keine Termine an diesem Tag."); return; }
+      const rows = entries.map((e) => `<div class="cal-entry">${e.label}</div>`).join("");
+      openModal(`<h3>${day}. ${MONTH_NAMES[base.getMonth()]} ${base.getFullYear()}</h3><div style="margin-top:10px;">${rows}</div>`);
+    };
+    grid.appendChild(cell);
+  }
+  box.appendChild(grid);
+  return box;
+}
+
+function buildWebuntisWidget() {
+  const box = document.createElement("div");
+  state.periods.forEach((p) => {
+    const color = getSubjectColor(p.subject);
+    const card = document.createElement("div");
+    card.className = "period";
+    let statusHtml = "";
+    if (p.status === "test") {
+      statusHtml = `<div class="period-status"><span class="status-dot" style="background:var(--accent-blue)">i</span><span class="status-label">Test</span><span class="more-info" data-test="${p.testId}">Mehr Infos</span></div>`;
+    } else if (p.status === "ausfall") {
+      statusHtml = `<div class="period-status"><span class="status-dot" style="background:var(--accent-red)">i</span><span class="status-label">Ausfall</span></div>`;
+    } else if (p.status === "vertretung") {
+      statusHtml = `<div class="period-status"><span class="status-dot" style="background:var(--accent-yellow)">i</span><span class="status-label">Vertretung</span><span class="more-info" data-vertretung="${p.id}">Mehr Infos</span></div>`;
+    }
+    card.innerHTML = `
+      <div class="period-head" style="${subjectCardStyle(color)}">${subjectDot(color)}<span>${p.subject}</span><span class="period-room">${p.room}</span></div>
+      <div class="period-body"><div class="period-teacher">${p.teacher}</div>${statusHtml}</div>
+    `;
+    box.appendChild(card);
+  });
+  box.querySelectorAll("[data-test]").forEach((n) => {
+    n.addEventListener("click", () => openTestInfoModal(n.dataset.test));
+  });
+  box.querySelectorAll("[data-vertretung]").forEach((n) => {
+    n.addEventListener("click", () => {
+      const p = state.periods.find((x) => x.id === n.dataset.vertretung);
+      openVertretungModal(p.original);
+    });
+  });
+  return box;
+}
+
+function openTestInfoModal(testId) {
+  const src = state.testSources[testId];
+  const best = src.nextcloud.description.length >= src.webuntis.description.length ? src.nextcloud : src.webuntis;
+  const from = best === src.nextcloud ? "Nextcloud-Kalender" : "WebUntis";
+  openModal(`
+    <h3>Test-Details</h3>
+    <div class="modal-meta">${best.date} · übernommen aus ${from} (ausführlichere Quelle)</div>
+    <p style="font-size:13.5px;color:var(--text-primary);line-height:1.6;">${best.description}</p>
+  `);
+}
+function openVertretungModal(original) {
+  openModal(`
+    <h3>Vertretung</h3>
+    <div class="modal-meta">Ursprünglich geplant</div>
+    <p style="font-size:13.5px;color:var(--text-primary);line-height:1.6;">${original.subject} · ${original.teacher} · ${original.room}</p>
+  `);
+}
+
+function openWidgetMenu(e, widget) {
+  e.preventDefault();
+  const menu = document.getElementById("ctxmenu");
+  const others = state.widgets.filter((w) => w.id !== widget.id && !w.hidden);
+  const swapRows = others.map((w) => `<div class="ctx-item" data-swap="${w.id}">Tauschen mit „${w.title}"</div>`).join("");
+  menu.innerHTML = `${swapRows}<div class="ctx-sep"></div><div class="ctx-item danger" data-act="remove">Entfernen</div>`;
+  menu.style.left = e.clientX + "px";
+  menu.style.top = e.clientY + "px";
+  menu.classList.add("open");
+  menu.querySelectorAll("[data-swap]").forEach((item) => {
+    item.onclick = () => {
+      const other = state.widgets.find((w) => w.id === item.dataset.swap);
+      const tmp = widget.slot; widget.slot = other.slot; other.slot = tmp;
+      closeCtx(); renderWidgets();
+    };
+  });
+  menu.querySelector('[data-act="remove"]').onclick = () => {
+    widget.hidden = true; closeCtx(); renderWidgets();
+    showToast(widget.title + " ausgeblendet — Slot anklicken, um es zurückzuholen.");
+  };
+}
+
+function renderWidgets() {
+  const grid = document.getElementById("widget-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  ["slotA", "slotB", "slotC", "slotD"].forEach((slotId) => {
+    const w = state.widgets.find((x) => x.slot === slotId);
+    if (!w) return;
+    if (w.hidden) {
+      const empty = el(`<div class="widget-empty">+ „${w.title}" wieder anzeigen</div>`);
+      empty.style.gridArea = slotId;
+      empty.onclick = () => { w.hidden = false; renderWidgets(); };
+      grid.appendChild(empty);
+      return;
+    }
+    const card = document.createElement("div");
+    card.className = "widget";
+    card.style.gridArea = slotId;
+    const clickable = !!WIDGET_HEAD_CLICK[w.id];
+    const head = el(`<div class="widget-head ${clickable ? "clickable" : ""}">${w.title}</div>`);
+    if (clickable) head.onclick = WIDGET_HEAD_CLICK[w.id];
+    head.addEventListener("contextmenu", (e) => openWidgetMenu(e, w));
+    const body = document.createElement("div");
+    body.className = "widget-body";
+    body.appendChild(WIDGET_BUILDERS[w.id]());
+    body.addEventListener("contextmenu", (e) => openWidgetMenu(e, w));
+    card.appendChild(head); card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+PAGE_RENDERERS["uebersicht"] = renderUebersicht;
+
+/* ============================================================================
+   MODUL: MAIL (echtes Postfach — Ordner / Liste / Leseansicht)
+   TODO(backend): über IMAP an IServ anbinden (siehe Entwicklungsplan).
+   ============================================================================ */
+function renderMail(main) {
+  main.appendChild(el(`
+    <div class="page-header">
+      <div class="page-title">Mail</div>
+      <div class="page-sub">IServ-Postfach</div>
+    </div>
+  `));
+
+  const layout = el(`<div class="mail-layout"></div>`);
+  main.appendChild(layout);
+
+  // Ordner
+  const foldersBox = el(`<div class="mail-folders"></div>`);
+  const composeBtn = el(`<button class="btn primary small" style="margin-bottom:8px;">✎ Neu</button>`);
+  composeBtn.onclick = openComposeModal;
+  foldersBox.appendChild(composeBtn);
+  state.mail.folders.forEach((f) => {
+    const count = state.mail.messages.filter((m) => m.folder === f.id && !m.read).length;
+    const row = el(`<div class="mail-folder ${state.mail.activeFolder === f.id ? "active" : ""}">
+      <span>${f.icon} ${f.label}</span>${count ? `<span class="count">${count}</span>` : ""}
+    </div>`);
+    row.onclick = () => { state.mail.activeFolder = f.id; state.mail.activeMessageId = null; renderPage(); };
+    foldersBox.appendChild(row);
+  });
+  layout.appendChild(foldersBox);
+
+  // Liste
+  const listBox = el(`<div class="mail-list"></div>`);
+  const msgs = state.mail.messages.filter((m) => m.folder === state.mail.activeFolder);
+  if (msgs.length === 0) listBox.appendChild(el(`<div class="mail-empty">Keine Nachrichten hier.</div>`));
+  msgs.forEach((m) => {
+    const item = el(`
+      <div class="msg-item ${m.read ? "" : "unread"} ${state.mail.activeMessageId === m.id ? "active" : ""}">
+        <div class="msg-sender">${m.sender}<span class="msg-source">${m.date}</span></div>
+        <div style="font-size:12.5px;font-weight:600;margin:2px 0;">${m.subject}</div>
+        <div class="msg-preview">${m.preview}</div>
+      </div>
+    `);
+    item.onclick = () => { state.mail.activeMessageId = m.id; m.read = true; renderPage(); };
+    item.addEventListener("contextmenu", (e) => {
+      e.preventDefault(); m.read = !m.read; renderPage();
+      showToast(m.read ? "Als gelesen markiert." : "Als ungelesen markiert.");
+    });
+    listBox.appendChild(item);
+  });
+  layout.appendChild(listBox);
+
+  // Leseansicht
+  const readBox = el(`<div class="mail-reading"></div>`);
+  const activeMsg = state.mail.messages.find((m) => m.id === state.mail.activeMessageId);
+  if (!activeMsg) {
+    readBox.appendChild(el(`<div class="mail-empty">Wähle links eine Nachricht aus.</div>`));
+  } else {
+    readBox.innerHTML = `
+      <div class="subject">${activeMsg.subject}</div>
+      <div class="meta">${activeMsg.sender} · ${activeMsg.source} · ${activeMsg.date}</div>
+      <div class="body">${activeMsg.body}</div>
+      <div id="mail-ai-summary" style="margin-top:16px;"></div>
+    `;
+    if (activeAIProvider()) {
+      const sumBtn = el(`<button class="btn small" style="margin-top:16px;">✨ Mit KI zusammenfassen</button>`);
+      sumBtn.onclick = () => {
+        const provider = activeAIProvider();
+        requestAIConsent(`Der Inhalt der Nachricht „${activeMsg.subject}" von ${activeMsg.sender} wird an ${provider} gesendet.`, () => {
+          document.getElementById("mail-ai-summary").innerHTML =
+            `<div class="notice-box">Zusammenfassung (simuliert): ${activeMsg.sender} geht es um „${activeMsg.subject}" — kurze, klare Antwort reicht vermutlich.</div>`;
+        });
       };
-      listEl.appendChild(card);
+      readBox.appendChild(sumBtn);
+    }
+  }
+  layout.appendChild(readBox);
+}
+
+function openComposeModal(prefill) {
+  prefill = prefill || {};
+  openModal(`
+    <h3>Neue Nachricht</h3>
+    <div class="field-label">An</div>
+    <input class="tn-input" id="compose-to" placeholder="empfaenger@mol-frw-gym.de" value="${prefill.to || ""}" />
+    <div class="field-label">Betreff</div>
+    <input class="tn-input" id="compose-subject" placeholder="Betreff" value="${prefill.subject || ""}" />
+    <div class="field-label">Nachricht</div>
+    <textarea class="tn-input" id="compose-body" rows="6" placeholder="Text …"></textarea>
+    <button class="btn primary" id="compose-send" style="margin-top:14px;">Senden</button>
+  `);
+  document.getElementById("compose-send").onclick = () => {
+    const to = document.getElementById("compose-to").value.trim() || "unbekannt";
+    const subject = document.getElementById("compose-subject").value.trim() || "(Ohne Betreff)";
+    const body = document.getElementById("compose-body").value.trim();
+    state.mail.messages.unshift({
+      id: "m" + Date.now(), folder:"sent", source:"IServ", sender: state.user.name, to,
+      subject, preview: `An ${to}: ` + body.slice(0, 70), body, date:"Gerade eben", read:true
+    });
+    closeModal();
+    showToast(`Gesendet an ${to} (simuliert — Backend folgt).`);
+    if (state.activePage === "mail") renderPage();
+  };
+}
+PAGE_RENDERERS["mail"] = renderMail;
+
+/* ============================================================================
+   MODUL: CHATS (WhatsApp-artig) — Direktnachrichten & Gruppen.
+   Kontakte kommen ausschließlich aus dem Freunde-System (nur bestätigte
+   Freunde sind anschreibbar). TODO(backend): echte Echtzeit-Zustellung
+   (z. B. WebSockets) — hier ist alles nur lokaler Zustand.
+   ============================================================================ */
+function renderChats(main) {
+  main.appendChild(el(`
+    <div class="page-header">
+      <div class="page-title">Chats</div>
+      <div class="page-sub">Direktnachrichten und Gruppen</div>
+    </div>
+  `));
+
+  const layout = el(`<div class="chat-layout"></div>`);
+
+  const list = el(`<div class="chat-list"></div>`);
+  const newGroupBtn = el(`<button class="btn small" style="margin-bottom:8px;">+ Neue Gruppe</button>`);
+  newGroupBtn.onclick = openNewGroupModal;
+  list.appendChild(newGroupBtn);
+
+  const sorted = [...state.chats.conversations];
+  sorted.forEach((conv) => {
+    const last = conv.messages[conv.messages.length - 1];
+    const item = el(`
+      <div class="chat-list-item ${state.chats.activeId === conv.id ? "active" : ""}">
+        <div class="name">${conv.type === "group" ? "👥" : "👤"} ${conv.name}</div>
+        <div class="last">${last ? last.text : "Noch keine Nachrichten"}</div>
+      </div>
+    `);
+    item.onclick = () => { state.chats.activeId = conv.id; renderPage(); };
+    list.appendChild(item);
+  });
+  layout.appendChild(list);
+
+  const conv = state.chats.conversations.find((c) => c.id === state.chats.activeId);
+  const convBox = el(`<div class="chat-conversation"></div>`);
+  if (!conv) {
+    convBox.appendChild(el(`<div class="mail-empty">Wähle links einen Chat aus.</div>`));
+  } else {
+    convBox.appendChild(el(`<div class="chat-conv-head">${conv.type === "group" ? "👥" : "👤"} ${conv.name}</div>`));
+    const body = el(`<div class="chat-conv-body"></div>`);
+    conv.messages.forEach((m) => {
+      body.appendChild(el(`
+        <div class="chat-bubble ${m.self ? "self" : "other"}">
+          ${conv.type === "group" && !m.self ? `<strong>${m.from}</strong><br/>` : ""}${m.text}
+          <span class="meta">${m.time}</span>
+        </div>
+      `));
+    });
+    convBox.appendChild(body);
+
+    const foot = el(`
+      <div class="chat-conv-foot">
+        <input placeholder="Nachricht schreiben …" />
+        <button class="btn primary small">Senden</button>
+      </div>
+    `);
+    const input = foot.querySelector("input");
+    const sendBtn = foot.querySelector("button");
+    const doSend = () => {
+      const val = input.value.trim();
+      if (!val) return;
+      conv.messages.push({ from: state.user.name, text: val, time: "Gerade eben", self: true });
+      input.value = "";
+      renderPage();
+      // Kleine simulierte Antwort bei 1:1-Chats, nur zur Demo-Lebendigkeit.
+      if (conv.type === "dm") {
+        const convId = conv.id;
+        setTimeout(() => {
+          if (state.activePage !== "chats") return; // Nutzer ist weg — nichts mehr tun
+          const stillThere = state.chats.conversations.find((c) => c.id === convId);
+          if (!stillThere) return;
+          stillThere.messages.push({ from: stillThere.name, text: "👍", time: "Gerade eben", self: false });
+          if (state.chats.activeId === convId) renderPage();
+        }, 1200);
+      }
+    };
+    sendBtn.onclick = doSend;
+    input.onkeydown = (e) => { if (e.key === "Enter") doSend(); };
+    convBox.appendChild(foot);
+    setTimeout(() => { body.scrollTop = body.scrollHeight; }, 0);
+  }
+  layout.appendChild(convBox);
+  main.appendChild(layout);
+}
+function openNewGroupModal() {
+  const memberRows = state.friends.connections.map((f) => `
+    <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;">
+      <input type="checkbox" value="${f.id}" /> ${f.name}
+    </label>
+  `).join("");
+  openModal(`
+    <h3>Neue Gruppe</h3>
+    <div class="field-label">Gruppenname</div>
+    <input class="tn-input" id="group-name" placeholder="z. B. Physik-AG" />
+    <div class="field-label">Mitglieder (aus deinen Freunden)</div>
+    <div>${memberRows || '<div style="color:var(--text-dim);font-size:12.5px;">Noch keine Freunde verbunden.</div>'}</div>
+    <button class="btn primary" id="group-create" style="margin-top:14px;">Erstellen</button>
+  `);
+  document.getElementById("group-create").onclick = () => {
+    const name = document.getElementById("group-name").value.trim();
+    if (!name) return;
+    const members = [...document.querySelectorAll('#modal-box input[type="checkbox"]:checked')].map((c) => c.value);
+    const id = "cg" + Date.now();
+    state.chats.conversations.push({ id, type:"group", name, members, messages:[] });
+    state.chats.activeId = id;
+    closeModal();
+    if (state.activePage === "chats") renderPage();
+  };
+}
+PAGE_RENDERERS["chats"] = renderChats;
+
+/* ============================================================================
+   MODUL: STUNDENPLAN (volle Wochenraster-Seite)
+   TODO(backend): über die inoffizielle WebUntis-API laden (siehe Entwicklungsplan).
+   ============================================================================ */
+function renderStundenplan(main) {
+  const header = el(`
+    <div class="page-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div class="page-title">Stundenplan</div>
+        <div class="page-sub">Aktuelle Woche</div>
+      </div>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-muted);cursor:pointer;">
+        <input type="checkbox" id="tt-hide-free" ${state.stundenplanHideFree ? "checked" : ""} />
+        Freistunden ausblenden
+      </label>
+    </div>
+  `);
+  header.querySelector("#tt-hide-free").onchange = (e) => { state.stundenplanHideFree = e.target.checked; renderPage(); };
+  main.appendChild(header);
+
+  const grid = el(`<div class="tt-grid"></div>`);
+  grid.appendChild(el(`<div></div>`));
+  state.timetable.days.forEach((d) => grid.appendChild(el(`<div class="tt-head">${d}</div>`)));
+
+  state.timetable.slots.forEach((slot) => {
+    const lessonsInRow = state.timetable.days.map((day) => state.timetable.lessons.find((l) => l.day === day && l.slot === slot));
+    if (state.stundenplanHideFree && lessonsInRow.every((l) => !l)) return; // ganze Reihe ohne Unterricht überspringen
+
+    grid.appendChild(el(`<div class="tt-slot-label">${slot}.</div>`));
+    state.timetable.days.forEach((day) => {
+      const lesson = state.timetable.lessons.find((l) => l.day === day && l.slot === slot);
+      if (!lesson) { grid.appendChild(el(`<div class="tt-cell empty"></div>`)); return; }
+      const color = getSubjectColor(lesson.subject);
+      let statusHtml = "";
+      if (lesson.status === "test") statusHtml = `<span class="tt-status" data-test="${lesson.testId}">Test — Mehr Infos</span>`;
+      if (lesson.status === "ausfall") statusHtml = `<span style="opacity:.85;">Ausfall</span>`;
+      if (lesson.status === "vertretung") statusHtml = `<span class="tt-status" data-vertretung="1">Vertretung — Mehr Infos</span>`;
+      const cell = el(`
+        <div class="tt-cell" style="${subjectCardStyle(color)}">
+          <span class="tt-subject">${subjectDot(color)}${lesson.subject}</span>
+          <span class="tt-room">${lesson.room} · ${lesson.teacher}</span>
+          ${statusHtml}
+        </div>
+      `);
+      const testNode = cell.querySelector("[data-test]");
+      if (testNode) testNode.onclick = (e) => { e.stopPropagation(); openTestInfoModal(lesson.testId); };
+      const vertretungNode = cell.querySelector("[data-vertretung]");
+      if (vertretungNode) vertretungNode.onclick = (e) => { e.stopPropagation(); openVertretungModal(lesson.original); };
+      grid.appendChild(cell);
+    });
+  });
+  main.appendChild(grid);
+}
+PAGE_RENDERERS["stundenplan"] = renderStundenplan;
+
+/* ============================================================================
+   MODUL: schul.cloud — bewusst minimal, da laut Schule bald abgeschafft.
+   ============================================================================ */
+function renderSchulcloud(main) {
+  main.appendChild(el(`
+    <div class="page-header">
+      <div class="page-title">schul.cloud</div>
+      <div class="page-sub">Nachrichtendienst der Schule</div>
+    </div>
+    <div class="notice-box">
+      Laut Schule wird schul.cloud mittelfristig abgeschafft. Deshalb bauen wir
+      hier bewusst keine tiefere Integration mehr — falls sich das ändert,
+      können wir das direkt hier ergänzen.
+    </div>
+  `));
+}
+PAGE_RENDERERS["schulcloud"] = renderSchulcloud;
+
+/* ============================================================================
+   MODUL: DOKUMENTE (Datei-Browser wie Nextcloud Files, inkl. IServ-Ordner)
+   TODO(backend): über Nextcloud WebDAV/OCS-API laden, Vorschau via Collabora.
+   ============================================================================ */
+const DOC_ICONS = { folder:"📁", pdf:"📕", docx:"📘", xlsx:"📗", image:"🖼️", note:"🗒️" };
+
+function renderDokumente(main) {
+  main.appendChild(el(`
+    <div class="page-header">
+      <div class="page-title">Dokumente</div>
+      <div class="page-sub">Nextcloud-Dateien — inklusive IServ-Ordner</div>
+    </div>
+  `));
+
+  const crumb = el(`<div class="docs-breadcrumb"></div>`);
+  state.docs.currentPathIds.forEach((id, idx) => {
+    const node = findDocNode(state.docs.currentPathIds.slice(0, idx + 1));
+    const seg = el(`<span class="seg">${node.name}</span>`);
+    seg.onclick = () => { state.docs.currentPathIds = state.docs.currentPathIds.slice(0, idx + 1); renderPage(); };
+    crumb.appendChild(seg);
+    if (idx < state.docs.currentPathIds.length - 1) crumb.appendChild(el(`<span>/</span>`));
+  });
+  main.appendChild(crumb);
+
+  const grid = el(`<div class="docs-grid"></div>`);
+  const current = findDocNode(state.docs.currentPathIds);
+  (current.children || []).forEach((node) => {
+    const icon = node.type === "folder" ? DOC_ICONS.folder : (DOC_ICONS[node.kind] || "📄");
+    const item = el(`<div class="docs-item"><div class="icon">${icon}</div><div class="name">${node.name}</div></div>`);
+    item.onclick = () => {
+      if (node.type === "folder") { state.docs.currentPathIds = [...state.docs.currentPathIds, node.id]; renderPage(); }
+      else openModal(`<h3>${node.name}</h3><p style="font-size:13.5px;color:var(--text-muted);margin-top:10px;">Vorschau folgt, sobald Nextcloud/Collabora angebunden ist.</p>`);
+    };
+    grid.appendChild(item);
+  });
+  if ((current.children || []).length === 0) grid.appendChild(el(`<div style="color:var(--text-dim);font-size:13px;">Dieser Ordner ist leer.</div>`));
+  main.appendChild(grid);
+}
+PAGE_RENDERERS["dokumente"] = renderDokumente;
+
+/* ============================================================================
+   MODUL: NOTIZEN (GoodNotes-artig) — Seiten mit beweglichen, editierbaren
+   Textfeldern auf einer Zeichenfläche. Freihand-Zeichnen bleibt bewusst
+   Mockup (siehe frühere Entscheidung), Textfelder sind hingegen ECHT
+   funktionsfähig: hinzufügen, beschreiben, verschieben.
+   Export: lokal (.schoolnote/.md/.png), nach Nextcloud, oder — mit
+   hinterlegtem API-Key — per KI verarbeiten & automatisch einsortieren
+   (inkl. optionaler Wiki-Ablage). Siehe notizen-und-ki-plan.md für die
+   Backend-Wunschliste (u. a. echter GoodNotes-kompatibler Export).
+   ============================================================================ */
+const NOTE_TOOLS = [
+  { id:"textfeld", icon:"🔤", label:"Textfeld hinzufügen", action:true, run: () => addTextbox() },
+  { id:"stift", icon:"✏️", label:"Stift" },
+  { id:"marker", icon:"🖊️", label:"Textmarker" },
+  { id:"radierer", icon:"🧹", label:"Radierer" },
+  { id:"auswahl", icon:"⬚", label:"Auswahl / Verschieben" },
+  { id:"formen", icon:"◻︎", label:"Formen" },
+  { id:"farbe", icon:"🎨", label:"Farbe" }
+];
+let notizenActiveTool = "stift";
+
+function currentNotePage() { return state.notizen.pages[state.notizen.activePage]; }
+function addTextbox() {
+  currentNotePage().textboxes.push({ id:"tb" + Date.now(), x:40, y:40, text:"" });
+  renderPage();
+}
+function createTextboxEl(tb) {
+  const box = el(`
+    <div class="hs-textbox" style="left:${tb.x}px; top:${tb.y}px;">
+      <div class="hs-textbox-handle">⠿ ⠿ ⠿</div>
+      <div class="hs-textbox-content" contenteditable="true" spellcheck="false"></div>
+    </div>
+  `);
+  const content = box.querySelector(".hs-textbox-content");
+  content.innerText = tb.text;
+  content.addEventListener("blur", () => { tb.text = content.innerText; });
+  box.querySelector(".hs-textbox-handle").addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    const startX = e.clientX, startY = e.clientY, origX = tb.x, origY = tb.y;
+    function onMove(ev) {
+      box.style.left = (origX + ev.clientX - startX) + "px";
+      box.style.top = (origY + ev.clientY - startY) + "px";
+    }
+    function onUp(ev) {
+      tb.x = origX + ev.clientX - startX;
+      tb.y = origY + ev.clientY - startY;
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+    }
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  });
+  return box;
+}
+
+function renderNotizen(main) {
+  const header = el(`
+    <div class="page-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div class="page-title">Notizen</div>
+        <div class="page-sub">${state.notizen.title}</div>
+      </div>
+      <button class="btn primary small" id="note-export-btn">Exportieren</button>
+    </div>
+  `);
+  header.querySelector("#note-export-btn").onclick = openNotizenExportModal;
+  main.appendChild(header);
+
+  const layout = el(`<div class="hs-layout"></div>`);
+
+  const tools = el(`<div class="hs-tools"></div>`);
+  NOTE_TOOLS.forEach((t) => {
+    const btn = el(`<button class="hs-tool ${!t.action && notizenActiveTool === t.id ? "active" : ""}" title="${t.label}">${t.icon}</button>`);
+    btn.onclick = () => { if (t.action) t.run(); else { notizenActiveTool = t.id; renderPage(); } };
+    tools.appendChild(btn);
+  });
+  layout.appendChild(tools);
+
+  const canvas = el(`<div class="hs-canvas"></div>`);
+  currentNotePage().textboxes.forEach((tb) => canvas.appendChild(createTextboxEl(tb)));
+  canvas.appendChild(el(`<div class="hs-canvas-hint">Zeichnen folgt später — Textfelder sind schon nutzbar (Werkzeug „Textfeld").</div>`));
+  layout.appendChild(canvas);
+
+  const pages = el(`<div class="hs-pages"></div>`);
+  state.notizen.pages.forEach((p, idx) => {
+    const thumb = el(`<div class="hs-page-thumb ${state.notizen.activePage === idx ? "active" : ""}">Seite ${idx + 1}</div>`);
+    thumb.onclick = () => { state.notizen.activePage = idx; renderPage(); };
+    pages.appendChild(thumb);
+  });
+  const addPage = el(`<div class="hs-add-page">+ Neue Seite</div>`);
+  addPage.onclick = () => { state.notizen.pages.push({ id:"np" + Date.now(), textboxes:[] }); state.notizen.activePage = state.notizen.pages.length - 1; renderPage(); };
+  pages.appendChild(addPage);
+  layout.appendChild(pages);
+
+  main.appendChild(layout);
+}
+PAGE_RENDERERS["notizen"] = renderNotizen;
+
+/* ---- Export-Flow (lokal / Nextcloud / KI) ---------------------------- */
+function notizenAsMarkdown() {
+  return state.notizen.pages
+    .map((p, i) => `<!-- Seite ${i + 1} -->\n\n` + p.textboxes.map((t) => t.text).join("\n\n"))
+    .join("\n\n---\n\n");
+}
+function downloadFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  showToast(`${filename} heruntergeladen.`);
+}
+function exportPageAsPng() {
+  const page = currentNotePage();
+  const canvas = document.createElement("canvas");
+  canvas.width = 800; canvas.height = 1000;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) { showToast("Bildexport in dieser Umgebung nicht verfügbar."); return; }
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "#eeeeee";
+  for (let y = 30; y < canvas.height; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+  ctx.fillStyle = "#1a1b26"; ctx.font = "16px sans-serif";
+  page.textboxes.forEach((tb) => {
+    tb.text.split("\n").forEach((line, i) => ctx.fillText(line, tb.x, tb.y + 20 + i * 20));
+  });
+  canvas.toBlob((blob) => {
+    if (!blob) { showToast("Bildexport in dieser Umgebung nicht verfügbar."); return; }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `${state.notizen.title}-seite${state.notizen.activePage + 1}.png`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showToast("Seite als Bild heruntergeladen.");
+  });
+}
+function flattenFolderOptions(node, path) {
+  path = path || node.name;
+  let list = [{ id: node.id, path }];
+  (node.children || []).forEach((c) => { if (c.type === "folder") list = list.concat(flattenFolderOptions(c, path + " / " + c.name)); });
+  return list;
+}
+function processNoteWithAI(toWiki) {
+  const fullText = state.notizen.title + " " + notizenAsMarkdown();
+  const subject = guessSubjectFromText(fullText) || "Sonstiges";
+  let content = notizenAsMarkdown();
+  if (state.aiSettings.notizenMode === "voll") {
+    content = `<!-- KI-bearbeitet: zusammengefasst, vervollständigt, Rechtschreibung korrigiert (simuliert) -->\n\n` + content;
+  }
+  const folderId = docFolderIdForSubject(subject) || "sonstiges";
+  addFileToFolder(folderId, `${state.notizen.title}.md`, "note");
+  let msg = `Notiz unter „${subject}" in Nextcloud abgelegt`;
+  if (toWiki) {
+    const collectiveId = guessWikiCollectiveId(subject);
+    if (collectiveId) {
+      const collective = state.wiki.collectives.find((c) => c.id === collectiveId);
+      collective.pages.push({ id:"w" + Date.now(), title: state.notizen.title, md: content, children: [] });
+      msg += ` und ins Wiki-Collective „${collective.name}" übernommen.`;
+    } else {
+      msg += `. Kein passendes Wiki-Collective gefunden — bitte manuell im Wiki anlegen.`;
+    }
+  } else {
+    msg += ".";
+  }
+  closeModal();
+  showToast(msg);
+}
+function openNotizenExportModal() {
+  const provider = activeAIProvider();
+  const folderOptions = flattenFolderOptions(state.docs.tree).map((f) => `<option value="${f.id}">${f.path}</option>`).join("");
+  openModal(`
+    <h3>Notiz exportieren</h3>
+    <div class="field-label">Titel</div>
+    <input class="tn-input" id="note-title" value="${state.notizen.title}" />
+
+    <div class="export-section" style="margin-top:16px;">
+      <h4>Auf diesem Gerät speichern</h4>
+      <div class="export-format-row">
+        <button class="btn small" id="exp-bundle">.schoolnote (Text + Zeichnung)</button>
+        <button class="btn small" id="exp-md">.md (nur Text)</button>
+        <button class="btn small" id="exp-png">.png (aktuelle Seite)</button>
+      </div>
+      <div style="font-size:10.5px;color:var(--text-dim);margin-top:6px;">.schoolnote ist unser Platzhalter-Format — echter GoodNotes-Export ist als Backend-Wunsch notiert.</div>
+    </div>
+
+    <div class="export-section">
+      <h4>In Nextcloud speichern</h4>
+      <select class="tn-input" id="note-folder">${folderOptions}</select>
+      <button class="btn" id="exp-nextcloud" style="margin-top:8px;">Speichern</button>
+    </div>
+
+    ${provider ? `
+    <div class="export-section">
+      <h4>✨ Mit KI verarbeiten &amp; einsortieren</h4>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;margin-bottom:10px;">
+        <input type="checkbox" id="note-to-wiki" /> Auch ins Wiki aufnehmen
+      </label>
+      <button class="btn primary" id="exp-ai">Mit KI verarbeiten</button>
+    </div>` : `<div class="notice-box">Kein API-Schlüssel hinterlegt — die KI-Ablage ist erst mit einem Schlüssel in den Einstellungen verfügbar.</div>`}
+  `);
+
+  document.getElementById("note-title").oninput = (e) => { state.notizen.title = e.target.value; };
+  document.getElementById("exp-bundle").onclick = () => downloadFile(`${state.notizen.title}.schoolnote`, JSON.stringify(state.notizen, null, 2), "application/json");
+  document.getElementById("exp-md").onclick = () => downloadFile(`${state.notizen.title}.md`, notizenAsMarkdown(), "text/markdown");
+  document.getElementById("exp-png").onclick = () => exportPageAsPng();
+  document.getElementById("exp-nextcloud").onclick = () => {
+    const folderId = document.getElementById("note-folder").value;
+    addFileToFolder(folderId, `${state.notizen.title}.md`, "note");
+    closeModal();
+    showToast(`In Nextcloud gespeichert: ${state.notizen.title}.md`);
+    if (state.activePage === "dokumente") renderPage();
+  };
+  const aiBtn = document.getElementById("exp-ai");
+  if (aiBtn) {
+    aiBtn.onclick = () => {
+      const toWiki = document.getElementById("note-to-wiki").checked;
+      requestAIConsent(`Der Inhalt der Notiz „${state.notizen.title}" wird an ${provider} gesendet.`, () => processNoteWithAI(toWiki));
+    };
+  }
+}
+
+/* ============================================================================
+   MODUL: WIKI (Collectives-Stil) — mehrere Collectives, verschachtelte Seiten,
+   Markdown-Editor mit Live-Vorschau (marked.js), Sichtbarkeit inkl. gezielter
+   Freigabe an einzelne Freunde.
+   TODO(backend): Rendering serverseitig sanitizen (XSS!), bevor echte
+   Nutzereingaben verarbeitet werden — hier ist es nur eine Frontend-Demo.
+   ============================================================================ */
+function renderWiki(main) {
+  main.appendChild(el(`
+    <div class="page-header">
+      <div class="page-title">Wiki</div>
+      <div class="page-sub">Wissensdatenbank — organisiert in Collectives</div>
+    </div>
+  `));
+
+  if (!state.wiki.activeCollectiveId) {
+    const grid = el(`<div class="wiki-collectives-grid"></div>`);
+    state.wiki.collectives.forEach((c) => {
+      const card = el(`
+        <div class="wiki-collective-card">
+          <div class="dot" style="background:var(${c.colorVar})"></div>
+          <div class="name">${c.name}</div>
+          <div class="meta">${countWikiPages(c.pages)} Seiten · ${visibilityLabel(c.visibility)}</div>
+        </div>
+      `);
+      card.onclick = () => { state.wiki.activeCollectiveId = c.id; state.wiki.activePageId = null; renderPage(); };
+      grid.appendChild(card);
+    });
+    const addCard = el(`<div class="wiki-add-card">+ Neues Collective</div>`);
+    addCard.onclick = () => {
+      const name = prompt("Name des neuen Collectives:");
+      if (!name) return;
+      const id = "c" + Date.now();
+      state.wiki.collectives.push({ id, name, colorVar: COLOR_CYCLE[state.wiki.collectives.length % COLOR_CYCLE.length], visibility:"beide", pages:[] });
+      state.wiki.activeCollectiveId = id;
+      renderPage();
+    };
+    grid.appendChild(addCard);
+    main.appendChild(grid);
+    return;
+  }
+
+  const collective = state.wiki.collectives.find((c) => c.id === state.wiki.activeCollectiveId);
+  const back = el(`<button class="btn small" style="margin-bottom:14px;">← Alle Collectives</button>`);
+  back.onclick = () => { state.wiki.activeCollectiveId = null; renderPage(); };
+  main.appendChild(back);
+
+  const layout = el(`<div class="wiki-layout"></div>`);
+
+  // Baum
+  const tree = el(`<div class="wiki-tree"></div>`);
+  const addRootPage = el(`<button class="btn small" style="width:100%;margin-bottom:8px;">+ Neue Seite</button>`);
+  addRootPage.onclick = () => addWikiPage(collective.pages);
+  tree.appendChild(addRootPage);
+  tree.appendChild(buildWikiTree(collective.pages));
+  layout.appendChild(tree);
+
+  // Inhalt
+  const content = el(`<div class="wiki-content"></div>`);
+  const trail = state.wiki.activePageId ? findWikiPage(collective.pages, state.wiki.activePageId, []) : null;
+  const page = trail ? trail[trail.length - 1] : null;
+
+  if (!page) {
+    content.innerHTML = `<div style="color:var(--text-dim);font-size:13px;">Wähle links eine Seite aus oder lege eine neue an.</div>`;
+  } else {
+    const head = el(`<div class="wiki-content-head"></div>`);
+    head.appendChild(el(`<h1>${page.title}</h1>`));
+    const rightControls = el(`<div style="display:flex;align-items:center;gap:8px;"></div>`);
+    rightControls.appendChild(buildVisibilitySelector(collective));
+    const addChild = el(`<button class="btn small">+ Unterseite</button>`);
+    addChild.onclick = () => addWikiPage(page.children);
+    rightControls.appendChild(addChild);
+    const toggleBtn = el(`<button class="btn small">${state.wiki.editMode ? "Anzeigen" : "Bearbeiten"}</button>`);
+    toggleBtn.onclick = () => { state.wiki.editMode = !state.wiki.editMode; renderPage(); };
+    rightControls.appendChild(toggleBtn);
+    head.appendChild(rightControls);
+    content.appendChild(head);
+
+    if (state.wiki.editMode) {
+      const textarea = el(`<textarea class="wiki-md-edit">${page.md}</textarea>`);
+      content.appendChild(textarea);
+      const saveBtn = el(`<button class="btn primary" style="margin-top:12px;">Speichern</button>`);
+      saveBtn.onclick = () => { page.md = textarea.value; state.wiki.editMode = false; renderPage(); showToast("Gespeichert."); };
+      content.appendChild(saveBtn);
+    } else {
+      const rendered = el(`<div class="wiki-md-view"></div>`);
+      rendered.innerHTML = (typeof marked !== "undefined") ? marked.parse(page.md) : page.md;
+      content.appendChild(rendered);
+    }
+  }
+  layout.appendChild(content);
+  main.appendChild(layout);
+}
+
+function countWikiPages(pages) {
+  return pages.reduce((sum, p) => sum + 1 + countWikiPages(p.children), 0);
+}
+function visibilityLabel(v) {
+  if (v === "schule") return "Nur Schule";
+  if (v === "privat") return "Nur Privat";
+  if (v === "freunde") return "Ausgewählte Freunde";
+  return "Schule & Privat";
+}
+function buildWikiTree(pages) {
+  const wrap = document.createElement("div");
+  pages.forEach((p) => {
+    const node = document.createElement("div");
+    node.className = "wiki-tree-node";
+    const row = el(`
+      <div class="wiki-tree-row ${state.wiki.activePageId === p.id ? "active" : ""}">
+        <span class="wiki-tree-toggle">${p.children.length ? "▾" : "·"}</span><span>${p.title}</span>
+      </div>
+    `);
+    row.onclick = () => { state.wiki.activePageId = p.id; state.wiki.editMode = false; renderPage(); };
+    node.appendChild(row);
+    if (p.children.length) {
+      const childWrap = document.createElement("div");
+      childWrap.className = "wiki-tree-children";
+      childWrap.appendChild(buildWikiTree(p.children));
+      node.appendChild(childWrap);
+    }
+    wrap.appendChild(node);
+  });
+  return wrap;
+}
+function addWikiPage(list) {
+  const title = prompt("Titel der neuen Seite:");
+  if (!title) return;
+  const id = "w" + Date.now();
+  list.push({ id, title, md: `# ${title}\n\n`, children: [] });
+  state.wiki.activePageId = id;
+  state.wiki.editMode = true;
+  renderPage();
+}
+function buildVisibilitySelector(collective) {
+  const wrap = document.createElement("div");
+  const select = el(`
+    <select class="tn-input" style="width:auto;padding:6px 8px;font-size:12px;">
+      <option value="beide" ${collective.visibility==="beide"?"selected":""}>Schule & Privat</option>
+      <option value="schule" ${collective.visibility==="schule"?"selected":""}>Nur Schule</option>
+      <option value="privat" ${collective.visibility==="privat"?"selected":""}>Nur Privat</option>
+      <option value="freunde" ${collective.visibility==="freunde"?"selected":""}>Ausgewählte Freunde</option>
+    </select>
+  `);
+  select.onchange = () => { collective.visibility = select.value; renderPage(); };
+  wrap.appendChild(select);
+  if (collective.visibility === "freunde") {
+    collective.sharedWith = collective.sharedWith || [];
+    const picker = el(`<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;"></div>`);
+    state.friends.connections.forEach((f) => {
+      const on = collective.sharedWith.includes(f.id);
+      const chip = el(`<span class="fb-chip ${on ? "active" : ""}" style="${on ? "background:var(--accent-blue);border-color:var(--accent-blue);" : ""}">${f.name}</span>`);
+      chip.onclick = () => {
+        collective.sharedWith = on ? collective.sharedWith.filter((id) => id !== f.id) : [...collective.sharedWith, f.id];
+        renderPage();
+      };
+      picker.appendChild(chip);
+    });
+    wrap.appendChild(picker);
+  }
+  const note = el(`<div style="font-size:10.5px;color:var(--text-dim);margin-top:4px;max-width:200px;">Schule→Privat-Freigaben dürfen nur Admins ändern.</div>`);
+  wrap.appendChild(note);
+  return wrap;
+}
+PAGE_RENDERERS["wiki"] = renderWiki;
+
+/* KI-Assistent hat keine eigene Seite mehr — siehe renderKIOverlay() weiter oben. */
+
+/* ============================================================================
+   MODUL: FREUNDE — Verbindungen zwischen Nutzern (auch schulübergreifend),
+   Voraussetzung für gezieltes Teilen von Wikis/Dateien. Schulen selbst
+   bleiben strikt getrennt; nur bestätigte Freundschaften verbinden Nutzer.
+   ============================================================================ */
+function renderFreunde(main) {
+  main.appendChild(el(`
+    <div class="page-header">
+      <div class="page-title">Freunde</div>
+      <div class="page-sub">Verbindungen zu anderen Nutzern — Voraussetzung, um Wikis oder Dateien gezielt zu teilen</div>
+    </div>
+  `));
+
+  const addRow = el(`
+    <div style="display:flex;gap:8px;max-width:420px;margin-bottom:24px;">
+      <input class="tn-input" id="friend-search" placeholder="Nutzername oder E-Mail" />
+      <button class="btn primary" id="friend-send">Anfrage senden</button>
+    </div>
+  `);
+  addRow.querySelector("#friend-send").onclick = () => {
+    const val = addRow.querySelector("#friend-search").value.trim();
+    if (!val) return;
+    state.friends.outgoing.push({ id:"u" + Date.now(), name: val, school:"unbekannt" });
+    addRow.querySelector("#friend-search").value = "";
+    renderPage();
+    showToast("Anfrage gesendet.");
+  };
+  main.appendChild(addRow);
+
+  if (state.friends.incoming.length) {
+    main.appendChild(el(`<div class="field-label">Eingehende Anfragen</div>`));
+    state.friends.incoming.forEach((f) => {
+      const row = el(`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);max-width:420px;">
+          <span>${f.name} <span style="color:var(--text-dim);font-size:11.5px;">· ${f.school}</span></span>
+          <span style="display:flex;gap:6px;"><button class="btn small primary" data-accept="${f.id}">Annehmen</button><button class="btn small" data-decline="${f.id}">Ablehnen</button></span>
+        </div>
+      `);
+      row.querySelector("[data-accept]").onclick = () => {
+        state.friends.incoming = state.friends.incoming.filter((x) => x.id !== f.id);
+        state.friends.connections.push(f);
+        renderPage();
+      };
+      row.querySelector("[data-decline]").onclick = () => {
+        state.friends.incoming = state.friends.incoming.filter((x) => x.id !== f.id);
+        renderPage();
+      };
+      main.appendChild(row);
     });
   }
 
-  function render(){
-    const item = NAV_ITEMS.find(n => n.id === state.active) || NAV_ITEMS[0];
-    crumbEl.textContent = item.label;
-    renderNav();
-
-    if(state.active === "uebersicht") return renderOverview();
-    if(state.active === "feedback") return renderFeedback();
-    if(state.active === "einstellungen") return renderSettings();
-    if(item.empty) return renderEmpty(item);
-
-    contentEl.innerHTML = "";
+  if (state.friends.outgoing.length) {
+    main.appendChild(el(`<div class="field-label">Ausgehende Anfragen</div>`));
+    state.friends.outgoing.forEach((f) => {
+      const row = el(`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);max-width:420px;">
+          <span>${f.name}</span><span style="color:var(--text-dim);font-size:11.5px;">Ausstehend</span>
+        </div>
+      `);
+      main.appendChild(row);
+    });
   }
 
-  render();
-})();
+  main.appendChild(el(`<div class="field-label">Verbunden</div>`));
+  if (state.friends.connections.length === 0) main.appendChild(el(`<div style="color:var(--text-dim);font-size:13px;">Noch keine Freunde verbunden.</div>`));
+  state.friends.connections.forEach((f) => {
+    main.appendChild(el(`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);max-width:420px;">
+        <span>${f.name} <span style="color:var(--text-dim);font-size:11.5px;">· ${f.school}</span></span>
+        <span style="color:var(--accent-green);font-size:11.5px;">Verbunden</span>
+      </div>
+    `));
+  });
+}
+PAGE_RENDERERS["freunde"] = renderFreunde;
+
+/* ============================================================================
+   MODUL: EINSTELLUNGEN — Tab-Struktur wie bei Nextcloud (links Tabs, rechts Inhalt)
+   ============================================================================ */
+const SETTINGS_TABS = [
+  { id:"profil", label:"Profil" },
+  { id:"design", label:"Design" },
+  { id:"ki", label:"KI" },
+  { id:"faecher", label:"Fächer & Farben" },
+  { id:"gruppe", label:"Benutzergruppe" },
+  { id:"dashboard", label:"Dashboard" },
+  { id:"daten", label:"Daten" }
+];
+
+function renderEinstellungen(main) {
+  main.appendChild(el(`
+    <div class="page-header">
+      <div class="page-title">Einstellungen</div>
+    </div>
+  `));
+  const layout = el(`<div class="settings-layout"></div>`);
+  const tabs = el(`<div class="settings-tabs"></div>`);
+  SETTINGS_TABS.forEach((t) => {
+    const btn = el(`<div class="settings-tab ${state.settingsTab === t.id ? "active" : ""}">${t.label}</div>`);
+    btn.onclick = () => { state.settingsTab = t.id; renderPage(); };
+    tabs.appendChild(btn);
+  });
+  layout.appendChild(tabs);
+
+  const panel = el(`<div class="settings-panel"></div>`);
+  const builders = {
+    profil: buildSettingsProfil, design: buildSettingsDesign, ki: buildSettingsKI,
+    faecher: buildSettingsFaecher, gruppe: buildSettingsGruppe, dashboard: buildSettingsDashboard,
+    daten: buildSettingsDaten
+  };
+  panel.appendChild(builders[state.settingsTab]());
+  layout.appendChild(panel);
+
+  main.appendChild(layout);
+}
+PAGE_RENDERERS["einstellungen"] = renderEinstellungen;
+
+function buildSettingsProfil() {
+  const box = document.createElement("div");
+  box.appendChild(el(`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+      <div class="avatar" style="width:52px;height:52px;font-size:16px;">${state.user.initials}</div>
+      <div>
+        <div style="font-weight:600;">${state.user.name}</div>
+        <div style="font-size:12px;color:var(--text-dim);">${state.user.school}</div>
+      </div>
+    </div>
+  `));
+  box.appendChild(el(`<div class="field-label">Name</div>`));
+  const nameInput = el(`<input class="tn-input" value="${state.user.name}" />`);
+  nameInput.oninput = () => {
+    state.user.name = nameInput.value;
+    state.user.initials = nameInput.value.split(" ").map((p) => p[0] || "").join("").slice(0,2).toUpperCase() || "?";
+    renderTopbar();
+  };
+  box.appendChild(nameInput);
+  box.appendChild(el(`<div class="field-label">E-Mail</div>`));
+  box.appendChild(el(`<input class="tn-input" value="max.mustermann@mol-frw-gym.de" disabled />`));
+  box.appendChild(el(`
+    <div class="notice-box" style="margin-top:20px;">
+      Login läuft über dein Nextcloud-Konto (Single Sign-on) — Passwort und
+      Kontodaten werden dort verwaltet, nicht hier.
+    </div>
+  `));
+  return box;
+}
+
+function buildSettingsDesign() {
+  const box = document.createElement("div");
+  box.appendChild(el(`<div class="field-label">Theme</div>`));
+  const cards = el(`<div class="theme-cards"></div>`);
+  const previewColors = {
+    "tokyo-night": ["#1a1b26","#7aa2f7","#bb9af7","#9ece6a"],
+    "clean-dark":  ["#18181b","#5b8def","#8c7ae6","#5fae67"],
+    "clean-light": ["#f7f7f8","#3568d4","#7952d1","#3c8a48"]
+  };
+  THEMES.forEach((t) => {
+    const c = previewColors[t.id];
+    const card = el(`
+      <div class="theme-card ${state.theme === t.id ? "active" : ""}">
+        <div class="theme-swatch" style="background:${c[0]};">
+          <i style="background:${c[1]}"></i><i style="background:${c[2]}"></i><i style="background:${c[3]}"></i>
+        </div>
+        <div class="tname">${t.label}</div>
+      </div>
+    `);
+    card.onclick = () => { state.theme = t.id; document.documentElement.dataset.theme = t.id; renderPage(); };
+    cards.appendChild(card);
+  });
+  box.appendChild(cards);
+  box.appendChild(el(`<div class="notice-box" style="margin-top:20px;">Clean Dark / Clean Light sind bewusst zurückhaltend gehalten — für alle, die kein "Spectacle-Design" wollen.</div>`));
+
+  box.appendChild(el(`<div class="field-label" style="margin-top:26px;">Stundenplan-Darstellung</div>`));
+  const ttOptions = [
+    { id:"bunt", label:"Bunt", hint:"Volle Fachfarbe" },
+    { id:"dezent", label:"Dezent", hint:"Nur farbiger Rand" },
+    { id:"neutral", label:"Neutral", hint:"Nur ein kleiner Punkt" }
+  ];
+  const ttChips = el(`<div style="display:flex;gap:8px;flex-wrap:wrap;"></div>`);
+  ttOptions.forEach((o) => {
+    const chip = el(`
+      <div class="theme-card" style="text-align:center;cursor:pointer;padding:10px 14px;">
+        <div class="tname" style="margin-bottom:2px;">${o.label}</div>
+        <div style="font-size:10.5px;color:var(--text-dim);">${o.hint}</div>
+      </div>
+    `);
+    if (state.stundenplanStyle === o.id) chip.classList.add("active");
+    chip.onclick = () => { state.stundenplanStyle = o.id; renderPage(); };
+    ttChips.appendChild(chip);
+  });
+  box.appendChild(ttChips);
+  box.appendChild(el(`<div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Gilt für das WebUntis-Widget und die volle Stundenplan-Seite.</div>`));
+  return box;
+}
+
+function buildSettingsKI() {
+  const box = document.createElement("div");
+  const providers = [ { id:"anthropic", label:"Anthropic (Claude)" }, { id:"openai", label:"OpenAI" }, { id:"gemini", label:"Google Gemini" } ];
+  providers.forEach((p) => {
+    box.appendChild(el(`<div class="field-label">${p.label} — API-Schlüssel</div>`));
+    const row = el(`<div style="display:flex;gap:8px;"></div>`);
+    const input = el(`<input class="tn-input" type="password" placeholder="sk-..." value="${state.apiKeys[p.id]}" />`);
+    input.oninput = () => { state.apiKeys[p.id] = input.value; };
+    row.appendChild(input);
+    const testBtn = el(`<button class="btn small">Testen</button>`);
+    testBtn.onclick = () => showToast("Verbindungstest simuliert — Backend folgt.");
+    row.appendChild(testBtn);
+    box.appendChild(row);
+  });
+
+  box.appendChild(el(`<div class="field-label" style="margin-top:26px;">MCP-Server</div>`));
+  const mcpList = el(`<div></div>`);
+  function renderMcpList() {
+    mcpList.innerHTML = "";
+    if (state.mcpServers.length === 0) mcpList.appendChild(el(`<div style="color:var(--text-dim);font-size:12.5px;margin-bottom:8px;">Noch keine MCP-Server hinterlegt.</div>`));
+    state.mcpServers.forEach((s, idx) => {
+      const row = el(`<div class="mcp-row"><span>${s.name} — ${s.url}</span><button>✕</button></div>`);
+      row.querySelector("button").onclick = () => { state.mcpServers.splice(idx, 1); renderMcpList(); };
+      mcpList.appendChild(row);
+    });
+  }
+  renderMcpList();
+  box.appendChild(mcpList);
+  const addRow = el(`
+    <div style="display:flex;gap:6px;margin-top:6px;">
+      <input class="tn-input" id="mcp-name" placeholder="Name (z. B. Dateisystem)" />
+      <input class="tn-input" id="mcp-url" placeholder="URL / Verbindung" />
+      <button class="btn small">+</button>
+    </div>
+  `);
+  addRow.querySelector("button").onclick = () => {
+    const name = addRow.querySelector("#mcp-name").value.trim();
+    const url = addRow.querySelector("#mcp-url").value.trim();
+    if (!name) return;
+    state.mcpServers.push({ name, url: url || "—" });
+    addRow.querySelector("#mcp-name").value = ""; addRow.querySelector("#mcp-url").value = "";
+    renderMcpList();
+  };
+  box.appendChild(addRow);
+
+  box.appendChild(el(`<div class="field-label" style="margin-top:26px;">Notizen-Verarbeitung durch die KI</div>`));
+  const modeOptions = [
+    { id:"voll", label:"Volle Bearbeitung", hint:"Zusammenfassen, vervollständigen, Rechtschreibung korrigieren" },
+    { id:"einsortieren", label:"Nur einsortieren", hint:"Inhalt bleibt unverändert, nur Ordner/Wiki wird gewählt" }
+  ];
+  modeOptions.forEach((o) => {
+    const row = el(`
+      <label style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;cursor:pointer;">
+        <input type="radio" name="notizen-mode" ${state.aiSettings.notizenMode === o.id ? "checked" : ""} style="margin-top:3px;" />
+        <span><strong style="font-size:13px;">${o.label}</strong><br/><span style="font-size:11.5px;color:var(--text-dim);">${o.hint}</span></span>
+      </label>
+    `);
+    row.querySelector("input").onchange = () => { state.aiSettings.notizenMode = o.id; };
+    box.appendChild(row);
+  });
+  return box;
+}
+
+function buildSettingsFaecher() {
+  const box = document.createElement("div");
+  box.appendChild(el(`<div class="field-label">Farbe pro Fach</div>`));
+  state.subjectsList.forEach((subject) => {
+    getSubjectColor(subject); // sicherstellen, dass eine Farbe existiert
+    const row = el(`<div class="subject-row"><span class="sname">${subject}</span></div>`);
+    COLOR_CYCLE.forEach((cv) => {
+      const selected = state.subjectColors[subject] === cv;
+      const swatch = el(`<button class="swatch-btn ${selected ? "selected" : ""}" style="background:var(${cv})"></button>`);
+      swatch.onclick = () => { state.subjectColors[subject] = cv; renderPage(); };
+      row.appendChild(swatch);
+    });
+    box.appendChild(row);
+  });
+  const addRow = el(`
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <input class="tn-input" id="new-subject" placeholder="Neues Fach" />
+      <button class="btn small">Hinzufügen</button>
+    </div>
+  `);
+  addRow.querySelector("button").onclick = () => {
+    const val = addRow.querySelector("#new-subject").value.trim();
+    if (!val || state.subjectsList.includes(val)) return;
+    state.subjectsList.push(val);
+    getSubjectColor(val);
+    addRow.querySelector("#new-subject").value = "";
+    renderPage();
+  };
+  box.appendChild(addRow);
+  return box;
+}
+
+function buildSettingsGruppe() {
+  const box = document.createElement("div");
+  box.appendChild(el(`
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.6;max-width:480px;">
+      Steuert, welche Module in der linken Navigation sichtbar sind. Schul-Module
+      (Mail, Stundenplan, schul.cloud) werden im "Privat"-Modus ausgeblendet.
+    </p>
+  `));
+  const row = el(`<div style="display:flex;gap:8px;margin-top:10px;"></div>`);
+  const schuleBtn = el(`<button class="btn ${state.group === "schule" ? "primary" : ""}">🎓 Schule</button>`);
+  const privatBtn = el(`<button class="btn ${state.group === "privat" ? "primary" : ""}">🏠 Privat</button>`);
+  schuleBtn.onclick = () => setGroup("schule");
+  privatBtn.onclick = () => setGroup("privat");
+  row.appendChild(schuleBtn); row.appendChild(privatBtn);
+  box.appendChild(row);
+  return box;
+}
+
+function buildSettingsDashboard() {
+  const box = document.createElement("div");
+  box.appendChild(el(`<p style="font-size:13px;color:var(--text-muted);">Widget-Anordnung auf der Übersicht zurücksetzen, falls etwas unübersichtlich geworden ist.</p>`));
+  const resetBtn = el(`<button class="btn" style="margin-top:8px;">Widget-Layout zurücksetzen</button>`);
+  resetBtn.onclick = () => {
+    state.widgets = [
+      { id:"nachrichten", title:"Nachrichten", slot:"slotA", hidden:false },
+      { id:"schnellzugriff", title:"Schnellzugriff", slot:"slotB", hidden:false },
+      { id:"kalender", title:"Kalender", slot:"slotC", hidden:false },
+      { id:"webuntis", title:"WebUntis", slot:"slotD", hidden:false }
+    ];
+    showToast("Widget-Layout zurückgesetzt.");
+  };
+  box.appendChild(resetBtn);
+  return box;
+}
+
+function buildSettingsDaten() {
+  const box = document.createElement("div");
+  box.appendChild(el(`
+    <div class="notice-box" style="margin-bottom:18px;">
+      Solange es noch kein Backend gibt, lebt alles nur im Arbeitsspeicher —
+      ein Neuladen der Seite setzt das Dashboard zurück. Mit Export/Import
+      kannst du deinen Stand trotzdem sichern und wiederherstellen.
+    </div>
+  `));
+
+  box.appendChild(el(`<div class="field-label">Sichern</div>`));
+  const exportBtn = el(`<button class="btn">Als Datei herunterladen</button>`);
+  exportBtn.onclick = () => {
+    const data = JSON.stringify(state, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "school-aio-backup.json";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showToast("Backup heruntergeladen.");
+  };
+  box.appendChild(exportBtn);
+
+  box.appendChild(el(`<div class="field-label" style="margin-top:20px;">Wiederherstellen</div>`));
+  const importInput = el(`<input type="file" accept="application/json" class="tn-input" />`);
+  importInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const loaded = JSON.parse(reader.result);
+        Object.keys(loaded).forEach((key) => { state[key] = loaded[key]; });
+        document.documentElement.dataset.theme = state.theme;
+        renderAll();
+        showToast("Daten wiederhergestellt.");
+      } catch (err) { showToast("Datei konnte nicht gelesen werden — ist es ein gültiges Backup?"); }
+    };
+    reader.readAsText(file);
+  };
+  box.appendChild(importInput);
+  return box;
+}
+
+/* ============================================================================
+   INIT
+   ============================================================================ */
+function renderAll() {
+  document.documentElement.dataset.theme = state.theme;
+  renderTopbar();
+  document.getElementById("landing").classList.toggle("hidden", state.loggedIn);
+  document.getElementById("dashboard").classList.toggle("visible", state.loggedIn);
+  if (state.loggedIn) { renderIconrail(); renderPage(); }
+}
+renderAll();
+typeMotto();
 </script>
 </body>
 </html>
