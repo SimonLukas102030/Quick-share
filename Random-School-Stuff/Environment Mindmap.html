@@ -1,0 +1,244 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Environment Mindmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one-screen mindmap (centre + six branches) that opens a reading view per subtopic */
+:root{
+  --bg:#EDF2EF; --surface:#FFFFFF; --ink:#13302A; --muted:#55706A; --line:#B9CCC4;
+  --accent:#2E7A5A; --accent-soft:#DCEDE4; --sky:#3C7CA3;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1A17; --surface:#16251F; --ink:#E3EEE9; --muted:#97B0A8; --line:#2E463E;
+  --accent:#6CC79D; --accent-soft:#1E3A2F; --sky:#7EB7DA; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1A17; --surface:#16251F; --ink:#E3EEE9; --muted:#97B0A8; --line:#2E463E;
+  --accent:#6CC79D; --accent-soft:#1E3A2F; --sky:#7EB7DA; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:980px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+header.top{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+header.top h1{font-size:clamp(28px,5vw,40px)}
+header.top p{margin:0;color:var(--muted);max-width:60ch}
+
+/* map */
+.map{position:relative;display:grid;grid-template-columns:1fr minmax(160px,200px) 1fr;grid-template-rows:repeat(3,auto);gap:28px 64px;align-items:center;padding-block:12px}
+.map svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.map svg path{fill:none;stroke:var(--line);stroke-width:2;stroke-dasharray:400;stroke-dashoffset:400;animation:draw 1s ease-out .25s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.centre{grid-column:2;grid-row:1 / span 3;justify-self:center;width:170px;aspect-ratio:1;border-radius:50%;background:var(--accent);color:var(--bg);display:grid;place-items:center;text-align:center;font-family:var(--display);font-weight:700;font-size:22px;position:relative;z-index:1;animation:pop .6s cubic-bezier(.2,.8,.3,1.2) both}
+.centre::after{content:"";position:absolute;inset:-10px;border-radius:50%;border:2px solid var(--accent);opacity:.35;animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.06);opacity:.15}}
+@keyframes pop{from{transform:scale(.7)}}
+.node{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;text-align:left;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px 18px;cursor:pointer;font:inherit;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;animation:rise .55s ease-out both}
+.node:hover,.node:focus-visible{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 10px 24px -14px var(--accent)}
+.node:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+@keyframes rise{from{transform:translateY(14px);opacity:.3}}
+.node h3{font-size:19px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.node h3 .arrow{color:var(--accent);transition:transform .25s ease}
+.node:hover .arrow{transform:translateX(4px)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;background:var(--accent-soft);color:var(--ink);padding:2px 10px;border-radius:999px}
+.node .count{font-size:13px;color:var(--muted)}
+.node.new{border-style:dashed}
+.l1{grid-column:1;grid-row:1}.l2{grid-column:1;grid-row:2}.l3{grid-column:1;grid-row:3}
+.r1{grid-column:3;grid-row:1}.r2{grid-column:3;grid-row:2}.r3{grid-column:3;grid-row:3}
+.hint{margin-top:18px;color:var(--muted);font-size:14px;text-align:center}
+
+/* topic view */
+.topic{animation:slide .45s ease-out both}
+@keyframes slide{from{transform:translateX(24px);opacity:.2}}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer;transition:border-color .2s,background .2s}
+.back:hover{border-color:var(--accent);background:var(--accent-soft)}
+.back:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.topic-head{display:flex;flex-direction:column;gap:10px;margin:22px 0 18px}
+.topic-head h2{font-size:clamp(28px,5vw,42px)}
+.topic-head p{margin:0;max-width:62ch;color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:28px;align-items:start}
+.qs{display:flex;flex-direction:column;gap:10px;min-width:0}
+details{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);transition:border-color .2s;animation:rise .45s ease-out both}
+details[open]{border-color:var(--accent)}
+summary{list-style:none;cursor:pointer;padding:14px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;font-weight:700}
+summary::-webkit-details-marker{display:none}
+summary .n{font-family:var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+summary .plus{color:var(--muted);transition:transform .25s ease;font-weight:400}
+details[open] summary .plus{transform:rotate(45deg)}
+summary:focus-visible{outline:3px solid var(--sky);outline-offset:2px;border-radius:var(--radius)}
+.ans{padding:0 18px 16px 50px;animation:fade .3s ease-out}
+.ans ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.ans .tag{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--sky);font-weight:700;margin-bottom:4px}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}}
+aside{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+.box{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px}
+.box h3{font-size:16px;margin-bottom:10px}
+.box p{margin:0;font-size:14px;color:var(--muted)}
+.box a{color:var(--sky)}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
+.toolbar{display:flex;gap:8px;margin-bottom:12px}
+.ghost{background:none;border:none;color:var(--accent);font:inherit;font-size:14px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+
+@media (max-width:720px){
+  .map{grid-template-columns:1fr 1fr;gap:12px}
+  .map svg.links{display:none}
+  .centre{grid-column:1 / span 2;grid-row:auto;width:130px;font-size:18px;margin-bottom:8px}
+  .l1,.l2,.l3,.r1,.r2,.r3{grid-column:auto;grid-row:auto}
+  .cols{grid-template-columns:1fr}
+  aside{position:static}
+  .ans{padding-left:18px}
+}
+@media (max-width:440px){.map{grid-template-columns:1fr}.centre{grid-column:1}}
+@media (prefers-reduced-motion:reduce){*,*::after{animation:none!important;transition:none!important}.map svg path{stroke-dashoffset:0}}
+</style>
+
+<div class="wrap">
+  <section id="mapView">
+    <header class="top">
+      <span class="eyebrow">English oral exam · Topic</span>
+      <h1>Environment</h1>
+      <p>Six subtopics, 36 discussion questions. Pick a branch to open its questions and answer notes.</p>
+    </header>
+    <div class="map" id="map">
+      <svg class="links" id="links" aria-hidden="true"></svg>
+      <div class="centre" id="centre">Environment</div>
+    </div>
+    <p class="hint">Tip: open a question to see answer notes, then use "Next topic" to move on.</p>
+  </section>
+
+  <section id="topicView" hidden></section>
+</div>
+
+<script>
+const T = [
+ {id:"climate",pos:"l1",title:"Climate change",intro:"Why the Earth is getting warmer, what that changes, and whether we can still limit it.",
+  keys:["greenhouse effect","CO₂ emissions","global warming","sea level rise","extreme weather","drought","fossil fuels","climate justice"],
+  phrase:"There is no Planet B.",
+  q:[
+  ["What is the difference between weather and climate?",["Weather = what happens on a single day (rain, sun, temperature).","Climate = the average weather in a region over about 30 years."]],
+  ["What causes climate change?",["Burning fossil fuels (coal, oil, gas) releases CO₂.","Greenhouse gases trap heat in the atmosphere (greenhouse effect).","Other causes: deforestation, livestock farming (methane), industry."]],
+  ["What effects of climate change can we already see today?",["Heatwaves, droughts, floods and stronger storms.","Melting glaciers and polar ice, rising sea levels.","Example from Germany: dry summers, forest fires, low water in rivers."]],
+  ["Who suffers most from climate change?",["Poorer countries and island nations, although they caused the least emissions.","Future generations, farmers, people living on coasts.","Key idea: climate justice."]],
+  ["Do you think we can still stop climate change?",["Stop: no, warming has already happened. Limit: yes.","Paris Agreement goal: well below 2 °C, ideally 1.5 °C.","Needs fast cuts in emissions and more renewable energy."]],
+  ["Should flying or eating meat be more expensive to protect the climate?",["Pro: prices would show the real environmental cost; people change behaviour.","Contra: unfair for people with less money; personal freedom.","Good question for an opinion round."]]]},
+ {id:"pollution",pos:"l2",title:"Pollution",intro:"What we put into air, water and soil, and how it comes back to us.",
+  keys:["air pollution","smog","plastic waste","microplastics","water pollution","pesticides","noise","light pollution"],
+  phrase:"Out of sight, out of mind.",
+  q:[
+  ["What kinds of pollution are there?",["Air, water, soil, plastic, noise and light pollution."]],
+  ["Where does air pollution come from, and how does it affect our health?",["Sources: traffic, factories, power plants, heating, burning waste.","Effects: asthma, lung and heart disease, smog in big cities."]],
+  ["Why is plastic in the ocean such a big problem?",["Plastic takes hundreds of years to break down.","Animals get tangled in it or mistake it for food.","Example: the Great Pacific Garbage Patch."]],
+  ["What are microplastics, and why should we care?",["Tiny plastic pieces under 5 mm, e.g. from tyres, clothes, cosmetics.","Found in water, fish, salt and even in human blood."]],
+  ["Should single-use plastic be banned completely?",["The EU already banned items like plastic straws and cutlery (2021).","Pro: less waste. Contra: some alternatives also harm the environment (paper needs lots of water and wood)."]],
+  ["Who is responsible for pollution: companies, governments or each of us?",["Companies produce most of it, governments set the rules, consumers create demand.","Good question to argue different sides."]]]},
+ {id:"biodiversity",pos:"l3",title:"Biodiversity",intro:"The variety of life on Earth, why it is shrinking, and why that matters to us.",
+  keys:["endangered species","extinction","habitat loss","deforestation","rainforest","ecosystem","pollination","food chain"],
+  phrase:"Save the bees, save the trees.",
+  q:[
+  ["What does \"biodiversity\" mean?",["The variety of all life on Earth: plants, animals, fungi, microorganisms and their ecosystems."]],
+  ["Why are so many species endangered?",["Habitat loss, pollution, climate change, overfishing, poaching, invasive species."]],
+  ["Why are rainforests like the Amazon so important?",["Home to a huge share of the world's species.","Store CO₂ and produce oxygen (\"lungs of the Earth\").","Cut down for cattle farming, soy, palm oil and wood."]],
+  ["Why should we care if an insect or a frog goes extinct?",["Everything in an ecosystem is connected (food chain).","Bees and other insects pollinate many of our food crops."]],
+  ["Are zoos good or bad for protecting animals?",["Pro: breeding programmes, research, education.","Contra: animals live in captivity, small enclosures."]],
+  ["What can we do to protect animals and plants in our own area?",["Plant wildflowers for bees, build insect hotels, avoid pesticides.","Support a national park or nature reserve in your region."]]]},
+ {id:"waste",pos:"r1",title:"Waste & consumption",intro:"How much we buy, how fast we throw it away, and what the alternatives are.",
+  keys:["throwaway society","recycling","reduce, reuse, recycle","fast fashion","food waste","zero waste","second-hand","upcycling"],
+  phrase:"Reduce, reuse, recycle.",
+  q:[
+  ["What is meant by a \"throwaway society\"?",["Products are used briefly and then thrown away instead of repaired or reused.","Examples: coffee-to-go cups, cheap electronics, fast fashion."]],
+  ["Does recycling really help?",["Yes, it saves raw materials and energy.","But only part of plastic waste is actually recycled; some is burned or exported.","Better order: reduce → reuse → recycle."]],
+  ["What is fast fashion, and why is it harmful?",["Cheap clothes produced quickly in huge amounts, worn only a few times.","Uses a lot of water and chemicals; poor working conditions; textile waste.","Alternatives: second-hand, clothes swaps, fewer but better items."]],
+  ["Why is food waste a problem?",["Wasted food also wastes the water, land and energy used to produce it.","Reasons: buying too much, misunderstood \"best before\" dates, supermarket standards.","Ideas: foodsharing, meal planning, apps like Too Good To Go."]],
+  ["Could you live a zero-waste life?",["Ideas: refill shops, reusable bottles and bags, buying unpacked food.","Is it realistic for everyone, or only for people with time and money?"]],
+  ["Do we need to consume less, or just consume differently?",["\"Green growth\" (better technology) vs. \"sufficiency\" (simply buying less).","Open opinion question."]]]},
+ {id:"activism",pos:"r2",title:"Activism & politics",intro:"Who fights for the planet, how they do it, and what governments have agreed to.",
+  keys:["Fridays for Future","Greta Thunberg","Paris Agreement","Greenpeace","WWF","protest","climate strike","CO₂ price"],
+  phrase:"Think global, act local.",
+  q:[
+  ["Who is Greta Thunberg, and what did she achieve?",["Swedish activist; started a school strike for the climate in 2018 at age 15.","Started the global Fridays for Future movement; spoke at the UN."]],
+  ["Are school strikes a good way to protest?",["Pro: get attention, young people's voices are heard.","Contra: students miss lessons; some say protests should happen in free time."]],
+  ["What is the Paris Agreement?",["Signed in 2015 by almost all countries of the world.","Goal: limit global warming to well below 2 °C, ideally 1.5 °C.","Every country sets its own targets to cut emissions."]],
+  ["What do organisations like Greenpeace or WWF do?",["Greenpeace: campaigns and protests against polluters, e.g. oil drilling, whaling.","WWF: protects endangered animals and habitats."]],
+  ["Are radical protests (blocking roads, gluing yourself to streets) acceptable?",["Example: Letzte Generation in Germany.","Pro: create urgency. Contra: annoy people, may turn the public against the cause."]],
+  ["Should governments or individuals do more to protect the environment?",["Governments: laws, CO₂ prices, public transport, renewables.","Individuals: lifestyle choices, voting, protesting.","Most experts say both are needed."]]]},
+ {id:"ai",pos:"r3",title:"AI & the environment",intro:"Artificial intelligence uses a lot of energy, but it can also help protect the planet. Friend or foe?",
+  keys:["data centre","electricity","energy consumption","cooling water","e-waste","carbon footprint","climate models","smart grid"],
+  phrase:"With great power comes a great power bill.",
+  source:{label:"Scientific American on the IEA report (2025)",url:"https://scientificamerican.com/article/ai-will-drive-doubling-of-data-center-energy-demand-by-2030"},
+  q:[
+  ["Why does AI use so much energy?",["AI runs in huge data centres full of servers that run day and night.","Training large models and answering millions of requests needs a lot of computing power.","IEA: data centres used about 1.5 % of the world's electricity in 2024 (415 TWh); by 2030 this could more than double to about 945 TWh, roughly what Japan uses today."]],
+  ["What other environmental problems do data centres cause?",["Lots of water for cooling the servers.","Raw materials for chips and hardware; electronic waste (e-waste).","Part of the electricity still comes from coal and gas."]],
+  ["How can AI help to protect the environment?",["Better climate models and weather or disaster forecasts.","Smart power grids that balance solar and wind energy.","Satellite images to detect deforestation or illegal fishing; robots that sort recycling."]],
+  ["Is using ChatGPT or other AI tools bad for the planet?",["A single request uses more energy than a normal web search, but much less than a car ride.","The problem is the huge total number of requests.","Should we use AI only when it is really useful?"]],
+  ["Should tech companies be forced to use only green energy for their data centres?",["Pro: they are rich and use huge amounts of electricity; good example for others.","Contra: not enough green energy everywhere yet; could slow down progress."]],
+  ["Is AI more a friend or a foe of the environment?",["Depends on how it is used and where the energy comes from.","Good closing question: let everyone take a side."]]]}
+];
+
+const map=document.getElementById('map'), links=document.getElementById('links');
+const mapView=document.getElementById('mapView'), topicView=document.getElementById('topicView');
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+T.forEach((t,i)=>{
+  const b=document.createElement('button');
+  b.className='node '+t.pos+(t.id==='ai'?' new':'');
+  b.style.animationDelay=(0.1+i*0.07)+'s';
+  b.dataset.id=t.id;
+  b.innerHTML=`<h3>${esc(t.title)}<span class="arrow" aria-hidden="true">→</span></h3>
+   <div class="chips">${t.keys.slice(0,3).map(k=>`<span class="chip">${esc(k)}</span>`).join('')}</div>
+   <span class="count">${t.q.length} questions</span>`;
+  b.addEventListener('click',()=>{location.hash=t.id});
+  map.appendChild(b);
+});
+
+function drawLinks(){
+  if(getComputedStyle(links).display==='none') return;
+  const m=map.getBoundingClientRect(), c=document.getElementById('centre').getBoundingClientRect();
+  const cx=c.left+c.width/2-m.left, cy=c.top+c.height/2-m.top;
+  links.setAttribute('viewBox',`0 0 ${m.width} ${m.height}`);
+  links.innerHTML=[...map.querySelectorAll('.node')].map(n=>{
+    const r=n.getBoundingClientRect(), left=r.left<c.left;
+    const x=(left?r.right:r.left)-m.left, y=r.top+r.height/2-m.top;
+    const sx=cx+(left?-c.width/2:c.width/2)*0.85, mx=(sx+x)/2;
+    return `<path d="M${sx} ${cy} C${mx} ${cy} ${mx} ${y} ${x} ${y}"/>`;
+  }).join('');
+}
+
+function showTopic(id){
+  const i=T.findIndex(t=>t.id===id); if(i<0){showMap();return}
+  const t=T[i], prev=T[(i+T.length-1)%T.length], next=T[(i+1)%T.length];
+  topicView.innerHTML=`<div class="topic">
+   <button class="back" id="backBtn"><span aria-hidden="true">←</span> Back to mindmap</button>
+   <div class="topic-head"><span class="eyebrow">Subtopic ${i+1} of ${T.length}</span><h2>${esc(t.title)}</h2><p>${esc(t.intro)}</p></div>
+   <div class="cols">
+    <div class="qs">
+     <div class="toolbar"><button class="ghost" id="openAll">Show all answers</button></div>
+     ${t.q.map((q,k)=>`<details style="animation-delay:${k*0.05}s"><summary><span class="n">${String(k+1).padStart(2,'0')}</span><span>${esc(q[0])}</span><span class="plus" aria-hidden="true">+</span></summary>
+       <div class="ans"><span class="tag">Answer notes</span><ul>${q[1].map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div></details>`).join('')}
+    </div>
+    <aside>
+     <div class="box"><h3>Key words</h3><div class="chips">${t.keys.map(k=>`<span class="chip">${esc(k)}</span>`).join('')}</div></div>
+     <div class="box"><h3>Slogan / saying</h3><p>“${esc(t.phrase)}”</p></div>
+     ${t.source?`<div class="box"><h3>Source</h3><p><a href="${t.source.url}" target="_blank" rel="noopener">${esc(t.source.label)}</a></p></div>`:''}
+    </aside>
+   </div>
+   <nav class="pager"><button class="back" data-go="${prev.id}">← ${esc(prev.title)}</button><button class="back" data-go="${next.id}">Next topic: ${esc(next.title)} →</button></nav>
+  </div>`;
+  mapView.hidden=true; topicView.hidden=false;
+  document.getElementById('backBtn').onclick=()=>{location.hash='map'};
+  topicView.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.go});
+  const oa=document.getElementById('openAll');
+  oa.onclick=()=>{const ds=topicView.querySelectorAll('details');const open=[...ds].some(d=>!d.open);ds.forEach(d=>d.open=open);oa.textContent=open?'Hide all answers':'Show all answers'};
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showMap(){topicView.hidden=true;mapView.hidden=false;requestAnimationFrame(drawLinks)}
+function route(){const h=location.hash.slice(1); h&&h!=='map'?showTopic(h):showMap()}
+window.addEventListener('hashchange',route);
+window.addEventListener('resize',()=>{if(!mapView.hidden)drawLinks()});
+document.fonts&&document.fonts.ready.then(()=>{if(!mapView.hidden)drawLinks()});
+route();
+</script>
+
+</body></html>
