@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physik üben – Schwingungen (Faden- &amp; Federpendel)</title>
+<style>
+:root{color-scheme:dark light;--bg:#0b1220;--bg2:#111a2e;--panel:#16223a;--panel2:#1c2b48;--line:#2b3c5e;--fg:#e8eefc;--mut:#8da2c8;--pri:#4cc2ff;--pri2:#2b7fff;--ok:#2ecc71;--bad:#ff5d6c;--warn:#f5b942;--acc:#b49cff;--shadow:0 8px 26px rgba(0,0,0,.35);--r:14px;--kred:#ff6b6b;--kblue:#4cc2ff;--kgreen:#2ecc71;--kpurple:#b49cff;--kgray:#8da2c8}
+@media (prefers-color-scheme:light){:root{--bg:#edf1f8;--bg2:#e2e9f4;--panel:#ffffff;--panel2:#f1f5fb;--line:#cdd7e8;--fg:#14213d;--mut:#5a6a8a;--pri:#0b7fd1;--pri2:#1d4ed8;--ok:#14803d;--bad:#c81e3a;--warn:#a96a00;--acc:#6d4ad8;--shadow:0 8px 26px rgba(30,50,90,.13);--kred:#d62839;--kblue:#0b7fd1;--kgreen:#15803d;--kpurple:#6d4ad8;--kgray:#5a6a8a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:232px minmax(0,1fr) 410px;grid-template-areas:"top top top" "nav main side";gap:16px;padding:14px;max-width:1900px;margin:0 auto}
+.top{grid-area:top;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px 16px;box-shadow:var(--shadow)}
+.top h1{font-size:1.15rem;margin:0;flex:1;min-width:220px}
+.top h1 small{display:block;font-weight:400;color:var(--mut);font-size:.8rem}
+.gbar{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:.85rem}
+.gbar .bar{width:150px;height:9px;border-radius:9px;background:var(--bg2);overflow:hidden;border:1px solid var(--line)}
+.gbar .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pri2),var(--ok));width:0}
+#nav{grid-area:nav;position:sticky;top:14px;align-self:start;max-height:calc(100vh - 28px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px;box-shadow:var(--shadow)}
+#nav a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;color:var(--fg);text-decoration:none;font-size:.92rem;line-height:1.25;cursor:pointer}
+#nav a:hover{background:var(--panel2)}
+#nav a.on{background:var(--pri2);color:#fff}
+#nav a .ic{flex:none;width:1.4em;text-align:center}
+#nav a .tx{flex:1}
+#nav a .st{font-size:.72rem;opacity:.8;white-space:nowrap}
+#nav .sep{height:1px;background:var(--line);margin:6px 4px}
+#main{grid-area:main;min-width:0}
+#side{grid-area:side;position:sticky;top:14px;align-self:start;max-height:calc(100vh - 28px);overflow:auto;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h2{margin:0 0 8px;font-size:1.25rem}
+.card h3{margin:14px 0 6px;font-size:1.02rem;color:var(--pri)}
+h1.lt{font-size:1.6rem;margin:2px 0 4px}
+.sub{color:var(--mut);margin:0 0 14px}
+.mut{color:var(--mut)}
+details.theory{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:0;margin-bottom:16px;box-shadow:var(--shadow)}
+details.theory>summary{cursor:pointer;padding:12px 18px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details.theory>summary::before{content:"▸";transition:.2s}
+details.theory[open]>summary::before{transform:rotate(90deg)}
+details.theory .tb{padding:0 20px 16px}
+.tb{overflow-x:auto}
+.tb table{border-collapse:collapse;width:100%;margin:8px 0;font-size:.95rem}
+.tb th,.tb td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+.tb th{background:var(--panel2)}
+.tb ul{margin:6px 0 6px 20px;padding:0}
+.box{background:var(--panel2);border-left:4px solid var(--pri);padding:10px 14px;border-radius:0 10px 10px 0;margin:10px 0}
+.box.warn{border-color:var(--warn)}
+.box.ok{border-color:var(--ok)}
+.fbox{display:flex;flex-wrap:wrap;gap:8px 22px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px 16px;margin:8px 0;font-size:1.1rem;align-items:center}
+/* ---------- Math ---------- */
+.m{font-family:"Cambria Math","STIX Two Math","Latin Modern Math",Cambria,"Times New Roman",serif;font-size:1.1em;white-space:nowrap;line-height:1}
+.m .v{font-style:italic}
+.m .op{margin:0 .22em}
+.m .u{font-style:normal}
+.m .thin{display:inline-block;width:.25em}
+.m sub{font-size:.68em;vertical-align:-.28em;line-height:0}
+.m sup{font-size:.68em;vertical-align:.6em;line-height:0}
+.m .fnm{margin-right:.08em}
+.m .par{opacity:.85}
+.m .ph{color:var(--mut);opacity:.7}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .2em;line-height:1.15}
+.frac>.fn{border-bottom:1.5px solid currentColor;padding:0 .25em .08em}
+.frac>.fd{padding:.1em .25em 0}
+.rad{display:inline-flex;align-items:stretch;vertical-align:middle;margin:0 .1em;line-height:1.15}
+.rad>.rs{width:.8em;flex:none;align-self:stretch;height:auto;min-height:1.1em;overflow:visible}
+.rad>.rb{border-top:1.5px solid currentColor;padding:.1em .12em 0 .08em;margin-top:.06em;display:inline-flex;align-items:center}
+.rad>.ri{font-size:.6em;align-self:flex-start;margin-right:-.5em;margin-left:.1em;position:relative;top:.3em}
+/* ---------- Aufgaben ---------- */
+.task{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px 14px;margin-bottom:16px;box-shadow:var(--shadow);position:relative}
+.task.done{border-color:var(--ok)}
+.thead{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.chip{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:1px 10px;color:var(--mut)}
+.ttitle{font-weight:700}
+.thead .sp{flex:1}
+.ttext{margin-bottom:8px}
+.tfig{margin:8px 0;text-align:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px;overflow-x:auto}
+.tfig svg{max-width:100%;height:auto}
+.step{border-top:1px dashed var(--line);padding:10px 0 6px}
+.step:first-child{border-top:none}
+.sprompt{margin-bottom:6px}
+.sn{display:inline-flex;width:1.5em;height:1.5em;border-radius:50%;background:var(--pri2);color:#fff;font-size:.8rem;align-items:center;justify-content:center;margin-right:8px;font-weight:700}
+.arow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input.ans,.sel,textarea.free,#notes,.cin{background:var(--bg2);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;outline:none}
+input.ans:focus,.sel:focus,textarea:focus,.cin:focus{border-color:var(--pri)}
+input.ans{width:min(100%,360px);font-family:ui-monospace,Consolas,monospace}
+.unit{color:var(--mut)}
+.prev{min-height:1.7em;padding:3px 4px;color:var(--mut)}
+.prev .m{color:var(--fg)}
+textarea.free{width:100%;resize:vertical}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt{text-align:left;background:var(--bg2);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.opt:hover{border-color:var(--pri)}
+.opt.sel{border-color:var(--pri);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--pri)}
+.opt.right{border-color:var(--ok);background:rgba(46,204,113,.14)}
+.opt.wrong{border-color:var(--bad);background:rgba(255,93,108,.12)}
+.sbtn{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.btn{background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:6px 14px;cursor:pointer;font-size:.92rem}
+.btn:hover{border-color:var(--pri)}
+.btn.pri{background:var(--pri2);border-color:var(--pri2);color:#fff}
+.btn.pri:hover{filter:brightness(1.1)}
+.btn.sm{padding:3px 10px;font-size:.82rem}
+.btn:disabled{opacity:.5;cursor:default}
+.fb{margin-top:6px}
+.good{color:var(--ok);font-weight:700}
+.bad{color:var(--bad);font-weight:700}
+.warnmsg{color:var(--warn)}
+.hint{background:rgba(245,185,66,.12);border:1px solid var(--warn);border-radius:10px;padding:6px 12px;margin-top:6px;font-size:.95rem}
+.expl{background:var(--panel2);border-left:4px solid var(--warn);border-radius:0 10px 10px 0;padding:8px 14px;margin-top:6px}
+.expl p{margin:4px 0}
+.expl .ln{margin:6px 0}
+.corr{margin-top:6px;font-weight:600}
+.model{background:var(--panel2);border-left:4px solid var(--ok);padding:8px 14px;border-radius:0 10px 10px 0;margin-top:8px}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:4px 0;cursor:pointer}
+.tfoot{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:8px;border-top:1px solid var(--line);align-items:center}
+.sum{margin-left:auto;font-weight:600}
+.mk{display:inline-flex;width:1.4em;height:1.4em;border-radius:50%;background:var(--fg);color:var(--bg);font-weight:800;align-items:center;justify-content:center;font-size:.85em}
+.more{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 22px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.chips button{background:var(--panel2);border:1.5px solid var(--line);border-radius:20px;padding:4px 14px;cursor:pointer}
+.chips button.on{background:var(--pri2);border-color:var(--pri2);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.stat b{font-size:1.4rem;display:block}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.lnk{color:var(--pri);cursor:pointer;text-decoration:underline}
+/* ---------- Taschenrechner ---------- */
+.calc{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow)}
+.ctop{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--mut);margin:0 4px 6px}
+.ctop b{color:var(--pri)}
+.cscreen{background:#c9d8c0;color:#101a10;border-radius:12px;padding:8px 12px;border:3px solid #6c7a66;min-height:118px;display:flex;flex-direction:column;justify-content:space-between;font-family:"Cambria Math","STIX Two Math",Cambria,serif}
+.cscreen .m{font-size:1.25em}
+.cscreen .m .par{opacity:1}
+.cscreen .ph{color:#58634f}
+#c-pretty{min-height:46px;display:flex;align-items:center;flex-wrap:wrap;overflow-x:auto;padding:4px 0}
+#c-res{text-align:right;font-size:1.65rem;min-height:2.1rem;line-height:1.3}
+#c-res .m{font-size:1.1em}
+#c-res.err{font-size:1rem;color:#8b1d1d}
+#c-res.pre{opacity:.5}
+#c-res2{text-align:right;min-height:1.5em;font-size:.95rem;color:#2b3a28}
+.cin{width:100%;margin:8px 0;font-family:ui-monospace,Consolas,monospace;font-size:.95rem;padding:6px 10px}
+.keys{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.keys button{border:none;border-radius:10px;padding:0;height:42px;font-size:1rem;cursor:pointer;background:#2c3f63;color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.35);user-select:none;display:flex;align-items:center;justify-content:center;font-family:"Cambria Math",Cambria,"Times New Roman",serif}
+.keys button:active{transform:translateY(1px);box-shadow:none}
+.keys button.op,.keys button.eq{font-family:system-ui,sans-serif;font-size:1.25rem}
+.keys button.op sup{font-size:.6em}
+.keys button.num{background:#3b4f78;font-size:1.15rem;font-family:system-ui,sans-serif}
+.keys button.op{background:#5a3d9e}
+.keys button.fn2{background:#223252;font-size:.85rem;font-family:system-ui,sans-serif}
+.keys button.fn2.on{background:var(--warn);color:#000}
+.keys button.eq{background:var(--pri2)}
+.keys button.del{background:#a1344a}
+.keys button sup{font-size:.65em;line-height:0}
+.chist{margin-top:10px;max-height:150px;overflow:auto;font-size:.95rem}
+.chist div{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 6px;border-radius:8px;cursor:pointer}
+.chist div:hover{background:var(--panel2)}
+.cact{display:flex;gap:6px;margin-top:8px}
+.notes{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px;box-shadow:var(--shadow)}
+.notes label{display:flex;justify-content:space-between;align-items:center;font-weight:600;margin-bottom:6px;font-size:.9rem}
+#notes{width:100%;min-height:210px;resize:vertical;line-height:1.5}
+/* ---------- responsive ---------- */
+@media (max-width:1280px){
+  .app{grid-template-columns:210px minmax(0,1fr);grid-template-areas:"top top" "nav main" "side side"}
+  #side{position:static;max-height:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+}
+@media (max-width:820px){
+  .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "nav" "main" "side";padding:8px}
+  #nav{position:static;max-height:none;display:flex;overflow-x:auto;gap:4px}
+  #nav a{white-space:nowrap;flex:none}
+  #nav a .st{display:none}
+  #nav .sep{width:1px;height:auto;margin:2px}
+}
+.fab{display:none}
+@media (max-width:1280px){.fab{display:flex;position:fixed;right:14px;bottom:14px;width:52px;height:52px;border-radius:50%;background:var(--pri2);color:#fff;border:none;font-size:1.4rem;align-items:center;justify-content:center;box-shadow:var(--shadow);cursor:pointer;z-index:10}}
+svg text{font-family:system-ui,sans-serif}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <h1>⚛️ Physik-Training: Mechanische Schwingungen<small>Fadenpendel &amp; Federpendel · Übung für den Test · Stoff aus der Nextcloud (Physik › 1.1)</small></h1>
+    <div class="gbar"><span id="g-txt"></span><div class="bar"><i id="g-bar"></i></div><button class="btn sm" id="g-reset" type="button">Fortschritt zurücksetzen</button></div>
+  </header>
+  <nav id="nav" aria-label="Lektionen"></nav>
+  <main id="main"></main>
+  <aside id="side">
+    <section class="calc" aria-label="Taschenrechner">
+      <div class="ctop"><span>🧮 Taschenrechner</span><b id="c-mode"></b></div>
+      <div class="cscreen"><div id="c-pretty"></div><div><div id="c-res"></div><div id="c-res2"></div></div></div>
+      <input id="c-in" class="cin" type="text" spellcheck="false" autocomplete="off" placeholder="z. B. 2*pi*sqrt(0,5/9,81) oder tippe mit den Tasten">
+      <div class="keys" id="keys"></div>
+      <div class="cact"><button class="btn sm" id="c-toans" type="button">↳ Ergebnis ins Antwortfeld</button><button class="btn sm" id="c-clearhist" type="button">Verlauf leeren</button></div>
+      <div class="chist" id="c-hist"></div>
+    </section>
+    <section class="notes">
+      <label><span id="n-label">📝 Notizen</span><button class="btn sm" id="n-clear" type="button">leeren</button></label>
+      <textarea id="notes" placeholder="Hier ist Platz für Notizen, Rechnungen und Merksätze … (wird automatisch gespeichert)"></textarea>
+    </section>
+  </aside>
+</div>
+<button class="fab" id="fab" type="button" title="Zum Taschenrechner">🧮</button>
+<script>
+/* ===================== MATHE-ENGINE (Parser · Auswertung · schöne Darstellung) ===================== */
+const M = (() => {
+  const FN = ['sin','cos','tan','asin','acos','atan','sqrt','root','ln','log','abs','exp'];
+  const GREEK = {'π':'pi','ω':'omega','φ':'phi','α':'alpha','Δ':'Delta','τ':'tau','λ':'lambda','μ':'mu','θ':'theta','ϑ':'theta','ε':'epsilon','ρ':'rho'};
+  const SYM = {pi:'π',omega:'ω',phi:'φ',alpha:'α',Delta:'Δ',tau:'τ',lambda:'λ',mu:'μ',theta:'θ',epsilon:'ε',rho:'ρ'};
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  function norm(s){
+    return String(s).replace(/[−–—]/g,'-').replace(/[×·⋅∙]/g,'*').replace(/÷/g,'/')
+      .replace(/²/g,'^2').replace(/³/g,'^3').replace(/√/g,'sqrt')
+      .replace(/[₀-₉]/g,c=>'_'+(c.charCodeAt(0)-0x2080)).replace(/ /g,' ');
+  }
+
+  /* ---------- Tokenizer ---------- */
+  function tokenize(src){
+    const s = norm(src), t = [];
+    let i = 0;
+    while(i < s.length){
+      const c = s[i];
+      if(/\s/.test(c)){ i++; continue; }
+      const rest = s.slice(i);
+      let m;
+      if((m = /^(\d+(?:[.,]\d*)?|[.,]\d+)/.exec(rest))){ t.push({k:'num',s:m[0]}); i += m[0].length; continue; }
+      if((m = /^\{([^}]*)\}/.exec(rest))){ t.push({k:'unit',s:m[1]}); i += m[0].length; continue; }
+      if(GREEK[c]){
+        let name = GREEK[c]; i++;
+        const m2 = /^_[A-Za-z0-9]+/.exec(s.slice(i));
+        if(m2){ name += m2[0]; i += m2[0].length; }
+        t.push({k:'id',s:name}); continue;
+      }
+      if((m = /^[A-Za-zÄÖÜäöü]+(?:_[A-Za-z0-9ÄÖÜäöü]+)?/.exec(rest))){ t.push({k:'id',s:m[0]}); i += m[0].length; continue; }
+      if(c === '≈' || c === '~' || '+-*/^()=;<>,!'.includes(c)){ t.push({k:'op',s:c === ',' ? ';' : c}); i++; continue; }
+      throw new Error('Unbekanntes Zeichen „' + c + '“');
+    }
+    return t;
+  }
+
+  /* ---------- Parser (fehlertolerant: fehlende Operanden → Platzhalter, offene Klammern werden geschlossen) ---------- */
+  function parse(src){
+    const T = tokenize(src); let p = 0; const errs = [];
+    const isOp = o => T[p] && T[p].k === 'op' && T[p].s === o;
+    const REL = ['=','≈','<','>','~'];
+    function relation(){
+      let a = expr();
+      while(T[p] && T[p].k === 'op' && REL.includes(T[p].s)){ const o = T[p++].s; a = {t:'bin',op:o,a,b:expr()}; }
+      return a;
+    }
+    function expr(){
+      let a = term();
+      while(isOp('+') || isOp('-')){ const o = T[p++].s; a = {t:'bin',op:o,a,b:term()}; }
+      return a;
+    }
+    function startsPrimary(){
+      const k = T[p]; if(!k) return false;
+      return k.k === 'num' || k.k === 'id' || k.k === 'unit' || (k.k === 'op' && k.s === '(');
+    }
+    function term(){
+      let a = unary();
+      for(;;){
+        if(isOp('*')){ p++; a = {t:'bin',op:'*',a,b:unary()}; }
+        else if(isOp('/')){ p++; a = {t:'bin',op:'/',a,b:unary()}; }
+        else if(startsPrimary()){ a = {t:'imp',a,b:unary()}; }
+        else break;
+      }
+      return a;
+    }
+    function unary(){
+      if(isOp('-')){ p++; return {t:'neg',a:unary()}; }
+      if(isOp('+')){ p++; return unary(); }
+      return power();
+    }
+    function power(){
+      let a = primary();
+      if(isOp('^')){ p++; a = {t:'pow',a,b:unary()}; }
+      return a;
+    }
+    function primary(){
+      const k = T[p];
+      if(!k) return {t:'empty'};
+      if(k.k === 'num'){ p++; return {t:'num',s:k.s.replace('.',','),v:parseFloat(k.s.replace(',','.'))}; }
+      if(k.k === 'unit'){ p++; return {t:'unit',s:k.s}; }
+      if(k.k === 'op' && k.s === '('){
+        p++; const a = relation(); let open = false;
+        if(isOp(')')) p++; else open = true;
+        return {t:'paren',a,open};
+      }
+      if(k.k === 'id'){
+        p++;
+        const low = k.s.toLowerCase();
+        if(FN.includes(low)){
+          if(isOp('(')){
+            p++; const args = [relation()];
+            while(isOp(';')){ p++; args.push(expr()); }
+            if(isOp(')')) p++;
+            return {t:'fn',name:low,args};
+          }
+          return {t:'fn',name:low,args:[unary()]};
+        }
+        return {t:'var',name:k.s};
+      }
+      return {t:'empty'};
+    }
+    const ast = relation();
+    while(p < T.length){
+      if(isOp(')')){ errs.push('Überzählige Klammer „)“'); p++; continue; }
+      errs.push('Unerwartetes Zeichen „' + T[p].s + '“'); p++;
+    }
+    return {ast, errs};
+  }
+
+  /* ---------- Auswertung ---------- */
+  const snap = v => Math.abs(v) < 1e-13 ? 0 : v;
+  function lookup(name, env){
+    if(env && Object.prototype.hasOwnProperty.call(env,name)) return env[name];
+    const low = name.toLowerCase();
+    if(low === 'pi') return Math.PI;
+    if(name === 'e') return Math.E;
+    if(low === 'ans'){ if(env && env.ans !== undefined) return env.ans; return 0; }
+    if(/^[A-Za-z]{2,}$/.test(name)){
+      let prod = 1;
+      for(const ch of name){
+        if(env && Object.prototype.hasOwnProperty.call(env,ch)) prod *= env[ch];
+        else if(ch === 'e') prod *= Math.E;
+        else throw new Error('Unbekannte Größe „' + name + '“');
+      }
+      return prod;
+    }
+    throw new Error('Unbekannte Größe „' + name + '“');
+  }
+  function ev(n, env, deg){
+    const E = x => ev(x, env, deg);
+    switch(n.t){
+      case 'num': return n.v;
+      case 'unit': return 1;
+      case 'empty': throw new Error('Rechnung unvollständig');
+      case 'paren': return E(n.a);
+      case 'neg': return -E(n.a);
+      case 'var': return lookup(n.name, env);
+      case 'imp': return E(n.a) * E(n.b);
+      case 'pow': {
+        const r = Math.pow(E(n.a), E(n.b));
+        if(Number.isNaN(r)) throw new Error('Potenz nicht definiert');
+        return r;
+      }
+      case 'bin': {
+        if(['=','≈','<','>','~'].includes(n.op)) throw new Error('Hier ist ein Wert gefragt, keine Gleichung');
+        const a = E(n.a), b = E(n.b);
+        if(n.op === '+') return a + b;
+        if(n.op === '-') return a - b;
+        if(n.op === '*') return a * b;
+        if(n.op === '/'){ if(b === 0) throw new Error('Division durch 0'); return a / b; }
+        break;
+      }
+      case 'fn': {
+        const nm = n.name, a = E(n.args[0]);
+        const toR = x => deg ? x * Math.PI / 180 : x, fromR = x => deg ? x * 180 / Math.PI : x;
+        switch(nm){
+          case 'sin': return snap(Math.sin(toR(a)));
+          case 'cos': return snap(Math.cos(toR(a)));
+          case 'tan': {
+            if(deg && Math.abs(((a % 180) + 180) % 180 - 90) < 1e-9) throw new Error('tan ist hier nicht definiert');
+            return snap(Math.tan(toR(a)));
+          }
+          case 'asin': if(Math.abs(a) > 1) throw new Error('sin⁻¹ nur für −1 … 1'); return snap(fromR(Math.asin(a)));
+          case 'acos': if(Math.abs(a) > 1) throw new Error('cos⁻¹ nur für −1 … 1'); return snap(fromR(Math.acos(a)));
+          case 'atan': return snap(fromR(Math.atan(a)));
+          case 'sqrt': if(a < 0) throw new Error('Wurzel aus negativer Zahl'); return Math.sqrt(a);
+          case 'root': {
+            const x = n.args[1] ? E(n.args[1]) : NaN;
+            if(Number.isNaN(x)) throw new Error('Rechnung unvollständig');
+            if(x < 0 && Math.abs(a % 2) === 1) return -Math.pow(-x, 1 / a);
+            if(x < 0) throw new Error('Wurzel aus negativer Zahl');
+            return Math.pow(x, 1 / a);
+          }
+          case 'ln': if(a <= 0) throw new Error('ln nur für positive Zahlen'); return Math.log(a);
+          case 'log': if(a <= 0) throw new Error('log nur für positive Zahlen'); return Math.log10(a);
+          case 'abs': return Math.abs(a);
+          case 'exp': return Math.exp(a);
+        }
+      }
+    }
+    throw new Error('Nicht berechenbar');
+  }
+  function evalStr(str, env, deg){
+    const P = parse(str);
+    if(P.errs.length) throw new Error(P.errs[0]);
+    const v = ev(P.ast, env || {}, !!deg);
+    if(!Number.isFinite(v)) throw new Error('Ergebnis nicht endlich');
+    return v;
+  }
+
+  /* ---------- Antworten einlesen (Einheiten, „T=“ usw. werden toleriert) ---------- */
+  function cleanAnswer(raw){
+    let s = String(raw).trim();
+    if((s.match(/=/g) || []).length === 1) s = s.split('=')[1];
+    s = s.replace(/^\s*(ca\.?|≈|~)\s*/i,'');
+    s = s.replace(/^\s*[x×*]\s*(?=[\d(,.])/i,'');
+    s = s.replace(/(?<=[\d)\s])\s*(Hz|N\/m|m\/s²|m\/s\^2|m\/s2|rad\/s|kg|cm|mm|J|N|s|m)\s*$/i,'');
+    return s;
+  }
+  function evalAnswer(raw){ return evalStr(cleanAnswer(raw), {}, false); }
+
+  function sameFormula(user, ref, vars){
+    let u = String(user).trim();
+    if((u.match(/=/g) || []).length === 1) u = u.split('=')[1];
+    if(!u.trim()) return {ok:false, err:'Bitte eine Formel eingeben.'};
+    let pu;
+    try{ pu = parse(u); }catch(e){ return {ok:false, err:e.message}; }
+    if(pu.errs.length) return {ok:false, err:pu.errs[0]};
+    const pr = parse(ref).ast;
+    for(let k = 0; k < 6; k++){
+      const env = {}; vars.forEach((v,i) => env[v] = 0.9 + Math.random()*2.6 + i*0.37);
+      if(env.phi !== undefined){ env.phi_0 = env.phi; env.phi0 = env.phi; }
+      let a, b;
+      try{ b = ev(pu.ast, env, false); }catch(e){ return {ok:false, err:e.message + (/Unbekannte/.test(e.message) ? ' – nimm die Symbole aus der Aufgabe (z. B. ' + vars.join(', ') + ').' : '')}; }
+      a = ev(pr, env, false);
+      if(!(Math.abs(a - b) <= 1e-7 * Math.max(1, Math.abs(a)))) return {ok:false};
+    }
+    return {ok:true};
+  }
+
+  /* ---------- Zahlenformat ---------- */
+  function fmt(x, d){
+    d = d || 6;
+    if(!Number.isFinite(x)) return 'Fehler';
+    if(Math.abs(x) < 1e-12) return '0';
+    const a = Math.abs(x);
+    if(a >= 1e10 || a < 1e-5){
+      let e = Math.floor(Math.log10(a)), m = x / Math.pow(10, e);
+      m = +m.toPrecision(d);
+      if(Math.abs(m) >= 10){ m /= 10; e++; }
+      return String(m).replace('.',',') + '*10^' + e;
+    }
+    return String(+x.toPrecision(d)).replace('.',',');
+  }
+  function ratApprox(x, maxDen){
+    maxDen = maxDen || 1000;
+    const sgn = x < 0 ? -1 : 1; let v = Math.abs(x);
+    let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = v;
+    for(let i = 0; i < 24; i++){
+      const a = Math.floor(b), h2 = a*h1 + h0, k2 = a*k1 + k0;
+      if(k2 > maxDen) break;
+      h0 = h1; h1 = h2; k0 = k1; k1 = k2;
+      if(Math.abs(v - h1/k1) < 1e-10 * Math.max(1, v)) return [sgn*h1, k1];
+      const fr = b - a; if(fr < 1e-12) break; b = 1 / fr;
+    }
+    return Math.abs(v - h1/k1) < 1e-9 * Math.max(1, v) ? [sgn*h1, k1] : null;
+  }
+  function ratStr(x){
+    const r = ratApprox(x, 200);
+    if(!r) return fmt(x, 4);
+    return r[1] === 1 ? String(r[0]) : r[0] + '/' + r[1];
+  }
+  function surd(x){
+    if(!(x > 0) || Number.isInteger(x)) return null;
+    const y = x * x, n = Math.round(y);
+    if(n < 2 || n > 100000 || Math.abs(y - n) > 1e-8 * n) return null;
+    let a = 1, b = n;
+    for(let k = Math.floor(Math.sqrt(n)); k >= 2; k--){ if(n % (k*k) === 0){ a = k; b = n / (k*k); break; } }
+    return (a > 1 ? a : '') + 'sqrt(' + b + ')';
+  }
+
+  /* ---------- Darstellung als HTML ---------- */
+  const unwrap = n => n && n.t === 'paren' ? unwrap(n.a) : n;
+  function varHtml(name){
+    const parts = name.split('_');
+    const base = SYM[parts[0]] || (parts[0].toLowerCase() === 'ans' ? 'Ans' : parts[0]);
+    const cls = parts[0].toLowerCase() === 'ans' ? 'u' : 'v';
+    let h = '<span class="' + cls + '">' + esc(base) + '</span>';
+    if(parts.length > 1) h += '<sub>' + esc(parts.slice(1).join('_')) + '</sub>';
+    return h;
+  }
+  function unitHtml(s){
+    return esc(s).replace(/\^(-?\d)/g,'<sup>$1</sup>').replace(/\*/g,'·').replace(/\bu\b/g,'µ');
+  }
+  function radical(body, idx){
+    return '<span class="rad">' + (idx ? '<span class="ri">' + idx + '</span>' : '') +
+      '<svg class="rs" viewBox="0 0 10 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0.4 12.5 L2.4 11 L5 18.8 L9.6 0.6 L10 0.6" fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>' +
+      '<span class="rb">' + body + '</span></span>';
+  }
+  function R(n){
+    switch(n.t){
+      case 'num': return '<span class="n">' + esc(n.s) + '</span>';
+      case 'var': return varHtml(n.name);
+      case 'unit': return '<span class="u">' + unitHtml(n.s) + '</span>';
+      case 'empty': return '<span class="ph">▯</span>';
+      case 'paren': return '<span class="par">(</span>' + R(n.a) + '<span class="par">)</span>';
+      case 'neg': return '<span class="op">−</span>' + R(n.a);
+      case 'imp': return R(n.a) + (n.a.t === 'num' && n.b.t === 'unit' ? '<span class="thin"></span>' : '') + R(n.b);
+      case 'pow': return R(n.a) + '<sup>' + R(unwrap(n.b)) + '</sup>';
+      case 'bin': {
+        if(n.op === '/') return '<span class="frac"><span class="fn">' + R(unwrap(n.a)) + '</span><span class="fd">' + R(unwrap(n.b)) + '</span></span>';
+        const sym = {'+':'+','-':'−','*':'·','=':'=','≈':'≈','<':'<','>':'>','~':'∼'}[n.op];
+        return R(n.a) + '<span class="op">' + sym + '</span>' + R(n.b);
+      }
+      case 'fn': {
+        const a = n.args, nm = n.name;
+        if(nm === 'sqrt') return radical(R(unwrap(a[0])));
+        if(nm === 'root') return radical(R(unwrap(a[1] || {t:'empty'})), R(unwrap(a[0])));
+        if(nm === 'abs') return '<span class="par">|</span>' + R(unwrap(a[0])) + '<span class="par">|</span>';
+        const lab = {sin:'sin',cos:'cos',tan:'tan',asin:'sin<sup>−1</sup>',acos:'cos<sup>−1</sup>',atan:'tan<sup>−1</sup>',ln:'ln',log:'log',exp:'exp'}[nm];
+        return '<span class="fnm">' + lab + '</span><span class="par">(</span>' + R(unwrap(a[0])) + '<span class="par">)</span>';
+      }
+    }
+    return '';
+  }
+  const html = ast => '<span class="m">' + R(ast) + '</span>';
+  function render(str){
+    try{
+      const P = parse(str);
+      return html(P.ast);
+    }catch(e){ return '<span class="m">' + esc(str) + '</span>'; }
+  }
+
+  return {parse, ev, evalStr, evalAnswer, cleanAnswer, sameFormula, fmt, ratApprox, ratStr, surd, html, render, esc, norm};
+})();
+/* ===================== HILFSFUNKTIONEN ===================== */
+const S = {
+  get(k, d){ try{ const v = localStorage.getItem('phys_' + k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('phys_' + k, JSON.stringify(v)); }catch(e){} }
+};
+const h = (tag, cls, html) => { const e = document.createElement(tag); if(cls) e.className = cls; if(html != null) e.innerHTML = html; return e; };
+const rnd = (a, b) => a + Math.random() * (b - a);
+const ri = (a, b) => Math.floor(rnd(a, b + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const PI = Math.PI;
+const fmt = (x, d) => M.fmt(x, d || 5);
+/* tx: Text mit $formel$-Abschnitten → HTML mit schön gesetzten Formeln */
+const tx = s => String(s == null ? '' : s).replace(/\$([^$]+)\$/g, (_, e) => M.render(e));
+
+/* ===================== AUFGABEN-ENGINE ===================== */
+/* Aufgabe: {cat, title, text, figure, steps:[{type:'num'|'formula'|'choice'|'free', prompt, ans, ref, vars, unit, tol, options, select, explain, hints, model, points}]} */
+function checkNum(st, raw){
+  let v;
+  try{ v = M.evalAnswer(raw); }catch(e){ return {err: 'Das kann ich nicht lesen: ' + e.message}; }
+  const a = st.ans, tol = st.tol == null ? 0.02 : st.tol;
+  const ok = Math.abs(v - a) <= Math.max(Math.abs(a) * tol, st.abs || 1e-9);
+  if(ok) return {ok:true};
+  const near = Math.abs(v - a) <= Math.abs(a) * 0.12;
+  return {ok:false, msg: near ? 'Knapp daneben – prüfe Rundung und Zwischenergebnisse.' : 'Nicht ganz.'};
+}
+function checkFormula(st, raw){
+  const r = M.sameFormula(raw, st.ref, st.vars || []);
+  if(r.err) return {err: r.err};
+  return r.ok ? {ok:true} : {ok:false, msg:'Das ist nicht die gesuchte Formel.'};
+}
+function checkChoice(st, v){
+  const ans = Array.isArray(st.ans) ? st.ans : [st.ans];
+  return ans.includes(v) ? {ok:true} : {ok:false, msg:'Leider falsch.'};
+}
+
+function correctHtml(st){
+  if(st.type === 'num') return tx('$' + fmt(st.ans, 5) + (st.unit ? ' {' + st.unit + '}' : '') + '$');
+  if(st.type === 'formula') return tx('$' + st.ref + '$');
+  if(st.type === 'choice') return tx((Array.isArray(st.ans) ? st.ans : [st.ans]).map(i => st.options[i]).join(' / '));
+  return '';
+}
+
+function buildStep(st, i, total, o, cb){
+  const el = h('div', 'step');
+  el.append(h('div', 'sprompt', (total > 1 && !/class="mk"/.test(st.prompt) ? '<span class="sn">' + (i + 1) + '</span>' : '') + tx(st.prompt)));
+  const body = h('div', 'sbody'); el.append(body);
+  const fb = h('div', 'fb');
+  const btns = h('div', 'sbtn');
+  const bCheck = h('button', 'btn pri', 'Prüfen'); bCheck.type = 'button';
+  btns.append(bCheck);
+  let finished = false, attempts = 0, hintI = 0, getVal = () => null, lock = () => {}, markCorrect = () => {};
+  const ctl = {el, reveal: null};
+
+  /* ----- Eingabe je nach Typ ----- */
+  if(st.type === 'num' || st.type === 'formula'){
+    const row = h('div', 'arow');
+    const inp = document.createElement('input');
+    inp.className = 'ans'; inp.type = 'text'; inp.autocomplete = 'off'; inp.spellcheck = false;
+    inp.placeholder = st.type === 'num' ? 'Zahl oder Rechnung …' : 'Formel eintippen, z. B. a*sqrt(b/c)';
+    row.append(inp);
+    if(st.unit) row.append(h('span', 'unit', tx('$ {' + st.unit + '}$')));
+    body.append(row);
+    const prev = h('div', 'prev'); body.append(prev);
+    inp.addEventListener('input', () => { prev.innerHTML = inp.value.trim() ? M.render(inp.value) : ''; });
+    inp.addEventListener('focus', () => { LAST = inp; });
+    inp.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); check(); } });
+    getVal = () => inp.value.trim();
+    lock = () => { inp.disabled = true; };
+    ctl.focus = () => inp.focus();
+  } else if(st.type === 'choice'){
+    if(st.select){
+      const sel = document.createElement('select'); sel.className = 'sel';
+      sel.innerHTML = '<option value="">– auswählen –</option>' + st.options.map((t, k) => '<option value="' + k + '">' + M.esc(t) + '</option>').join('');
+      body.append(sel);
+      getVal = () => sel.value === '' ? null : +sel.value;
+      lock = () => { sel.disabled = true; };
+    } else {
+      const wrap = h('div', 'opts'); let chosen = null;
+      st.options.forEach((t, k) => {
+        const b = h('button', 'opt', tx(t)); b.type = 'button';
+        b.addEventListener('click', () => {
+          if(finished) return; chosen = k;
+          wrap.querySelectorAll('.opt').forEach(x => x.classList.remove('sel')); b.classList.add('sel');
+        });
+        wrap.append(b);
+      });
+      body.append(wrap);
+      getVal = () => chosen;
+      lock = () => wrap.querySelectorAll('.opt').forEach(x => x.disabled = true);
+      markCorrect = good => {
+        const ans = Array.isArray(st.ans) ? st.ans : [st.ans];
+        wrap.querySelectorAll('.opt').forEach((x, k) => {
+          if(ans.includes(k)) x.classList.add('right');
+          else if(x.classList.contains('sel')) x.classList.add('wrong');
+        });
+      };
+    }
+  } else if(st.type === 'free'){
+    const ta = document.createElement('textarea'); ta.className = 'free'; ta.rows = 4; ta.placeholder = 'Schreib deine Antwort hier auf …';
+    body.append(ta);
+    bCheck.textContent = 'Musterlösung zeigen';
+    let shown = false;
+    bCheck.onclick = () => {
+      if(!shown){
+        shown = true;
+        const m = h('div', 'model', '<b>Musterlösung</b><div>' + tx(st.model) + '</div><div style="margin-top:8px"><b>Was hattest du? (ehrlich abhaken)</b></div>');
+        const boxes = st.points.map(p => {
+          const lab = h('label', 'chk'); const cb2 = document.createElement('input'); cb2.type = 'checkbox';
+          lab.append(cb2); lab.append(h('span', null, tx(p))); m.append(lab); return cb2;
+        });
+        fb.append(m);
+        bCheck.textContent = 'Bewerten';
+        bCheck.classList.add('pri');
+        bCheck._boxes = boxes;
+      } else {
+        const k = bCheck._boxes.filter(b => b.checked).length, n = bCheck._boxes.length;
+        finished = true; ta.disabled = true; bCheck._boxes.forEach(b => b.disabled = true); btns.remove();
+        const ok = k === n;
+        fb.append(h('div', ok ? 'good' : 'warnmsg', ok ? '✓ Super – alles drin!' : 'Du hattest ' + k + ' von ' + n + ' Punkten. Lies die fehlenden nochmal durch und schreib sie dir in die Notizen.'));
+        cb(i, {ok, first: ok});
+      }
+    };
+    ctl.reveal = () => {
+      if(finished) return; finished = true; ta.disabled = true; btns.remove();
+      if(!shown) fb.append(h('div', 'model', '<b>Musterlösung</b><div>' + tx(st.model) + '</div>'));
+      cb(i, {ok:false, first:false, revealed:true});
+    };
+  }
+
+  /* ----- Prüfen ----- */
+  function check(){
+    if(finished || st.type === 'free') return;
+    const v = getVal();
+    if(v === null || v === ''){ fb.innerHTML = '<div class="warnmsg">Bitte erst etwas eingeben bzw. auswählen.</div>'; return; }
+    const r = st.type === 'num' ? checkNum(st, v) : st.type === 'formula' ? checkFormula(st, v) : checkChoice(st, v);
+    if(r.err){ fb.innerHTML = '<div class="warnmsg">' + M.esc(r.err) + '</div>'; return; }
+    attempts++;
+    if(r.ok){
+      finished = true; lock(); markCorrect(true); btns.remove();
+      fb.innerHTML = '<div class="good">✓ Richtig!' + (attempts > 1 ? ' (im ' + attempts + '. Versuch)' : '') + '</div>' + (st.okNote ? '<div class="expl">' + tx(st.okNote) + '</div>' : '');
+      cb(i, {ok:true, first: attempts === 1});
+    } else {
+      fb.innerHTML = '<div class="bad">✗ ' + r.msg + '</div><div class="expl"><div><b>So geht es Schritt für Schritt:</b></div>' + tx(st.explain) +
+        (o.strict ? '' : '<div class="corr">Probiere es nochmal – oder klicke auf „Lösung übernehmen“.</div>') + '</div>';
+      if(o.strict){
+        finished = true; lock(); markCorrect(false); btns.remove();
+        fb.querySelector('.expl').insertAdjacentHTML('beforeend', '<div class="corr">Richtig wäre: ' + correctHtml(st) + '</div>');
+        cb(i, {ok:false, first:false});
+      } else if(!btns.querySelector('.take')){
+        const t = h('button', 'btn take', 'Lösung übernehmen'); t.type = 'button';
+        t.onclick = () => ctl.reveal();
+        btns.append(t);
+      }
+    }
+  }
+  if(st.type !== 'free') bCheck.onclick = check;
+
+  if(st.type !== 'free'){
+    ctl.reveal = () => {
+      if(finished) return; finished = true; lock(); markCorrect(false); btns.remove();
+      fb.innerHTML = '<div class="expl"><div><b>Lösung:</b></div>' + tx(st.explain) + '<div class="corr">Richtig: ' + correctHtml(st) + '</div></div>';
+      cb(i, {ok:false, first:false, revealed:true});
+    };
+  }
+
+  /* ----- Tipps ----- */
+  const hints = st.hints || [];
+  if(hints.length && !o.strict){
+    const bh = h('button', 'btn', '💡 Tipp'); bh.type = 'button';
+    bh.onclick = () => {
+      if(finished) return;
+      const d = h('div', 'hint', '<b>Tipp ' + (hintI + 1) + '/' + hints.length + ':</b> ' + tx(hints[hintI]));
+      fb.append(d); hintI++;
+      if(hintI >= hints.length){ bh.disabled = true; bh.textContent = '💡 keine weiteren Tipps'; }
+    };
+    btns.append(bh);
+  }
+  el.append(btns, fb);
+  return ctl;
+}
+
+function renderTask(task, o){
+  o = Object.assign({strict:false, onDone:null, regen:null, noSolution:false}, o || {});
+  const root = h('div', 'task');
+  const head = h('div', 'thead');
+  if(task.catLabel) head.append(h('span', 'chip', task.catLabel));
+  if(task.title) head.append(h('span', 'ttitle', tx(task.title)));
+  head.append(h('span', 'sp'));
+  if(o.regen){
+    const r = h('button', 'btn sm', '🔁 Neue Aufgabe'); r.type = 'button'; r.onclick = o.regen; head.append(r);
+  }
+  root.append(head);
+  if(task.text) root.append(h('div', 'ttext', tx(task.text)));
+  if(task.figure){ const f = h('div', 'tfig'); f.innerHTML = task.figure; root.append(f); }
+  const stepsEl = h('div', 'steps'); root.append(stepsEl);
+  const foot = h('div', 'tfoot'); root.append(foot);
+  const total = task.steps.length, ctls = [], res = [];
+  let cur = 0, finishedAll = false;
+
+  function mount(i){
+    const c = buildStep(task.steps[i], i, total, o, (idx, r) => {
+      res[idx] = r;
+      if(idx + 1 < total) mount(idx + 1); else finish();
+    });
+    ctls[i] = c; stepsEl.append(c.el);
+    cur = i;
+  }
+  function finish(){
+    finishedAll = true;
+    const good = res.filter(r => r && r.first).length;
+    root.classList.add('done');
+    const s = h('span', 'sum', (good === total ? '🎉 ' : '') + good + ' / ' + total + ' im ersten Versuch richtig');
+    foot.append(s);
+    sol && sol.remove();
+    if(o.onDone) o.onDone({good, total, res});
+  }
+  let sol = null;
+  if(!o.noSolution && !o.strict){
+    sol = h('button', 'btn sm', '👁 Lösung anzeigen'); sol.type = 'button';
+    sol.onclick = () => {
+      let guard = 0;
+      while(!finishedAll && guard++ < 30){ const c = ctls[cur]; if(c && c.reveal) c.reveal(); else break; }
+    };
+    foot.append(sol);
+  }
+  mount(0);
+  return root;
+}
+/* ===================== TASCHENRECHNER ===================== */
+let LAST = null;   // zuletzt fokussiertes Antwortfeld
+const Calc = (() => {
+  const inp = document.getElementById('c-in'), pretty = document.getElementById('c-pretty'),
+        res = document.getElementById('c-res'), res2 = document.getElementById('c-res2'),
+        keysEl = document.getElementById('keys'), histEl = document.getElementById('c-hist'),
+        modeEl = document.getElementById('c-mode');
+  let deg = S.get('deg', true), shift = false, ans = 0, justEval = false, hist = S.get('hist', []), lastText = '';
+
+  const N = d => ({i:String(d), l:String(d), c:'num'});
+  const KEYS = [
+    [{a:'shift',l:'2nd',c:'fn2'},{a:'deg',l:'DEG',c:'fn2'},{a:'left',l:'◀',c:'fn2'},{a:'right',l:'▶',c:'fn2'},{i:'ans',l:'Ans',c:'fn2'}],
+    [{i:'sin(',l:'sin',s:'asin(',sl:'sin<sup>−1</sup>'},{i:'cos(',l:'cos',s:'acos(',sl:'cos<sup>−1</sup>'},{i:'tan(',l:'tan',s:'atan(',sl:'tan<sup>−1</sup>'},{i:'pi',l:'π'},{i:'e',l:'e'}],
+    [{i:'sqrt(',l:'√‾',s:'root(3;',sl:'³√‾'},{i:'^2',l:'x<sup>2</sup>',s:'^3',sl:'x<sup>3</sup>'},{i:'^(',l:'x<sup>y</sup>'},{i:'(',l:'('},{i:')',l:')'}],
+    [{i:'ln(',l:'ln',s:'e^(',sl:'e<sup>x</sup>'},{i:'log(',l:'log',s:'10^(',sl:'10<sup>x</sup>'},{i:'root(',l:'<sup>n</sup>√‾'},{i:'abs(',l:'|x|'},{i:'^(-1)',l:'x<sup>−1</sup>'}],
+    [N(7),N(8),N(9),{a:'del',l:'DEL',c:'del'},{a:'ac',l:'AC',c:'del'}],
+    [N(4),N(5),N(6),{i:'*',l:'×',c:'op'},{i:'/',l:'÷',c:'op'}],
+    [N(1),N(2),N(3),{i:'+',l:'+',c:'op'},{i:'-',l:'−',c:'op'}],
+    [N(0),{i:',',l:',',c:'num'},{i:'*10^(',l:'×10<sup>x</sup>',c:'op'},{i:'-',l:'(−)',c:'op'},{a:'eq',l:'=',c:'eq'}]
+  ];
+  function buildKeys(){
+    keysEl.innerHTML = '';
+    KEYS.flat().forEach(k => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = k.c || '';
+      b.innerHTML = (shift && k.sl) ? k.sl : (k.a === 'deg' ? (deg ? 'DEG' : 'RAD') : k.l);
+      if(k.a === 'shift' && shift) b.classList.add('on');
+      b.addEventListener('mousedown', e => e.preventDefault());
+      b.addEventListener('click', () => press(k));
+      keysEl.append(b);
+    });
+    modeEl.textContent = deg ? 'DEG (Grad)' : 'RAD (Bogenmaß)';
+  }
+  function prep(txt){
+    if(!justEval) return;
+    justEval = false;
+    if(/^[\^*\/+\-]/.test(txt) && txt !== '-' ) inp.value = 'ans';
+    else if(txt === '-') inp.value = 'ans';
+    else inp.value = '';
+    inp.setSelectionRange(inp.value.length, inp.value.length);
+  }
+  function ins(txt){
+    prep(txt);
+    const a = inp.selectionStart, b = inp.selectionEnd;
+    inp.setRangeText(txt, a, b, 'end');
+    inp.focus(); upd();
+  }
+  function del(){
+    justEval = false;
+    const a = inp.selectionStart, b = inp.selectionEnd;
+    if(a !== b){ inp.setRangeText('', a, b, 'end'); }
+    else if(a > 0){
+      const before = inp.value.slice(0, a);
+      const m = /(asin|acos|atan|sin|cos|tan|sqrt|root|abs|ln|log)\($/.exec(before);
+      const n = m ? m[0].length : 1;
+      inp.setRangeText('', a - n, a, 'end');
+    }
+    inp.focus(); upd();
+  }
+  function press(k){
+    if(k.a){
+      if(k.a === 'shift'){ shift = !shift; buildKeys(); return; }
+      if(k.a === 'deg'){ deg = !deg; S.set('deg', deg); buildKeys(); upd(); return; }
+      if(k.a === 'left'){ inp.focus(); const p = Math.max(0, inp.selectionStart - 1); inp.setSelectionRange(p, p); return; }
+      if(k.a === 'right'){ inp.focus(); const p = Math.min(inp.value.length, inp.selectionEnd + 1); inp.setSelectionRange(p, p); return; }
+      if(k.a === 'ac'){ inp.value = ''; justEval = false; res.className = ''; res.innerHTML = ''; res2.innerHTML = ''; inp.focus(); upd(); return; }
+      if(k.a === 'del'){ del(); return; }
+      if(k.a === 'eq'){ commit(); return; }
+    }
+    let txt = (shift && k.s) ? k.s : k.i;
+    if(shift){ shift = false; buildKeys(); }
+    ins(txt);
+  }
+  function plain(v){ return M.fmt(v, 10); }
+  function resultHtml(v){ return M.html(M.parse(M.fmt(v, 10)).ast); }
+  function extra(v){
+    const r = M.ratApprox(v, 2000);
+    if(r && r[1] !== 1 && Math.abs(v) < 1e7) return M.render(r[0] + '/' + r[1]);
+    const s = M.surd(v);
+    if(s) return M.render(s);
+    return '';
+  }
+  function showValue(v, pre){
+    res.className = pre ? 'pre' : '';
+    res.innerHTML = resultHtml(v);
+    const x = extra(v);
+    res2.innerHTML = x ? '≙ ' + x : '';
+  }
+  function upd(){
+    const s = inp.value;
+    if(!s.trim()){ pretty.innerHTML = '<span class="ph" style="color:#58634f">Rechnung eingeben …</span>'; if(!justEval){ res.innerHTML = ''; res2.innerHTML = ''; res.className = ''; } return; }
+    let P;
+    try{ P = M.parse(s); }catch(e){ pretty.textContent = s; res.className = 'err'; res.textContent = e.message; res2.innerHTML = ''; return; }
+    pretty.innerHTML = M.html(P.ast);
+    if(!justEval){
+      try{
+        if(P.errs.length) throw new Error(P.errs[0]);
+        const v = M.ev(P.ast, {ans}, deg);
+        if(!Number.isFinite(v)) throw new Error('x');
+        showValue(v, true); lastText = plain(v);
+      }catch(e){ res.className = ''; res.innerHTML = ''; res2.innerHTML = ''; lastText = ''; }
+    }
+  }
+  function commit(){
+    const s = inp.value;
+    if(!s.trim()) return;
+    try{
+      const v = M.evalStr(s, {ans}, deg);
+      ans = v; lastText = plain(v);
+      showValue(v, false);
+      justEval = true;
+      hist.unshift({e:s, r:lastText});
+      hist = hist.slice(0, 12); S.set('hist', hist); renderHist();
+    }catch(e){
+      res.className = 'err'; res.textContent = e.message; res2.innerHTML = '';
+    }
+  }
+  function renderHist(){
+    histEl.innerHTML = '';
+    hist.forEach(h => {
+      const d = document.createElement('div');
+      d.title = 'Klicken: Rechnung wieder laden';
+      d.innerHTML = '<span>' + M.render(h.e) + '</span><span>= ' + M.render(h.r) + '</span>';
+      d.addEventListener('click', () => { inp.value = h.e; justEval = false; upd(); inp.focus(); });
+      histEl.append(d);
+    });
+  }
+  inp.addEventListener('input', () => { justEval = false; upd(); });
+  inp.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){ e.preventDefault(); commit(); return; }
+    if(justEval && e.key.length === 1 && !e.ctrlKey && !e.metaKey){
+      prep(e.key);
+    }
+  });
+  document.getElementById('c-toans').addEventListener('click', () => {
+    const t = lastText || (justEval ? plain(ans) : '');
+    if(!t) return;
+    if(LAST && document.body.contains(LAST) && !LAST.disabled){
+      LAST.value = t; LAST.dispatchEvent(new Event('input')); LAST.focus();
+    } else {
+      navigator.clipboard && navigator.clipboard.writeText(t).catch(() => {});
+    }
+  });
+  document.getElementById('c-clearhist').addEventListener('click', () => { hist = []; S.set('hist', hist); renderHist(); });
+  buildKeys(); renderHist(); upd();
+  return {upd};
+})();
+/* ===================== SVG-HELFER ===================== */
+const COL = {red:'var(--kred)', blue:'var(--kblue)', green:'var(--kgreen)', purple:'var(--kpurple)', gray:'var(--kgray)', fg:'var(--fg)'};
+function arrow(x1, y1, x2, y2, col, sw){
+  sw = sw || 3;
+  const a = Math.atan2(y2 - y1, x2 - x1), L = 11;
+  const p1 = [x2 - L*Math.cos(a - 0.4), y2 - L*Math.sin(a - 0.4)], p2 = [x2 - L*Math.cos(a + 0.4), y2 - L*Math.sin(a + 0.4)];
+  return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + (x2 - 6*Math.cos(a)) + '" y2="' + (y2 - 6*Math.sin(a)) + '" stroke="' + col + '" stroke-width="' + sw + '" stroke-linecap="round"/>' +
+    '<polygon points="' + x2 + ',' + y2 + ' ' + p1[0] + ',' + p1[1] + ' ' + p2[0] + ',' + p2[1] + '" fill="' + col + '"/>';
+}
+const darrow = (x1, y1, x2, y2, col, sw) => arrow(x1, y1, x2, y2, col, sw) + arrow(x2, y2, x1, y1, col, sw);
+const mkr = (x, y, n) => '<g><circle cx="' + x + '" cy="' + y + '" r="12" fill="var(--fg)"/><text x="' + x + '" y="' + (y + 5) + '" text-anchor="middle" font-size="14" font-weight="800" fill="var(--bg)">' + n + '</text></g>';
+const stxt = (x, y, s, o) => { o = o || {}; return '<text x="' + x + '" y="' + y + '" font-size="' + (o.size || 13) + '" fill="' + (o.fill || 'var(--mut)') + '" text-anchor="' + (o.anchor || 'middle') + '"' + (o.extra || '') + '>' + s + '</text>'; };
+function springPath(cx, y1, y2, amp, n){
+  amp = amp || 11; n = n || 10;
+  let d = 'M' + cx + ' ' + y1 + ' L' + cx + ' ' + (y1 + 8);
+  const len = y2 - y1 - 16;
+  for(let i = 1; i <= n; i++){ const y = y1 + 8 + len * (i - 0.5) / n; d += ' L' + (cx + (i % 2 ? amp : -amp)) + ' ' + y; }
+  d += ' L' + cx + ' ' + (y2 - 8) + ' L' + cx + ' ' + y2;
+  return '<path d="' + d + '" fill="none" stroke="var(--fg)" stroke-width="2.2" stroke-linejoin="round"/>';
+}
+
+/* ---------- t-y-Diagramm ---------- */
+function svgTY(o){
+  const A = o.A, T = o.T, t0 = o.t0 || 0, damp = o.damp || 0, w = o.w || 640, hg = o.h || 290;
+  const padL = 54, padR = 20, padT = 16, padB = 42, pw = w - padL - padR, ph = hg - padT - padB;
+  const tick = o.tick || (Math.round(T * 10) % 5 === 0 ? 0.5 : 0.2);
+  const tm = o.tmax || Math.ceil(2.4 * T / tick) * tick;
+  const ymax = o.ymax || Math.ceil(A) + 1;
+  const X = t => padL + t / tm * pw, Y = v => padT + ph / 2 - v / ymax * (ph / 2);
+  let s = '<svg viewBox="0 0 ' + w + ' ' + hg + '" width="' + w + '" role="img">';
+  const nt = Math.round(tm / tick);
+  for(let k = 0; k <= nt; k++){
+    const t = k * tick, x = X(t);
+    s += '<line x1="' + x + '" y1="' + padT + '" x2="' + x + '" y2="' + (padT + ph) + '" stroke="var(--line)" stroke-width="1"/>';
+    if(nt <= 14 || k % 2 === 0) s += stxt(x, padT + ph + 18, M.fmt(+t.toFixed(3), 4), {size: 12});
+  }
+  const ystep = ymax > 6 ? 2 : 1;
+  for(let v = -ymax; v <= ymax; v += ystep){
+    const y = Y(v);
+    s += '<line x1="' + padL + '" y1="' + y + '" x2="' + (w - padR) + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/>';
+    s += stxt(padL - 8, y + 4, v, {size: 12, anchor: 'end'});
+  }
+  s += '<line x1="' + padL + '" y1="' + Y(0) + '" x2="' + (w - padR) + '" y2="' + Y(0) + '" stroke="var(--fg)" stroke-width="1.6"/>';
+  s += '<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (padT + ph) + '" stroke="var(--fg)" stroke-width="1.6"/>';
+  s += stxt(w - padR, padT + ph + 36, 't in s', {anchor: 'end', size: 13}) + stxt(padL + 6, padT + 10, 'y in cm', {anchor: 'start', size: 13});
+  if(o.env && damp){
+    for(const sg of [1, -1]){
+      let d = '';
+      for(let i = 0; i <= 120; i++){ const t = i / 120 * tm; d += (i ? 'L' : 'M') + X(t) + ' ' + Y(sg * A * Math.exp(-t / damp)); }
+      s += '<path d="' + d + '" fill="none" stroke="var(--kpurple)" stroke-width="2" stroke-dasharray="7 5"/>';
+    }
+  }
+  let d = '';
+  const N = 500;
+  for(let i = 0; i <= N; i++){
+    const t = i / N * tm, v = A * (damp ? Math.exp(-t / damp) : 1) * Math.cos(2 * PI * (t - t0) / T);
+    d += (i ? 'L' : 'M') + X(t).toFixed(1) + ' ' + Y(v).toFixed(1);
+  }
+  s += '<path d="' + d + '" fill="none" stroke="var(--kblue)" stroke-width="3" stroke-linejoin="round"/>';
+  if(o.extra) s += o.extra(X, Y, tm);
+  s += '</svg>';
+  return {svg: s, X, Y, tm, tick};
+}
+
+/* ---------- Federpendel-Kräfte ---------- */
+function svgFeder(){
+  const cols = [130, 380, 630], tops = [100, 140, 180], H = 50, W = 62, cy = t => t + H / 2;
+  let s = '<svg viewBox="0 0 760 330" width="760" role="img">';
+  s += '<line x1="20" y1="' + cy(140) + '" x2="740" y2="' + cy(140) + '" stroke="var(--kgray)" stroke-dasharray="6 5"/>' + stxt(24, cy(140) - 6, 'Ruhelage', {anchor: 'start', size: 12});
+  const names = ['oberer Umkehrpunkt', 'Ruhelage', 'unterer Umkehrpunkt'], fF = [25, 55, 85];
+  cols.forEach((cx, i) => {
+    const top = tops[i], c = cy(top);
+    s += '<rect x="' + (cx - 48) + '" y="8" width="96" height="9" rx="2" fill="var(--kgray)"/>';
+    s += springPath(cx, 17, top);
+    s += '<rect x="' + (cx - W / 2) + '" y="' + top + '" width="' + W + '" height="' + H + '" rx="6" fill="var(--panel2)" stroke="var(--fg)" stroke-width="2"/>';
+    s += stxt(cx, c + 5, 'm', {fill: 'var(--fg)', size: 16});
+    s += arrow(cx - 20, c, cx - 20, c + 55, COL.red);
+    s += arrow(cx + 20, c, cx + 20, c - fF[i], COL.blue);
+    if(i === 0) s += arrow(cx + 52, c, cx + 52, c + 30, COL.green);
+    if(i === 2) s += arrow(cx + 52, c, cx + 52, c - 30, COL.green);
+    if(i === 1) s += stxt(cx + 40, c + 30, 'F<tspan font-size="10" dy="3">res</tspan><tspan dy="-3"> = 0</tspan>', {anchor: 'start', fill: 'var(--kgreen)', size: 13});
+    s += stxt(cx, 322, names[i], {fill: 'var(--fg)', size: 14});
+  });
+  const c3 = cy(180), c1 = cy(100);
+  s += mkr(cols[2] - 20, c3 + 55 + 20, 1) + mkr(cols[2] + 20, c3 - 85 - 18, 2) + mkr(cols[2] + 52, c3 - 30 - 18, 3) + mkr(cols[0] + 52, c1 + 30 + 18, 4);
+  return s + '</svg>';
+}
+/* ---------- Fadenpendel-Kräfte ---------- */
+function svgFaden(){
+  const a = 28 * PI / 180, L = 230, px = 210, py = 20, bx = px + L * Math.sin(a), by = py + L * Math.cos(a), G = 100;
+  const sa = Math.sin(a), ca = Math.cos(a);
+  const tS = [bx - sa * G * ca, by - ca * G * ca];
+  const tT = [bx - ca * G * sa, by + sa * G * sa];
+  const tR = [bx + sa * G * ca, by + ca * G * ca];
+  let s = '<svg viewBox="0 0 470 380" width="470" role="img">';
+  s += '<rect x="150" y="8" width="120" height="9" rx="2" fill="var(--kgray)"/>';
+  s += '<line x1="' + px + '" y1="' + py + '" x2="' + px + '" y2="' + (py + L + 25) + '" stroke="var(--kgray)" stroke-dasharray="6 5"/>' + stxt(px - 8, py + L + 40, 'Ruhelage', {anchor: 'end', size: 12});
+  s += '<path d="M' + px + ' ' + (py + L) + ' A' + L + ' ' + L + ' 0 0 0 ' + bx + ' ' + by + '" fill="none" stroke="var(--kgray)" stroke-dasharray="3 4"/>';
+  s += '<line x1="' + px + '" y1="' + py + '" x2="' + bx + '" y2="' + by + '" stroke="var(--fg)" stroke-width="2"/>';
+  s += '<path d="M' + px + ' ' + (py + 52) + ' A52 52 0 0 0 ' + (px + 52 * sa) + ' ' + (py + 52 * ca) + '" fill="none" stroke="var(--fg)"/>' + stxt(px + 14, py + 78, 'α', {size: 15, fill: 'var(--fg)', anchor: 'start'});
+  s += '<circle cx="' + bx + '" cy="' + by + '" r="15" fill="var(--panel2)" stroke="var(--fg)" stroke-width="2"/>';
+  s += '<line x1="' + tT[0] + '" y1="' + tT[1] + '" x2="' + bx + '" y2="' + (by + G) + '" stroke="var(--kgray)" stroke-dasharray="4 4"/><line x1="' + tR[0] + '" y1="' + tR[1] + '" x2="' + bx + '" y2="' + (by + G) + '" stroke="var(--kgray)" stroke-dasharray="4 4"/>';
+  s += arrow(bx, by, bx, by + G, COL.red);
+  s += arrow(bx, by, tS[0], tS[1], COL.purple);
+  s += arrow(bx, by, tT[0], tT[1], COL.green);
+  s += arrow(bx, by, tR[0], tR[1], COL.gray, 2.5);
+  s += mkr(bx + 18, by + G + 16, 1) + mkr(tS[0] - 18, tS[1] - 8, 2) + mkr(tT[0] - 20, tT[1] + 8, 3) + mkr(tR[0] + 20, tR[1] + 6, 4);
+  return s + '</svg>';
+}
+/* ---------- beschriftetes t-y-Diagramm ---------- */
+function svgTYlabel(damped){
+  const o = damped ? {A: 4, T: 2, t0: 0, damp: 3.2, env: true, tick: 0.5, tmax: 7, ymax: 5} : {A: 3, T: 2, t0: 0.5, tick: 0.5, tmax: 5, ymax: 4};
+  o.extra = (X, Y) => {
+    let s = '';
+    if(!damped){
+      s += darrow(X(0.5) - 16, Y(0), X(0.5) - 16, Y(3), COL.red) + mkr(X(0.5) - 38, Y(1.5), 1);
+      s += darrow(X(0.5), Y(3.55), X(2.5), Y(3.55), COL.green) + mkr(X(1.5), Y(3.55) - 4, 2);
+      s += darrow(X(1), Y(0) + 0, X(2), Y(0), COL.purple, 4) + mkr(X(1.5), Y(0) - 22, 3);
+      s += darrow(X(3.5) + 18, Y(-3), X(3.5) + 18, Y(3), COL.gray) + mkr(X(3.5) + 40, Y(1.6), 4);
+      s += mkr(X(4.75), Y(0) - 22, 5);
+    } else {
+      s += darrow(X(0) + 14, Y(0), X(0) + 14, Y(4), COL.red) + mkr(X(0) + 36, Y(2.2), 1);
+      s += darrow(X(0), Y(4.5), X(2), Y(4.5), COL.green) + mkr(X(1), Y(4.5) - 4, 2);
+      s += mkr(X(3.6), Y(4 * Math.exp(-3.6 / 3.2)) - 26, 3);
+    }
+    return s;
+  };
+  return svgTY(o).svg;
+}
+/* ---------- Mini-Diagramme (Schwingungstypen) ---------- */
+function svgMini(type, label){
+  const w = 250, hg = 120, X = t => 10 + t / 10 * (w - 20), Y = v => hg / 2 - v * 40;
+  let d = '';
+  for(let i = 0; i <= 300; i++){
+    const t = i / 300 * 10; let A = 1;
+    if(type === 'gedaempft') A = Math.exp(-t / 3.5);
+    if(type === 'erzwungen') A = 1 - Math.exp(-t / 1.6);
+    const v = A * Math.sin(2 * PI * t / 1.6);
+    d += (i ? 'L' : 'M') + X(t).toFixed(1) + ' ' + Y(v).toFixed(1);
+  }
+  let s = '<svg viewBox="0 0 ' + w + ' ' + hg + '" width="' + w + '" style="display:inline-block;margin:4px;width:47%;max-width:380px;height:auto">';
+  s += '<rect x="1" y="1" width="' + (w - 2) + '" height="' + (hg - 2) + '" rx="8" fill="none" stroke="var(--line)"/>';
+  s += '<line x1="10" y1="' + Y(0) + '" x2="' + (w - 10) + '" y2="' + Y(0) + '" stroke="var(--fg)" stroke-width="1.2"/>';
+  s += '<path d="' + d + '" fill="none" stroke="var(--kblue)" stroke-width="2.4"/>';
+  if(type === 'selbsterregt'){
+    for(const t of [1.2, 2.8, 4.4, 6.0, 7.6, 9.2]) s += arrow(X(t), Y(-1.2) + 6, X(t), Y(-0.65), 'var(--warn)', 2);
+  }
+  s += '<circle cx="22" cy="20" r="12" fill="var(--fg)"/><text x="22" y="25" text-anchor="middle" font-size="14" font-weight="800" fill="var(--bg)">' + label + '</text>';
+  return s + '</svg>';
+}
+
+/* ===================== AUFGABEN-GENERATOREN ===================== */
+const CATS = {faktor:'Faktoren im Kopf', rechnen_faden:'Fadenpendel rechnen', rechnen_feder:'Federpendel rechnen', formel:'Formeln', diagramm:'Diagramme', kraefte:'Kräfte & Energie', konzept:'Wissensfragen', einheiten:'Größen & Einheiten', prop:'Proportionalitäten', frei:'Freitext'};
+const ratStr = x => M.ratStr(x);
+
+/* ---------- Faktoren im Kopf ---------- */
+const DEN = {4:'Viertel', 9:'Neuntel', 16:'Sechzehntel', 25:'Fünfundzwanzigstel', 36:'Sechsunddreißigstel', 100:'Hundertstel'};
+const VNAME = {l:'Die Fadenlänge $l$', g:'Die Fallbeschleunigung $g$ (anderer Planet)', m:'Die Masse $m$', A:'Die Amplitude $A$ (kleine Ausschläge)', D:'Die Federkonstante $D$'};
+const verb = c => c.mult > 1 ? (c.k === 4 ? 'wird vervierfacht' : c.k === 9 ? 'wird verneunfacht' : c.k === 100 ? 'wird verhundertfacht' : 'wird auf das ' + c.k + '-Fache vergrößert') : 'wird auf ein ' + DEN[c.k] + ' verkleinert';
+const PHR = new Map([[2, 'doppelt so groß'], [3, 'dreimal so groß'], [4, 'viermal so groß'], [5, 'fünfmal so groß'], [0.5, 'halb so groß'], [1/3, 'nur ein Drittel so groß'], [0.25, 'nur ein Viertel so groß']]);
+
+function genFactor(kind){
+  kind = kind || pick(['faden', 'feder']);
+  const EXP = kind === 'faden' ? {l:.5, g:-.5, m:0, A:0} : {m:.5, D:-.5, g:0, A:0};
+  const nz = Object.keys(EXP).filter(v => EXP[v] !== 0), zr = Object.keys(EXP).filter(v => EXP[v] === 0);
+  const ms = c => c.up ? String(c.k) : '1/' + c.k;
+  const mkc = v => { const k = pick([4, 9, 16, 25, 36, 100]), up = Math.random() < .5; return {v, k, up, mult: up ? k : 1 / k}; };
+  const formulaT = kind === 'faden' ? 'T = 2*pi*sqrt(l/g)' : 'T = 2*pi*sqrt(m/D)';
+  const pend = kind === 'faden' ? 'Fadenpendel' : 'Federpendel';
+  const mode = pick(['single', 'single', 'single', 'double', 'double', 'trick', 'reverse']);
+  const base = {cat:'faktor', catLabel:CATS.faktor, key:'factor:' + kind};
+  const hints = ['Schau in die Formel: Steht die Größe unter der Wurzel – im Zähler oder im Nenner? Oder kommt sie gar nicht vor?',
+    'Wurzelgesetz: Wirkt eine Größe mit „Wurzel“, musst du die Wurzel aus dem Faktor ziehen (√4 = 2, √9 = 3, √16 = 4, √25 = 5 …). Steht sie im Nenner, nimmst du den Kehrwert.'];
+
+  if(mode === 'reverse'){
+    const v = pick(nz), c = pick([2, 3, 4, 5, 0.5, 1/3, 0.25]);
+    const m = Math.pow(c, 1 / EXP[v]);
+    const expl = '<div class="ln">Formel: $' + formulaT + '$ → ' + (EXP[v] > 0 ? '$T ~ sqrt(' + v + ')$' : '$T ~ 1/sqrt(' + v + ')$') + '</div>' +
+      '<div class="ln">Faktor für $T$ = ' + (EXP[v] > 0 ? '√(Faktor von $' + v + '$)' : '1/√(Faktor von $' + v + '$)') + ' = ' + ratStr(c) + '</div>' +
+      '<div class="ln">Umgekehrt (beide Seiten quadrieren): ' + (EXP[v] > 0 ? 'Faktor von $' + v + '$ = $(' + ratStr(c) + ')^2$' : 'Faktor von $' + v + '$ = $1/(' + ratStr(c) + ')^2$') + ' = <b>' + ratStr(m) + '</b></div>';
+    return Object.assign(base, {
+      text: 'Ein ' + pend + ' soll mit einer Periodendauer schwingen, die <b>' + PHR.get(c) + '</b> ist wie vorher.',
+      steps: [{type:'num', prompt: VNAME[v] + ' muss mit welchem Faktor multipliziert werden? (z. B. 9 oder 1/4)', ans: m, tol: .01, explain: expl, hints:
+        ['Rückwärts denken: Wenn die Wurzel aus dem Faktor ' + ratStr(c) + ' ergeben soll, welcher Faktor steckt dann unter der Wurzel? Quadriere!', EXP[v] < 0 ? 'Die Größe steht im Nenner – dein Ergebnis muss also kleiner als 1 oder größer als 1 sein, je nachdem, ob T größer oder kleiner werden soll.' : 'Größe unter der Wurzel im Zähler: Wird T größer, muss auch die Größe größer werden.']}]
+    });
+  }
+  let ch;
+  if(mode === 'single') ch = [mkc(pick(nz))];
+  else if(mode === 'trick') ch = [mkc(pick(zr))];
+  else { const [a, b] = shuffle(nz).slice(0, 2); ch = [mkc(a), mkc(b)]; }
+  const ask = Math.random() < .7 ? 'T' : 'f';
+  let tot = 1, lines = ['<div class="ln">Formel: $' + formulaT + '$</div>'];
+  ch.forEach(c => {
+    const e = EXP[c.v], val = Math.pow(c.mult, e); tot *= val;
+    if(e === 0){
+      const why = c.v === 'm' ? 'Die Masse kürzt sich heraus (größere Masse → stärkere Rückstellkraft, aber auch mehr Trägheit).' : c.v === 'g' ? 'Beim Federpendel verschiebt $g$ nur die Ruhelage, nicht die Periodendauer.' : 'Die Amplitude spielt für $T$ keine Rolle (kleine Winkel bzw. ideale Feder).';
+      lines.push('<div class="ln">$' + c.v + '$ kommt in der Formel nicht vor → Faktor <b>1</b>. ' + why + '</div>');
+    } else {
+      const fs = (e > 0 ? 'sqrt(' + ms(c) + ')' : '1/sqrt(' + ms(c) + ')');
+      lines.push('<div class="ln">' + (e > 0 ? '$T ~ sqrt(' + c.v + ')$' : '$T ~ 1/sqrt(' + c.v + ')$') + ' → $' + c.v + '$ mal $' + ms(c) + '$ ergibt für $T$ den Faktor $' + fs + ' = ' + ratStr(val) + '$</div>');
+    }
+  });
+  if(ch.length > 1) lines.push('<div class="ln">Beide Faktoren multiplizieren: $' + ch.map(c => ratStr(Math.pow(c.mult, EXP[c.v]))).join(' * ') + ' = ' + ratStr(tot) + '$</div>');
+  let ans = tot;
+  if(ask === 'f'){ ans = 1 / tot; lines.push('<div class="ln">Die Frage geht nach $f$: $f = 1/T$ → Kehrwert: $1/(' + ratStr(tot) + ') = ' + ratStr(ans) + '$</div>'); }
+  lines.push('<div class="ln"><b>Ergebnis: ' + (ask === 'T' ? 'T' : 'f') + ' wird mit dem Faktor ' + ratStr(ans) + ' multipliziert.</b></div>');
+  return Object.assign(base, {
+    text: 'Ein ' + pend + ' schwingt mit der Periodendauer $T$ und der Frequenz $f$.<br>' + ch.map(c => VNAME[c.v] + ' ' + verb(c) + '.').join('<br>'),
+    steps: [{type:'num', prompt: 'Mit welchem Faktor ändert sich ' + (ask === 'T' ? 'die Periodendauer $T$' : 'die Frequenz $f$') + '? (Zahl, Bruch wie 1/3 oder Dezimalzahl)', ans, tol: .01, explain: lines.join(''),
+      hints: ask === 'f' ? ['Erst den Faktor für $T$ bestimmen, dann ist $f = 1/T$ der Kehrwert.'].concat(hints) : hints}]
+  });
+}
+
+/* ---------- Proportionalitäten (Faktor rein – Faktor raus) ---------- */
+function genProp(){
+  const R = [{e:1, s:'y ~ x'}, {e:2, s:'y ~ x^2'}, {e:.5, s:'y ~ sqrt(x)'}, {e:-1, s:'y ~ 1/x'}, {e:-.5, s:'y ~ 1/sqrt(x)'}, {e:-2, s:'y ~ 1/x^2'}];
+  const r = pick(R), sq = Math.abs(r.e) === .5;
+  const k = sq ? pick([4, 9, 16, 25, 1/4, 1/9]) : pick([2, 3, 4, 5, 10, 1/2, 1/3]);
+  const ans = Math.pow(k, r.e);
+  const ks = k >= 1 ? String(k) : '1/' + Math.round(1 / k);
+  return {cat:'prop', catLabel:CATS.prop, key:'prop', text: 'Es gilt der Zusammenhang $' + r.s + '$. Die Größe $x$ wird mit dem Faktor $' + ks + '$ multipliziert.',
+    steps: [{type:'num', prompt: 'Mit welchem Faktor ändert sich $y$?', ans, tol: .01, hints: ['„Faktor rein – Faktor raus“: Setze den Faktor für x in den Zusammenhang ein.', sq ? 'Bei der Wurzel: Wurzel aus dem Faktor ziehen.' : 'Bei der Potenz: Faktor hoch den Exponenten.'],
+      explain: '<div class="ln">Faktor rein – Faktor raus: Der Zusammenhang $' + r.s + '$ sagt: $y$ ändert sich um den Faktor, den man erhält, wenn man mit ' + (r.e === .5 ? 'der Wurzel aus' : r.e === -.5 ? 'dem Kehrwert der Wurzel aus' : r.e === 1 ? 'dem Faktor selbst' : r.e === 2 ? 'dem Quadrat von' : r.e === -1 ? 'dem Kehrwert von' : 'dem Kehrwert des Quadrats von') + ' $' + ks + '$ rechnet.</div>' +
+        '<div class="ln">$' + (r.e === .5 ? 'sqrt(' + ks + ')' : r.e === -.5 ? '1/sqrt(' + ks + ')' : r.e === 1 ? ks : r.e === 2 ? '(' + ks + ')^2' : r.e === -1 ? '1/(' + ks + ')' : '1/(' + ks + ')^2') + ' = ' + ratStr(ans) + '$</div>'}]};
+}
+
+/* ---------- Quotienten-Test ---------- */
+function genQuot(){
+  const D = pick([10, 20, 25, 40]), ms = [0.1, 0.4, 0.9, 1.6].slice(0, 3 + (Math.random() < .5 ? 1 : 0));
+  const rows = ms.map(m => { const T = Math.round(2 * PI * Math.sqrt(m / D) * 100) / 100; return {m, T}; });
+  const tbl = '<table class="tbl" style="border-collapse:collapse;margin:8px 0"><tr><th style="border:1px solid var(--line);padding:4px 12px">$m$ in kg</th>' + rows.map(r => '<td style="border:1px solid var(--line);padding:4px 12px">' + fmt(r.m) + '</td>').join('') + '</tr><tr><th style="border:1px solid var(--line);padding:4px 12px">$T$ in s</th>' + rows.map(r => '<td style="border:1px solid var(--line);padding:4px 12px">' + fmt(r.T) + '</td>').join('') + '</tr></table>';
+  const q = r => r.T * r.T / r.m;
+  return {cat:'prop', catLabel:CATS.prop, key:'quot', text: 'Bei einem Federpendel wurden für verschiedene Massen die Periodendauern gemessen:' + tbl + 'Du vermutest $T ~ sqrt(m)$ und machst den <b>Quotienten-Test</b>.',
+    steps: [0, 1].map(i => ({type:'num', prompt: 'Berechne $T^2/m$ für $m = ' + fmt(rows[i].m) + ' {kg}$.', ans: q(rows[i]), unit: 's^2/kg', tol: .03,
+        explain: '<div class="ln">$T^2/m = (' + fmt(rows[i].T) + ' {s})^2 / (' + fmt(rows[i].m) + ' {kg}) = ' + fmt(rows[i].T * rows[i].T, 4) + ' {s^2} / ' + fmt(rows[i].m) + ' {kg} = ' + fmt(q(rows[i]), 4) + ' {s^2/kg}$</div>',
+        hints: ['Erst $T$ quadrieren, dann durch $m$ teilen.']})).concat([{type:'choice', prompt: 'Was schließt du aus den Quotienten (alle ungefähr gleich)?', options: ['$T^2 ~ m$, also $T ~ sqrt(m)$ ✔', '$T ~ m$ (proportional)', '$T ~ 1/sqrt(m)$', '$T$ hängt nicht von $m$ ab'], ans: 0,
+        explain: '<div class="ln">Ist $T^2/m$ (annähernd) konstant, dann ist $T^2 ~ m$ – das heißt $T ~ sqrt(m)$.</div><div class="ln">Der Quotient muss immer zur Vermutung passen: Vermutung $y ~ x$ → $y/x$ konstant; $y ~ sqrt(x)$ → $y^2/x$ konstant; $y ~ 1/x$ → $y·x$ konstant.</div>'}])};
+}
+
+/* ---------- Größen & Einheiten ---------- */
+function genUnits(){
+  const v = pick(['fT', 'Tf', 'nt', 'omega', 'count']);
+  const base = {cat:'einheiten', catLabel:CATS.einheiten, key:'units'};
+  if(v === 'fT'){
+    const T = pick([0.5, 0.2, 0.25, 0.1, 2, 4, 5, 0.04, 0.8]);
+    return Object.assign(base, {text: 'Ein Körper braucht für eine volle Schwingung $T = ' + fmt(T) + ' {s}$.', steps: [{type:'num', prompt: 'Berechne die Frequenz $f$.', ans: 1 / T, unit: 'Hz', tol: .01, hints: ['Zusammenhang zwischen $f$ und $T$: $f = 1/T$'], explain: '<div class="ln">$f = 1/T = 1/(' + fmt(T) + ' {s}) = ' + fmt(1 / T) + ' {Hz}$</div><div class="ln">Merke: doppelte Periodendauer → halbe Frequenz.</div>'}]});
+  }
+  if(v === 'Tf'){
+    const f = pick([2, 4, 5, 10, 50, 0.5, 0.25, 20, 100]);
+    return Object.assign(base, {text: 'Eine Stimmgabel-ähnliche Schwingung hat die Frequenz $f = ' + fmt(f) + ' {Hz}$.', steps: [{type:'num', prompt: 'Berechne die Periodendauer $T$.', ans: 1 / f, unit: 's', tol: .01, hints: ['$T = 1/f$'], explain: '<div class="ln">$T = 1/f = 1/(' + fmt(f) + ' {Hz}) = ' + fmt(1 / f) + ' {s}$</div>'}]});
+  }
+  if(v === 'nt'){
+    const T = pick([0.5, 0.8, 1, 1.2, 1.5, 2, 2.5]), n = pick([10, 20, 5, 30]), t = Math.round(n * T * 100) / 100;
+    return Object.assign(base, {text: 'Für $' + n + '$ vollständige Schwingungen misst man mit der Stoppuhr $' + fmt(t) + ' {s}$.',
+      steps: [{type:'num', prompt: 'Wie groß ist die Periodendauer $T$?', ans: t / n, unit: 's', tol: .01, hints: ['Zeit für alle Schwingungen geteilt durch die Anzahl.'], explain: '<div class="ln">$T = t/n = ' + fmt(t) + ' {s} / ' + n + ' = ' + fmt(t / n) + ' {s}$</div><div class="ln">Tipp aus dem Versuch: lieber 10 Schwingungen stoppen – die Reaktionszeit fällt dann kaum ins Gewicht.</div>'},
+        {type:'num', prompt: 'Und die Frequenz $f$?', ans: n / t, unit: 'Hz', tol: .01, explain: '<div class="ln">$f = 1/T = 1/(' + fmt(t / n) + ' {s}) = ' + fmt(n / t) + ' {Hz}$</div>'}]});
+  }
+  if(v === 'omega'){
+    const f = pick([0.5, 1, 2, 4, 5, 10]);
+    return Object.assign(base, {text: 'Ein Pendel schwingt mit $f = ' + fmt(f) + ' {Hz}$.', steps: [{type:'num', prompt: 'Berechne die Kreisfrequenz $omega$.', ans: 2 * PI * f, unit: 'rad/s', tol: .01, hints: ['$omega = 2*pi*f$ (Taschenrechner: π-Taste).'], explain: '<div class="ln">$omega = 2*pi*f = 2*pi*' + fmt(f) + ' {Hz} = ' + fmt(2 * PI * f, 4) + ' {rad/s}$</div>'}]});
+  }
+  const f = pick([0.5, 2, 4, 5, 10]), t = pick([10, 20, 30, 60]);
+  return Object.assign(base, {text: 'Ein Körper schwingt mit $f = ' + fmt(f) + ' {Hz}$.', steps: [{type:'num', prompt: 'Wie viele vollständige Schwingungen macht er in $' + t + ' {s}$?', ans: f * t, tol: .01, hints: ['Die Frequenz sagt, wie viele Schwingungen pro Sekunde passieren.'], explain: '<div class="ln">$n = f*t = ' + fmt(f) + ' {Hz} * ' + t + ' {s} = ' + fmt(f * t) + '$</div>'}]});
+}
+
+/* ---------- Formeln ---------- */
+const FORMULAS = [
+  {q:'die Periodendauer $T$ des <b>Fadenpendels</b>', ref:'2*pi*sqrt(l/g)', vars:['l','g'], ex:'Fadenpendel: $T = 2*pi*sqrt(l/g)$. Unter der Wurzel stehen die Fadenlänge $l$ (Zähler) und $g$ (Nenner) – die Masse kommt <b>nicht</b> vor.'},
+  {q:'die Periodendauer $T$ des <b>Federpendels</b>', ref:'2*pi*sqrt(m/D)', vars:['m','D'], ex:'Federpendel: $T = 2*pi*sqrt(m/D)$. Unter der Wurzel: Masse $m$ (Zähler), Federkonstante $D$ (Nenner).'},
+  {q:'die Frequenz $f$ aus der Periodendauer $T$', ref:'1/T', vars:['T'], ex:'$f = 1/T$ (Einheit Hz = 1/s). $T$ und $f$ sind antiproportional.'},
+  {q:'die Periodendauer $T$ aus der Frequenz $f$', ref:'1/f', vars:['f'], ex:'$T = 1/f$.'},
+  {q:'die Kreisfrequenz $omega$ aus $f$ (mit $pi$ als <i>pi</i>)', ref:'2*pi*f', vars:['f'], ex:'$omega = 2*pi*f$ (Einheit rad/s).'},
+  {q:'die Kreisfrequenz $omega$ aus der Periodendauer $T$', ref:'2*pi/T', vars:['T'], ex:'$omega = 2*pi/T = 2*pi*f$.'},
+  {q:'die rücktreibende Kraft $F_r$ einer idealen Feder (Hookesches Gesetz) mit $D$ und der Auslenkung $x$', ref:'-D*x', vars:['D','x'], ex:'$F_r = -D*x$. Das Minuszeichen heißt: Die Kraft zeigt immer <b>entgegen</b> der Auslenkung.'},
+  {q:'die Auslenkung $x(t)$ einer harmonischen Schwingung (Amplitude $A$, Kreisfrequenz $omega$, Phase $phi$ – tippe <i>phi</i> oder φ)', ref:'A*cos(omega*t+phi)', vars:['A','omega','t','phi'], ex:'$x(t) = A*cos(omega*t+phi)$. $A$ = Amplitude, $omega$ = wie schnell, $phi$ = Phasenverschiebung (Startbedingung).'},
+  {q:'die Fadenlänge $l$ des Fadenpendels (nach $l$ umgestellt, mit $g$ und $T$)', ref:'g*T^2/(4*pi^2)', vars:['g','T'], ex:'<div class="ln">$T = 2*pi*sqrt(l/g)$</div><div class="ln">Quadrieren: $T^2 = 4*pi^2*l/g$</div><div class="ln">Nach $l$ auflösen (mal $g$, durch $4π^2$): $l = g*T^2/(4*pi^2)$</div>'},
+  {q:'die Fallbeschleunigung $g$ aus Fadenlänge $l$ und Periodendauer $T$', ref:'4*pi^2*l/T^2', vars:['l','T'], ex:'<div class="ln">$T^2 = 4*pi^2*l/g$</div><div class="ln">Mit $g$ multiplizieren und durch $T^2$ teilen: $g = 4*pi^2*l/T^2$</div>'},
+  {q:'die Masse $m$ eines Federpendels aus $D$ und $T$', ref:'D*T^2/(4*pi^2)', vars:['D','T'], ex:'<div class="ln">$T^2 = 4*pi^2*m/D$</div><div class="ln">$m = D*T^2/(4*pi^2)$</div>'},
+  {q:'die Federkonstante $D$ eines Federpendels aus $m$ und $T$', ref:'4*pi^2*m/T^2', vars:['m','T'], ex:'<div class="ln">$T^2 = 4*pi^2*m/D$</div><div class="ln">$D = 4*pi^2*m/T^2$</div>'},
+  {q:'die Eigenkreisfrequenz $omega$ eines Federpendels aus $D$ und $m$', ref:'sqrt(D/m)', vars:['D','m'], ex:'Aus $m*a = -D*x$ folgt $omega = sqrt(D/m)$ – und mit $T = 2*pi/omega$ die bekannte Formel $T = 2*pi*sqrt(m/D)$.'},
+  {q:'die potenzielle Energie (Spannenergie) der Feder bei Auslenkung $x$', ref:'1/2*D*x^2', vars:['D','x'], ex:'$E_pot = 1/2*D*x^2$. Maximal an den Umkehrpunkten, null in der Ruhelage.'},
+  {q:'die kinetische Energie eines Körpers mit Masse $m$ und Geschwindigkeit $v$', ref:'1/2*m*v^2', vars:['m','v'], ex:'$E_kin = 1/2*m*v^2$. Maximal beim Durchgang durch die Ruhelage.'},
+  {q:'die Dämpfungskraft $F_d$ (Konstante $b$, Geschwindigkeit $v$)', ref:'-b*v', vars:['b','v'], ex:'$F_d = -b*v$: proportional zur Geschwindigkeit und der Bewegung entgegengerichtet.'}
+];
+function genFormula(idx){
+  const f = idx != null && FORMULAS[idx] ? FORMULAS[idx] : pick(FORMULAS);
+  return {cat:'formel', catLabel:CATS.formel, key:'formula', steps: [{type:'formula', prompt: 'Gib die Formel für ' + f.q + ' an.', ref:f.ref, vars:f.vars, explain:f.ex,
+    hints: ['Tippe z. B. <code>a*sqrt(b/c)</code>. Wurzel: <code>sqrt( )</code>, π: <code>pi</code>, Bruch: <code>/</code>, Potenz: <code>^</code>.', 'Die Eingabe wird unten schön dargestellt – kontrolliere sie dort. Äquivalente Schreibweisen sind erlaubt.'],
+    okNote: '$' + f.ref + '$'}]};
+}
+
+/* ---------- Rechnen mit dem Fadenpendel ---------- */
+const PLANETS = [{n:'auf der Erde', g:9.81}, {n:'auf der Erde', g:9.81}, {n:'auf der Erde', g:9.81}, {n:'auf dem Mond', g:1.62}, {n:'auf dem Mars', g:3.71}];
+function genFadenT(){
+  const l = pick([0.25, 0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 4]), pl = pick(PLANETS);
+  const q = l / pl.g, w = Math.sqrt(q), T = 2 * PI * w, withF = Math.random() < .5;
+  const steps = [
+    {type:'formula', prompt: 'Welche Formel gilt für die Periodendauer $T$ des Fadenpendels?', ref:'2*pi*sqrt(l/g)', vars:['l','g'], hints: ['$T$ hängt von $l$ und $g$ ab – nicht von der Masse.'], explain: '$T = 2*pi*sqrt(l/g)$ – die Masse taucht nicht auf.'},
+    {type:'num', prompt: 'Setze ein und berechne zuerst den Bruch unter der Wurzel: $l/g$ = ?', ans:q, unit:'s^2', tol:.02, hints: ['Länge in m, g in m/s² → Ergebnis in s².'], explain: '<div class="ln">$l/g = ' + fmt(l) + ' {m} / ' + fmt(pl.g) + ' {m/s^2} = ' + fmt(q, 4) + ' {s^2}$</div>'},
+    {type:'num', prompt: 'Ziehe die Wurzel: $sqrt(l/g)$ = ?', ans:w, unit:'s', tol:.02, hints: ['Taschenrechner: √-Taste, dann das Ergebnis aus Schritt 2 einsetzen (oder Ans benutzen).'], explain: '<div class="ln">$sqrt(' + fmt(q, 4) + ' {s^2}) = ' + fmt(w, 4) + ' {s}$</div>'},
+    {type:'num', prompt: 'Multipliziere mit $2*pi$: $T$ = ?', ans:T, unit:'s', tol:.02, hints: ['Vergiss den Faktor 2π nicht.'], explain: '<div class="ln">$T = 2*pi*' + fmt(w, 4) + ' {s} = ' + fmt(T, 4) + ' {s}$</div>'}
+  ];
+  if(withF) steps.push({type:'num', prompt: 'Wie groß ist die Frequenz $f$?', ans:1 / T, unit:'Hz', tol:.02, hints: ['$f = 1/T$'], explain: '<div class="ln">$f = 1/T = 1/(' + fmt(T, 4) + ' {s}) = ' + fmt(1 / T, 4) + ' {Hz}$</div>'});
+  return {cat:'rechnen_faden', catLabel:CATS.rechnen_faden, key:'fadenT', text: 'Ein Fadenpendel der Länge $l = ' + fmt(l) + ' {m}$ schwingt ' + pl.n + ' ($g = ' + fmt(pl.g) + ' {m/s^2}$). Berechne ' + (withF ? 'Periodendauer und Frequenz' : 'die Periodendauer') + ' Schritt für Schritt.', steps};
+}
+function genFadenL(){
+  const T = pick([1, 1.5, 2, 2.5, 3, 4]), pl = pick(PLANETS), l = pl.g * T * T / (4 * PI * PI);
+  return {cat:'rechnen_faden', catLabel:CATS.rechnen_faden, key:'fadenL', text: 'Ein Fadenpendel soll ' + pl.n + ' ($g = ' + fmt(pl.g) + ' {m/s^2}$) die Periodendauer $T = ' + fmt(T) + ' {s}$ haben. Wie lang muss der Faden sein?', steps: [
+    {type:'formula', prompt: 'Stelle $T = 2*pi*sqrt(l/g)$ nach $l$ um. Wie lautet die Formel für $l$?', ref:'g*T^2/(4*pi^2)', vars:['g','T'], hints: ['Zuerst beide Seiten quadrieren, um die Wurzel loszuwerden.', 'Dann nach $l$ auflösen: mit $g$ malnehmen und durch $4π^2$ teilen.'],
+      explain: '<div class="ln">$T = 2*pi*sqrt(l/g)$</div><div class="ln">Quadrieren: $T^2 = 4*pi^2*l/g$</div><div class="ln">Mal $g$, geteilt durch $4*pi^2$: $l = g*T^2/(4*pi^2)$</div>'},
+    {type:'num', prompt: 'Berechne $T^2$.', ans:T * T, unit:'s^2', tol:.01, explain: '<div class="ln">$T^2 = (' + fmt(T) + ' {s})^2 = ' + fmt(T * T) + ' {s^2}$</div>'},
+    {type:'num', prompt: 'Berechne den Nenner $4*pi^2$.', ans:4 * PI * PI, tol:.01, hints: ['π² ≈ 9,87 – am besten mit der π-Taste und x²-Taste rechnen.'], explain: '<div class="ln">$4*pi^2 = 4 * 9,8696 = 39,478$</div>'},
+    {type:'num', prompt: 'Setze alles ein: $l$ = ?', ans:l, unit:'m', tol:.02, explain: '<div class="ln">$l = ' + fmt(pl.g) + ' {m/s^2} * ' + fmt(T * T) + ' {s^2} / 39,478 = ' + fmt(l, 4) + ' {m}$</div>' + (T === 2 && pl.g === 9.81 ? '<div class="ln">Das ist das <b>Sekundenpendel</b>: ca. 1 m lang.</div>' : '')}]};
+}
+function genFadenG(){
+  const l = pick([0.5, 0.6, 0.8, 1, 1.2]), n = pick([10, 10, 20]), gt = 9.81 * rnd(0.96, 1.04);
+  const t = Math.round(n * 2 * PI * Math.sqrt(l / gt) * 10) / 10, T = t / n, g = 4 * PI * PI * l / (T * T);
+  return {cat:'rechnen_faden', catLabel:CATS.rechnen_faden, key:'fadenG', text: 'Im Versuch misst man bei einem Fadenpendel der Länge $l = ' + fmt(l) + ' {m}$ für $' + n + '$ Schwingungen die Zeit $t = ' + fmt(t) + ' {s}$. Bestimme daraus die Fallbeschleunigung $g$.', steps: [
+    {type:'num', prompt: 'Berechne die Periodendauer $T$.', ans:T, unit:'s', tol:.01, explain: '<div class="ln">$T = t/n = ' + fmt(t) + ' {s} / ' + n + ' = ' + fmt(T, 4) + ' {s}$</div>'},
+    {type:'formula', prompt: 'Löse $T = 2*pi*sqrt(l/g)$ nach $g$ auf.', ref:'4*pi^2*l/T^2', vars:['l','T'], hints: ['Quadrieren, dann mit $g$ multiplizieren und durch $T^2$ teilen.'], explain: '<div class="ln">$T^2 = 4*pi^2*l/g$</div><div class="ln">$g = 4*pi^2*l/T^2$</div>'},
+    {type:'num', prompt: 'Berechne $g$.', ans:g, unit:'m/s^2', tol:.03, hints: ['Zähler und Nenner getrennt ausrechnen, dann teilen.'], explain: '<div class="ln">$g = 4*pi^2*' + fmt(l) + ' {m} / (' + fmt(T, 4) + ' {s})^2 = ' + fmt(4 * PI * PI * l, 4) + ' / ' + fmt(T * T, 4) + ' = ' + fmt(g, 4) + ' {m/s^2}$</div><div class="ln">Das passt gut zu $g ≈ 9,81 {m/s^2}$ ✓</div>'}]};
+}
+function genFadenN(){
+  const l = pick([0.25, 0.4, 1, 1.5, 2.5]), T = 2 * PI * Math.sqrt(l / 9.81), tt = pick([30, 60, 120]), n = tt / T;
+  return {cat:'rechnen_faden', catLabel:CATS.rechnen_faden, key:'fadenN', text: 'Ein Fadenpendel ($l = ' + fmt(l) + ' {m}$, auf der Erde mit $g = 9,81 {m/s^2}$) schwingt $' + tt + ' {s}$ lang.', steps: [
+    {type:'num', prompt: 'Berechne die Periodendauer $T$.', ans:T, unit:'s', tol:.02, explain: '<div class="ln">$T = 2*pi*sqrt(' + fmt(l) + ' / 9,81) = ' + fmt(T, 4) + ' {s}$</div>'},
+    {type:'num', prompt: 'Wie viele vollständige Schwingungen macht es in dieser Zeit?', ans:n, tol:.03, hints: ['Gesamtzeit durch die Zeit pro Schwingung.'], explain: '<div class="ln">$n = t/T = ' + tt + ' {s} / ' + fmt(T, 4) + ' {s} = ' + fmt(n, 4) + '$</div>'}]};
+}
+function genFadenMond(){
+  const l = pick([0.5, 1, 2]), Te = 2 * PI * Math.sqrt(l / 9.81), Tm = 2 * PI * Math.sqrt(l / 1.62);
+  return {cat:'rechnen_faden', catLabel:CATS.rechnen_faden, key:'fadenMond', text: 'Dasselbe Fadenpendel ($l = ' + fmt(l) + ' {m}$) wird einmal auf der Erde ($g = 9,81 {m/s^2}$) und einmal auf dem Mond ($g = 1,62 {m/s^2}$) benutzt.', steps: [
+    {type:'num', prompt: 'Periodendauer auf der Erde?', ans:Te, unit:'s', tol:.02, explain: '<div class="ln">$T = 2*pi*sqrt(' + fmt(l) + '/9,81) = ' + fmt(Te, 4) + ' {s}$</div>'},
+    {type:'num', prompt: 'Periodendauer auf dem Mond?', ans:Tm, unit:'s', tol:.02, explain: '<div class="ln">$T = 2*pi*sqrt(' + fmt(l) + '/1,62) = ' + fmt(Tm, 4) + ' {s}$</div>'},
+    {type:'num', prompt: 'Um welchen Faktor ist $T$ auf dem Mond größer?', ans:Tm / Te, tol:.02, hints: ['Teile die beiden Periodendauern.', '$g$ ist auf dem Mond ca. 6-mal kleiner → $T$ ist ca. √6 ≈ 2,45-mal größer.'], explain: '<div class="ln">$T_Mond / T_Erde = ' + fmt(Tm, 4) + ' / ' + fmt(Te, 4) + ' = ' + fmt(Tm / Te, 3) + '$</div><div class="ln">Kontrolle mit Wurzelgesetz: $sqrt(9,81/1,62) = ' + fmt(Math.sqrt(9.81 / 1.62), 3) + '$ ✓</div>'}]};
+}
+const genFadenAny = () => pick([genFadenT, genFadenT, genFadenL, genFadenG, genFadenN, genFadenMond])();
+
+/* ---------- Rechnen mit dem Federpendel ---------- */
+function genFederT(){
+  const m = pick([0.1, 0.2, 0.25, 0.4, 0.5, 1, 2]), D = pick([5, 10, 20, 25, 40, 50, 100]);
+  const q = m / D, w = Math.sqrt(q), T = 2 * PI * w, withF = Math.random() < .5;
+  const steps = [
+    {type:'formula', prompt: 'Welche Formel gilt für die Periodendauer $T$ des Federpendels?', ref:'2*pi*sqrt(m/D)', vars:['m','D'], hints: ['$T$ hängt von der Masse $m$ und der Federkonstanten $D$ ab.'], explain: '$T = 2*pi*sqrt(m/D)$'},
+    {type:'num', prompt: 'Berechne zuerst den Bruch unter der Wurzel: $m/D$ = ?', ans:q, unit:'s^2', tol:.02, hints: ['kg geteilt durch N/m ergibt s² (denn 1 N = 1 kg·m/s²).'], explain: '<div class="ln">$m/D = ' + fmt(m) + ' {kg} / ' + fmt(D) + ' {N/m} = ' + fmt(q, 4) + ' {s^2}$</div>'},
+    {type:'num', prompt: 'Wurzel ziehen: $sqrt(m/D)$ = ?', ans:w, unit:'s', tol:.02, explain: '<div class="ln">$sqrt(' + fmt(q, 4) + ') = ' + fmt(w, 4) + ' {s}$</div>'},
+    {type:'num', prompt: 'Mal $2*pi$: $T$ = ?', ans:T, unit:'s', tol:.02, explain: '<div class="ln">$T = 2*pi*' + fmt(w, 4) + ' {s} = ' + fmt(T, 4) + ' {s}$</div>'}
+  ];
+  if(withF) steps.push({type:'num', prompt: 'Frequenz $f$?', ans:1 / T, unit:'Hz', tol:.02, explain: '<div class="ln">$f = 1/T = 1/(' + fmt(T, 4) + ' {s}) = ' + fmt(1 / T, 4) + ' {Hz}$</div>'});
+  return {cat:'rechnen_feder', catLabel:CATS.rechnen_feder, key:'federT', text: 'Ein Körper der Masse $m = ' + fmt(m) + ' {kg}$ hängt an einer Feder mit der Federkonstanten $D = ' + fmt(D) + ' {N/m}$. Berechne ' + (withF ? 'Periodendauer und Frequenz' : 'die Periodendauer') + '.', steps};
+}
+function genFederD(){
+  const m = pick([0.1, 0.2, 0.25, 0.5, 1, 2]), T = pick([0.5, 0.8, 1, 1.5, 2]), D = 4 * PI * PI * m / (T * T);
+  return {cat:'rechnen_feder', catLabel:CATS.rechnen_feder, key:'federD', text: 'Ein Körper mit $m = ' + fmt(m) + ' {kg}$ soll an einer Feder mit der Periodendauer $T = ' + fmt(T) + ' {s}$ schwingen. Welche Federkonstante $D$ braucht man?', steps: [
+    {type:'formula', prompt: 'Stelle $T = 2*pi*sqrt(m/D)$ nach $D$ um.', ref:'4*pi^2*m/T^2', vars:['m','T'], hints: ['Quadrieren: $T^2 = 4*pi^2*m/D$.', 'Dann mit $D$ multiplizieren und durch $T^2$ teilen.'], explain: '<div class="ln">$T^2 = 4*pi^2*m/D$</div><div class="ln">Mal $D$, geteilt durch $T^2$: $D = 4*pi^2*m/T^2$</div>'},
+    {type:'num', prompt: 'Zähler: $4*pi^2*m$ = ?', ans:4 * PI * PI * m, tol:.02, explain: '<div class="ln">$4*pi^2*' + fmt(m) + ' = ' + fmt(4 * PI * PI * m, 4) + '$</div>'},
+    {type:'num', prompt: 'Nenner: $T^2$ = ?', ans:T * T, unit:'s^2', tol:.01, explain: '<div class="ln">$(' + fmt(T) + ' {s})^2 = ' + fmt(T * T) + ' {s^2}$</div>'},
+    {type:'num', prompt: 'Teile: $D$ = ?', ans:D, unit:'N/m', tol:.02, explain: '<div class="ln">$D = ' + fmt(4 * PI * PI * m, 4) + ' / ' + fmt(T * T) + ' = ' + fmt(D, 4) + ' {N/m}$</div>'}]};
+}
+function genFederM(){
+  const D = pick([10, 20, 25, 40, 50, 100]), T = pick([0.5, 1, 1.5, 2]), m = D * T * T / (4 * PI * PI);
+  return {cat:'rechnen_feder', catLabel:CATS.rechnen_feder, key:'federM', text: 'Eine Feder ($D = ' + fmt(D) + ' {N/m}$) schwingt mit einem Körper mit der Periodendauer $T = ' + fmt(T) + ' {s}$. Welche Masse hat der Körper?', steps: [
+    {type:'formula', prompt: 'Stelle die Formel nach $m$ um.', ref:'D*T^2/(4*pi^2)', vars:['D','T'], hints: ['Quadrieren, dann mit $D$ multiplizieren und durch $4π^2$ teilen.'], explain: '<div class="ln">$T^2 = 4*pi^2*m/D$</div><div class="ln">$m = D*T^2/(4*pi^2)$</div>'},
+    {type:'num', prompt: 'Berechne $m$.', ans:m, unit:'kg', tol:.02, hints: ['Erst $D*T^2$ ausrechnen, dann durch 39,48 teilen.'], explain: '<div class="ln">$m = ' + fmt(D) + ' {N/m} * ' + fmt(T * T) + ' {s^2} / 39,478 = ' + fmt(D * T * T, 4) + ' / 39,478 = ' + fmt(m, 4) + ' {kg}$</div>'}]};
+}
+function genFederHooke(){
+  const D = pick([10, 20, 25, 40, 50, 100]), x = pick([0.05, 0.1, 0.2]), F = D * x, m = pick([0.2, 0.5, 1]);
+  const T = 2 * PI * Math.sqrt(m / D);
+  return {cat:'rechnen_feder', catLabel:CATS.rechnen_feder, key:'federHooke', text: 'Zieht man mit der Kraft $F = ' + fmt(F) + ' {N}$ an einer Feder, dehnt sie sich um $x = ' + fmt(x * 100) + ' {cm}$. Danach hängt man einen Körper mit $m = ' + fmt(m) + ' {kg}$ daran und lässt ihn schwingen.', steps: [
+    {type:'num', prompt: 'Bestimme die Federkonstante $D$ aus $F = D*x$ (Achtung: $x$ in m!).', ans:D, unit:'N/m', tol:.01, hints: ['$D = F/x$ – rechne die Auslenkung zuerst von cm in m um.'], explain: '<div class="ln">$x = ' + fmt(x * 100) + ' {cm} = ' + fmt(x) + ' {m}$</div><div class="ln">$D = F/x = ' + fmt(F) + ' {N} / ' + fmt(x) + ' {m} = ' + fmt(D) + ' {N/m}$</div>'},
+    {type:'num', prompt: 'Berechne nun die Periodendauer $T$ des Federpendels.', ans:T, unit:'s', tol:.02, hints: ['$T = 2*pi*sqrt(m/D)$ mit dem gerade berechneten $D$.'], explain: '<div class="ln">$T = 2*pi*sqrt(' + fmt(m) + ' / ' + fmt(D) + ') = 2*pi*' + fmt(Math.sqrt(m / D), 4) + ' = ' + fmt(T, 4) + ' {s}$</div>'}]};
+}
+const genFederAny = () => pick([genFederT, genFederT, genFederD, genFederM, genFederHooke])();
+
+/* ---------- t-y-Diagramm ablesen ---------- */
+function genGraph(){
+  const T = pick([0.4, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4]), A = pick([2, 3, 4, 5]), damped = Math.random() < .3;
+  const tick = Math.round(T * 10) % 5 === 0 ? 0.5 : 0.2;
+  let t0 = 0;
+  if(!damped){
+    const opts = [0, tick], q = T / 4 / tick; if(Math.abs(q - Math.round(q)) < 1e-9) opts.push(T / 4);
+    t0 = pick(opts);
+  }
+  const fig = svgTY({A, T, t0, damp: damped ? T * pick([1.5, 2, 3]) : 0, env: damped, tick}).svg;
+  const steps = [
+    {type:'choice', prompt: 'Ist die Schwingung gedämpft oder ungedämpft?', options: ['ungedämpft (Amplitude bleibt gleich)', 'gedämpft (Amplitude nimmt ab)'], ans: damped ? 1 : 0, explain: '<div class="ln">Prüfe, ob die Maxima von Periode zu Periode kleiner werden. ' + (damped ? 'Hier werden sie kleiner (gestrichelte Hüllkurve) → <b>gedämpft</b>.' : 'Hier bleiben alle Maxima gleich hoch → <b>ungedämpft</b> (Modell).') + '</div>'},
+    {type:'num', prompt: damped ? 'Lies die Amplitude $A$ des <b>ersten</b> Ausschlags ab.' : 'Lies die Amplitude $A$ ab.', ans:A, unit:'cm', tol:.01, hints: ['Die Amplitude misst man von der Nulllinie ($y = 0$) bis zum höchsten Punkt – nicht bis zum tiefsten!'], explain: '<div class="ln">Von der Nulllinie bis zum ersten Maximum: $A = ' + A + ' {cm}$. (Der Abstand zwischen höchstem und tiefstem Punkt wäre $2A = ' + 2 * A + ' {cm}$ – das ist nicht die Amplitude.)</div>'},
+    {type:'num', prompt: 'Lies die Periodendauer $T$ ab.', ans:T, unit:'s', tol:.02, hints: ['Suche zwei benachbarte Maxima und lies den zeitlichen Abstand auf der t-Achse ab.', 'Du kannst auch zwei gleichsinnige Nulldurchgänge nehmen. Zwei direkt aufeinanderfolgende Nulldurchgänge sind nur $T/2$ auseinander.'], explain: '<div class="ln">Zwei benachbarte Maxima: bei $t = ' + fmt(+t0.toFixed(3)) + ' {s}$ und $t = ' + fmt(+(t0 + T).toFixed(3)) + ' {s}$ → $T = ' + fmt(+(t0 + T).toFixed(3)) + ' {s} - ' + fmt(+t0.toFixed(3)) + ' {s} = ' + fmt(T) + ' {s}$</div>'},
+    {type:'num', prompt: 'Berechne die Frequenz $f$.', ans:1 / T, unit:'Hz', tol:.02, hints: ['$f = 1/T$'], explain: '<div class="ln">$f = 1/T = 1/(' + fmt(T) + ' {s}) = ' + fmt(1 / T, 4) + ' {Hz}$</div>'}
+  ];
+  return {cat:'diagramm', catLabel:CATS.diagramm, key:'graph', text: 'Das Bild zeigt das t-y-Diagramm einer Schwingung. Zähle die Kästchen genau!', figure: fig, steps};
+}
+
+/* ---------- Kräfte, Orte, Energie ---------- */
+const POS = [
+  ['Die Geschwindigkeit ist am <b>größten</b>', 0, 'Beim Durchgang durch die Ruhelage ist die rücktreibende Kraft null, aber der Körper hat vorher Geschwindigkeit aufgebaut – Trägheit! Im t-y-Diagramm: bei den Nulldurchgängen.'],
+  ['Die Geschwindigkeit ist <b>null</b>', 1, 'An den Umkehrpunkten dreht der Körper um – dort steht er für einen Moment still.'],
+  ['Die <b>Beschleunigung</b> ist am größten', 1, 'Beschleunigung ~ rücktreibende Kraft ($m*a = -D*x$), und die ist bei maximaler Auslenkung am größten.'],
+  ['Die <b>Beschleunigung</b> ist null', 0, '$m*a = -D*x$: Bei $x = 0$ (Ruhelage) ist die Kraft und damit die Beschleunigung null.'],
+  ['Die <b>rücktreibende Kraft</b> ist am größten', 1, '$F_r = -D*x$ wird bei größtem $x$ (= Amplitude) maximal.'],
+  ['Die <b>rücktreibende Kraft</b> ist null', 0, '$F_r = -D*x$ → bei $x = 0$ ist $F_r = 0$.'],
+  ['Die <b>kinetische Energie</b> ist maximal', 0, '$E_kin = 1/2*m*v^2$ ist bei größter Geschwindigkeit maximal – in der Ruhelage.'],
+  ['Die <b>potenzielle Energie</b> (Spannenergie) ist maximal', 1, '$E_pot = 1/2*D*x^2$ ist bei größter Auslenkung maximal – an den Umkehrpunkten.'],
+  ['Die <b>kinetische Energie</b> ist null', 1, 'An den Umkehrpunkten ist $v = 0$, also $E_kin = 0$; die gesamte Energie steckt als $E_pot$ in der Auslenkung.'],
+  ['Die Auslenkung ist null', 0, 'Das ist die Definition der Ruhelage (Gleichgewichtslage).'],
+  ['Beim Federpendel gilt: Gewichtskraft und Federkraft sind <b>gleich groß</b>', 0, 'In der Ruhelage herrscht Kräftegleichgewicht – die resultierende Kraft ist null.']
+];
+function genPos(){
+  const p = pick(POS);
+  return {cat:'kraefte', catLabel:CATS.kraefte, key:'pos', text: 'Ein Pendel (Faden oder Feder) schwingt ungedämpft.',
+    steps: [{type:'choice', prompt: p[0] + ' …', options: ['in der Ruhelage (Nulldurchgang)', 'an den Umkehrpunkten (maximale Auslenkung)'], ans: p[1], explain: '<div class="ln">' + p[2] + '</div>'}]};
+}
+function genEnergy(){
+  const D = pick([20, 50, 100, 200]), A = pick([0.05, 0.1, 0.2]), m = pick([0.2, 0.5, 1, 2]);
+  const E = 0.5 * D * A * A, v = Math.sqrt(2 * E / m);
+  return {cat:'kraefte', catLabel:CATS.kraefte, key:'energy', title:'Energie beim Federpendel (anspruchsvoll)', text: 'Ein Federpendel ($D = ' + fmt(D) + ' {N/m}$, $m = ' + fmt(m) + ' {kg}$) wird um $A = ' + fmt(A * 100) + ' {cm}$ ausgelenkt und losgelassen. Reibung wird vernachlässigt.', steps: [
+    {type:'num', prompt: 'Wie groß ist die Spannenergie am Umkehrpunkt ($x = A$)?', ans:E, unit:'J', tol:.02, hints: ['$E_pot = 1/2*D*x^2$ – Auslenkung in Meter einsetzen!'], explain: '<div class="ln">$E_pot = 1/2*D*A^2 = 1/2 * ' + fmt(D) + ' {N/m} * (' + fmt(A) + ' {m})^2 = ' + fmt(E, 4) + ' {J}$</div>'},
+    {type:'num', prompt: 'Wie groß ist die kinetische Energie beim Durchgang durch die Ruhelage?', ans:E, unit:'J', tol:.02, hints: ['Ohne Dämpfung bleibt $E_kin + E_pot$ konstant. In der Ruhelage ist $E_pot = 0$.'], explain: '<div class="ln">Energieerhaltung: $E_kin + E_pot = konstant$. In der Ruhelage ist $E_pot = 0$, also ist $E_kin,max = E_pot,max = ' + fmt(E, 4) + ' {J}$.</div>'},
+    {type:'num', prompt: 'Wie schnell ist der Körper dann (maximale Geschwindigkeit)?', ans:v, unit:'m/s', tol:.02, hints: ['$E_kin = 1/2*m*v^2$ nach $v$ auflösen: $v = sqrt(2*E/m)$.'], explain: '<div class="ln">$1/2*m*v^2 = E$ → $v = sqrt(2*E/m) = sqrt(2*' + fmt(E, 4) + ' / ' + fmt(m) + ') = ' + fmt(v, 4) + ' {m/s}$</div>'}]};
+}
+
+/* ---------- Diagramm-Aufgaben ---------- */
+const FORCE_OPT = ['Gewichtskraft F_G', 'Federkraft F_Feder', 'rücktreibende Kraft F_r (resultierende Kraft zur Ruhelage hin)', 'Reibungskraft', 'Erregerkraft'];
+function diagFeder(){
+  return {cat:'kraefte', catLabel:CATS.kraefte, key:'diag:feder', title:'Kräfte am Federpendel', text: 'Das Bild zeigt dasselbe Federpendel an drei Orten. Ordne die nummerierten Pfeile zu. (Die Länge der Pfeile zeigt die Größe der Kräfte.)', figure: svgFeder(), steps: [
+    {type:'choice', select:true, prompt: '<span class="mk">1</span> – roter Pfeil nach unten:', options: FORCE_OPT, ans:0, explain: '<div class="ln">Der Pfeil nach unten, der an allen drei Orten gleich lang ist, ist die <b>Gewichtskraft</b> $F_G = m*g$. Sie ändert sich beim Schwingen nicht.</div>'},
+    {type:'choice', select:true, prompt: '<span class="mk">2</span> – blauer Pfeil nach oben (unten am Umkehrpunkt):', options: FORCE_OPT, ans:1, explain: '<div class="ln">Die Feder zieht nach oben: <b>Federkraft</b>. Unten ist die Feder am stärksten gedehnt → der Pfeil ist am längsten (länger als $F_G$).</div>'},
+    {type:'choice', select:true, prompt: '<span class="mk">3</span> – grüner Pfeil am unteren Umkehrpunkt:', options: FORCE_OPT, ans:2, explain: '<div class="ln">Unten ist $F_Feder > F_G$. Die Differenz bleibt übrig und zeigt nach oben – zur Ruhelage hin: die <b>rücktreibende (resultierende) Kraft</b> $F_r = F_Feder - F_G$.</div>'},
+    {type:'choice', select:true, prompt: '<span class="mk">4</span> – grüner Pfeil am oberen Umkehrpunkt (er zeigt nach unten!):', options: FORCE_OPT, ans:2, explain: '<div class="ln">Oben ist die Feder weniger gespannt: $F_G > F_Feder$. Die Differenz zeigt nach unten – wieder <b>zur Ruhelage hin</b>. Die rücktreibende Kraft zeigt also immer entgegen der Auslenkung ($F_r = -D*x$).</div>'},
+    {type:'choice', prompt: 'Was gilt in der Ruhelage (Mitte)?', options: ['$F_G$ und $F_Feder$ sind gleich groß, die resultierende Kraft ist null', '$F_Feder$ ist größer als $F_G$', '$F_G$ ist größer als $F_Feder$', 'Es wirkt gar keine Gewichtskraft'], ans:0, explain: '<div class="ln">In der Ruhelage herrscht Kräftegleichgewicht: $F_Feder = F_G$ → $F_r = 0$. Der Körper bewegt sich dort trotzdem, weil er wegen der <b>Trägheit</b> mit maximaler Geschwindigkeit durchschießt.</div>'}]};
+}
+const FADEN_OPT = ['Gewichtskraft F_G', 'Fadenkraft F_S (Spannkraft)', 'rücktreibende Kraft F_r (Komponente von F_G zur Ruhelage)', 'Komponente von F_G entlang des Fadens', 'Zentrifugalkraft'];
+function diagFaden(){
+  return {cat:'kraefte', catLabel:CATS.kraefte, key:'diag:faden', title:'Kräfte am Fadenpendel', text: 'Ein Fadenpendel ist um den Winkel $alpha$ ausgelenkt. Ordne die Pfeile zu. Die Gewichtskraft wurde in zwei Komponenten zerlegt (gestrichelte Hilfslinien).', figure: svgFaden(), steps: [
+    {type:'choice', select:true, prompt: '<span class="mk">1</span> – roter Pfeil, senkrecht nach unten:', options: FADEN_OPT, ans:0, explain: '<div class="ln">Senkrecht nach unten zeigt immer die <b>Gewichtskraft</b> $F_G = m*g$.</div>'},
+    {type:'choice', select:true, prompt: '<span class="mk">2</span> – lila Pfeil, entlang des Fadens zum Aufhängepunkt:', options: FADEN_OPT, ans:1, explain: '<div class="ln">Der Faden kann nur ziehen – die <b>Fadenkraft (Spannkraft)</b> zeigt entlang des Fadens zum Aufhängepunkt.</div>'},
+    {type:'choice', select:true, prompt: '<span class="mk">3</span> – grüner Pfeil, quer zum Faden Richtung Ruhelage:', options: FADEN_OPT, ans:2, explain: '<div class="ln">Der Teil der Gewichtskraft, der <b>quer zum Faden</b> wirkt, zieht das Pendel zur Ruhelage zurück: die <b>rücktreibende Kraft</b> $F_r$. (Zusatz: $F_r = F_G*sin(alpha)$ – je größer der Winkel, desto größer $F_r$; in der Ruhelage ist $alpha = 0$, also $F_r = 0$.)</div>'},
+    {type:'choice', select:true, prompt: '<span class="mk">4</span> – grauer Pfeil, entlang des Fadens vom Aufhängepunkt weg:', options: FADEN_OPT, ans:3, explain: '<div class="ln">Der zweite Teil der Gewichtskraft zeigt <b>entlang des Fadens</b> nach außen. Er wird vom Faden aufgenommen (gespannt) und trägt nicht zur Rückstellung bei.</div>'},
+    {type:'choice', prompt: 'Wann ist die rücktreibende Kraft $F_r$ am größten?', options: ['am Umkehrpunkt (größter Winkel)', 'in der Ruhelage', 'immer gleich groß'], ans:0, explain: '<div class="ln">$F_r$ wächst mit der Auslenkung: am Umkehrpunkt am größten, in der Ruhelage null.</div>'}]};
+}
+const TY_OPT = ['Amplitude A', 'Periodendauer T', 'halbe Periodendauer T/2', 'doppelte Amplitude 2A', 'Ruhelage (Gleichgewichtslage, y = 0)', 'Hüllkurve'];
+function diagTy(){
+  return {cat:'diagramm', catLabel:CATS.diagramm, key:'diag:ty', title:'t-y-Diagramm beschriften', text: 'Was zeigen die markierten Pfeile bzw. Linien?', figure: svgTYlabel(false), steps: [
+    {type:'choice', select:true, prompt:'<span class="mk">1</span>', options: TY_OPT, ans:0, explain: '<div class="ln">Von der Nulllinie bis zum höchsten Punkt = <b>Amplitude A</b>.</div>'},
+    {type:'choice', select:true, prompt:'<span class="mk">2</span>', options: TY_OPT, ans:1, explain: '<div class="ln">Zeitlicher Abstand zwischen zwei benachbarten Maxima = <b>Periodendauer T</b>.</div>'},
+    {type:'choice', select:true, prompt:'<span class="mk">3</span>', options: TY_OPT, ans:2, explain: '<div class="ln">Der Abstand zweier direkt aufeinanderfolgender Nulldurchgänge ist nur eine <b>halbe Periode T/2</b>.</div>'},
+    {type:'choice', select:true, prompt:'<span class="mk">4</span>', options: TY_OPT, ans:3, explain: '<div class="ln">Vom tiefsten zum höchsten Punkt ist der Abstand <b>2A</b> – nicht die Amplitude!</div>'},
+    {type:'choice', select:true, prompt:'<span class="mk">5</span> – die waagerechte Achse (y = 0):', options: TY_OPT, ans:4, explain: '<div class="ln">Die Nulllinie ist die <b>Ruhelage</b>. An den Nulldurchgängen hat der Körper seine größte Geschwindigkeit.</div>'}]};
+}
+function diagTyDamp(){
+  return {cat:'diagramm', catLabel:CATS.diagramm, key:'diag:tydamp', title:'Gedämpfte Schwingung', text: 'Das Diagramm zeigt eine gedämpfte Schwingung mit gestrichelter Hüllkurve.', figure: svgTYlabel(true), steps: [
+    {type:'choice', select:true, prompt:'<span class="mk">1</span> – Pfeil vom Ruhelage-Niveau zum ersten Maximum:', options: TY_OPT.concat(['erste Amplitude A₁']).slice(0, 5).concat(['Hüllkurve', 'erste Amplitude A₁']), ans:6, explain: '<div class="ln">Das ist die <b>erste Amplitude</b> $A_1$. Bei einer gedämpften Schwingung nimmt sie von Periode zu Periode ab.</div>'},
+    {type:'choice', select:true, prompt:'<span class="mk">2</span> – waagerechter Pfeil oben zwischen zwei Maxima:', options: TY_OPT.slice(0, 5).concat(['Hüllkurve', 'erste Amplitude A₁']), ans:1, explain: '<div class="ln">Abstand zweier Maxima = <b>Periodendauer T</b>. Bei schwacher Dämpfung bleibt $T$ praktisch gleich.</div>'},
+    {type:'choice', select:true, prompt:'<span class="mk">3</span> – gestrichelte Kurve, an der die Maxima liegen:', options: TY_OPT.slice(0, 5).concat(['Hüllkurve', 'erste Amplitude A₁']), ans:5, explain: '<div class="ln">Die Maxima liegen auf der abklingenden <b>Hüllkurve</b>. Bei Luft-/Flüssigkeitsreibung ist sie exponentiell (pro Periode derselbe Faktor), bei Reibung fester Flächen linear (pro Periode derselbe Betrag).</div>'},
+    {type:'choice', prompt:'Warum nimmt die Amplitude ab?', options: ['Die Dämpfungskraft (Reibung) entzieht dem System Energie.', 'Die Masse wird kleiner.', 'Die Periodendauer wird kleiner.', 'Die Erregerkraft wird größer.'], ans:0, explain: '<div class="ln">Die Dämpfungskraft $F_d = -b*v$ wandelt Schwingungsenergie in Wärme um.</div>'}]};
+}
+function diagTypen(){
+  const types = ['ungedaempft', 'gedaempft', 'erzwungen', 'selbsterregt'], names = ['ungedämpfte freie Schwingung', 'gedämpfte freie Schwingung', 'erzwungene Schwingung', 'selbsterregte Schwingung'];
+  const ord = shuffle([0, 1, 2, 3]), L = ['A', 'B', 'C', 'D'];
+  const expl = [
+    'Konstante Amplitude, keine Energiezufuhr: <b>ungedämpft</b> (nur ein Modell).',
+    'Amplitude klingt ab (Hüllkurve nimmt ab): <b>gedämpft</b>.',
+    'Erst ein <b>Einschwingvorgang</b>, dann konstante Amplitude, die der Erreger vorgibt: <b>erzwungen</b>.',
+    'Konstante Amplitude, aber mit kleinen <b>Energie-Stößen</b> (orange Pfeile), die das System selbst steuert (Rückkopplung): <b>selbsterregt</b>, z. B. Pendeluhr.'];
+  return {cat:'diagramm', catLabel:CATS.diagramm, key:'diag:typen', title:'Schwingungstypen erkennen', text: 'Vier t-y-Diagramme. Orange Pfeile bedeuten: Hier wird dem System Energie zugeführt.', figure: ord.map((t, i) => svgMini(types[t], L[i])).join(''),
+    steps: ord.map((t, i) => ({type:'choice', select:true, prompt: 'Diagramm <span class="mk">' + L[i] + '</span> ist eine …', options: names, ans:t, explain: '<div class="ln">' + expl[t] + '</div>'}))};
+}
+
+/* ===================== WISSENSFRAGEN ===================== */
+/* [Thema, Frage, richtig, [falsch…], Erklärung] */
+const BANK = [
+  ['basis','Welche zwei Dinge braucht jede mechanische Schwingung?','Eine rücktreibende Kraft und Trägheit (Masse)',['Reibung und eine Antriebskraft','Eine konstante Kraft und eine Feder','Nur eine große Masse'],'Die rücktreibende Kraft bringt den Körper zur Ruhelage zurück, die Trägheit lässt ihn über die Ruhelage hinausschießen. Schwingung = rücktreibende Kraft + Trägheit.'],
+  ['basis','Warum bleibt ein Pendel in der Ruhelage nicht einfach stehen?','Wegen seiner Trägheit hat es dort noch die größte Geschwindigkeit',['Weil dort die Reibung am größten ist','Weil die Feder dort am stärksten zieht','Weil die Gewichtskraft dort null ist'],'In der Ruhelage ist die rücktreibende Kraft null, der Körper bewegt sich aber noch – er schießt wegen der Trägheit über die Ruhelage hinaus.'],
+  ['basis','Was ist eine mechanische Schwingung?','Eine zeitlich periodische Hin- und Herbewegung um eine stabile Gleichgewichtslage',['Eine gleichförmige Bewegung auf einer Kreisbahn','Eine einmalige Bewegung zur Ruhelage','Eine Bewegung mit konstanter Geschwindigkeit'],'Definition: periodische Hin- und Herbewegung eines Körpers um seine stabile Gleichgewichtslage (Ruhelage).'],
+  ['basis','Was passiert am Federpendel beim Durchgang durch die Ruhelage?','Die kinetische Energie ist maximal, die Spannenergie null',['Die kinetische Energie ist null, die Spannenergie maximal','Beide Energien sind maximal','Beide Energien sind null'],'Energie wandelt sich ständig um: Ruhelage → $E_kin$ maximal; Umkehrpunkte → $E_pot$ maximal.'],
+  ['basis','Welche Aussage zur <b>ungedämpften</b> Schwingung stimmt?','Sie ist ein Modell: Energie bleibt erhalten, die Amplitude ist konstant',['Sie kommt in der Praxis immer vor','Die Amplitude wird mit der Zeit größer','Die Periodendauer nimmt ab'],'In echt gibt es immer Reibung. Ungedämpft ist die Idealisierung.'],
+  ['basis','Was bedeutet das Minuszeichen in $F_r = -D*x$?','Die Kraft zeigt immer entgegen der Auslenkung',['Die Kraft ist negativ und damit kleiner als null','Die Feder ist gestaucht','Die Kraft wirkt immer nach links'],'Bei Auslenkung nach rechts zeigt die Kraft nach links und umgekehrt – immer zur Ruhelage hin.'],
+  ['basis','Wann entsteht eine <b>harmonische</b> Schwingung?','Wenn die rücktreibende Kraft proportional zur Auslenkung ist',['Wenn die Dämpfung sehr groß ist','Wenn die Masse sehr klein ist','Wenn die Auslenkung konstant bleibt'],'$F_r ~ x$ (Hookesches Gesetz) führt auf $x(t) = A*cos(omega*t + phi)$.'],
+  ['basis','Welche Gleichung beschreibt die Bewegung am Federpendel?','$m*a = -D*x$',['$m*a = D*x^2$','$F = m*g$','$a = -D*v$'],'Trägheitskraft $m*a$ = rücktreibende Kraft $-D*x$ → Differentialgleichung der harmonischen Schwingung.'],
+  ['kenn','Welche Einheit hat die Federkonstante $D$?','N/m',['N·m','kg/s','N'],'$D = F/x$ → Newton pro Meter.'],
+  ['kenn','Welche Einheit hat die Kreisfrequenz $omega$?','rad/s (also 1/s)',['Hz·s','m/s','s'],'$omega = 2*pi*f$ → Einheit 1/s bzw. rad/s.'],
+  ['kenn','Wie hängen Frequenz $f$ und Periodendauer $T$ zusammen?','$f = 1/T$',['$f = T$','$f = T^2$','$f = 2*pi*T$'],'Doppelte Periodendauer → halbe Frequenz (antiproportional).'],
+  ['kenn','Wie ist die Kreisfrequenz definiert?','$omega = 2*pi*f = 2*pi/T$',['$omega = f/T$','$omega = 2*pi*T$','$omega = f^2$'],'In einer Periode werden $2*pi$ im Bogenmaß „durchlaufen“.'],
+  ['kenn','Was gibt die Amplitude $A$ an?','Die maximale Auslenkung aus der Ruhelage',['Die Zeit für eine Schwingung','Die Anzahl der Schwingungen pro Sekunde','Den Abstand zwischen höchstem und tiefstem Punkt'],'Amplitude = maximale Auslenkung, in Metern. Von Maximum zu Minimum ist es $2A$.'],
+  ['kenn','Die Periodendauer verdoppelt sich. Was passiert mit der Frequenz?','Sie halbiert sich',['Sie verdoppelt sich','Sie bleibt gleich','Sie vervierfacht sich'],'$f = 1/T$.'],
+  ['kenn','Welche Einheit hat die Frequenz?','Hz = 1/s',['m/s','s','N/m'],'Hertz = Schwingungen pro Sekunde.'],
+  ['diagr','Wie liest man die Amplitude im t-y-Diagramm ab?','Abstand der Nulllinie zum höchsten Punkt',['Abstand zwischen höchstem und tiefstem Punkt','Zeitabstand zweier Maxima','Zeit bis zum ersten Nulldurchgang'],'Amplitude = Abstand von der Ruhelage (y = 0). Max–Min wäre $2A$.'],
+  ['diagr','Wie liest man die Periodendauer $T$ ab?','Zeitlicher Abstand zweier benachbarter Maxima',['Höhe des Maximums','Abstand der Nulllinie zum Maximum','Zeit bis zum Ende der Zeichnung'],'Am genauesten über mehrere Perioden messen und durch die Anzahl teilen.'],
+  ['diagr','Zwei direkt aufeinanderfolgende Nulldurchgänge liegen wie weit auseinander?','$T/2$',['$T$','$2T$','$A$'],'Gleichsinnige Nulldurchgänge: $T$; direkt aufeinanderfolgende: $T/2$.'],
+  ['diagr','Wo hat der Körper im t-y-Diagramm die größte Geschwindigkeit?','Bei den Nulldurchgängen (Ruhelage)',['Bei den Maxima','Bei den Minima','Überall gleich'],'In der Ruhelage ist $E_kin$ maximal, an den Umkehrpunkten steht der Körper kurz still.'],
+  ['diagr','Woran erkennt man im t-y-Diagramm eine gedämpfte Schwingung?','Die Maxima werden von Periode zu Periode kleiner',['Die Periodendauer nimmt zu','Die Kurve ist eine Gerade','Die Maxima werden größer'],'Die Maxima liegen auf einer abklingenden Hüllkurve.'],
+  ['mess','Wie misst man die Periodendauer eines Pendels am genauesten?','Zeit für 10 Schwingungen stoppen und durch 10 teilen',['Eine Schwingung stoppen','Die Amplitude messen','Die Masse wiegen'],'Die Reaktionszeit beim Stoppen fällt dann kaum ins Gewicht.'],
+  ['prop','Die Masse beim Federpendel wird verdoppelt. $T$ wird …','√2 ≈ 1,41-mal so groß',['doppelt so groß','halb so groß','unverändert'],'$T ~ sqrt(m)$: Faktor 2 → $sqrt(2) ≈ 1,41$.'],
+  ['prop','Wie weist man $T ~ sqrt(m)$ im Experiment nach?','$T^2$ gegen $m$ auftragen – es ergibt sich eine Ursprungsgerade',['$T$ gegen $m$ auftragen – es ergibt sich eine Gerade','$T·m$ konstant prüfen','$T$ gegen $1/m$ auftragen'],'Linearisieren: $T^2 ~ m$ ist eine Ursprungsgerade. Oder Quotienten-Test: $T^2/m$ konstant.'],
+  ['prop','Welcher Quotient ist bei $T ~ sqrt(m)$ konstant?','$T^2/m$',['$T/m$','$T·m$','$T/sqrt(m)^2$'],'$T ~ sqrt(m)$ ⇔ $T^2 ~ m$ ⇔ $T^2/m = konstant$.'],
+  ['prop','Bei $y ~ 1/x$ wird $x$ verdoppelt. $y$ wird …','halbiert',['verdoppelt','vervierfacht','um √2 kleiner'],'Antiproportional: Faktor 2 rein → Faktor 1/2 raus.'],
+  ['prop','Welche Größen sind zueinander antiproportional?','Frequenz $f$ und Periodendauer $T$',['Periodendauer und Masse beim Federpendel','Amplitude und Frequenz','Fadenlänge und Periodendauer'],'$f = 1/T$.'],
+  ['faden','Von welchen Größen hängt $T$ beim Fadenpendel ab?','Von der Fadenlänge $l$ und von $g$',['Von der Masse $m$ und $l$','Von $m$, $l$ und $g$','Von der Amplitude und $m$'],'$T = 2*pi*sqrt(l/g)$ – keine Masse, keine Amplitude (bei kleinen Winkeln).'],
+  ['faden','Warum hängt $T$ beim Fadenpendel nicht von der Masse ab?','Größere Masse: größere rücktreibende Kraft, aber auch größere Trägheit – beides gleicht sich aus',['Weil die Masse zu klein ist, um zu wirken','Weil der Faden die Masse trägt','Weil die Reibung die Masse ausgleicht'],'Die Rückstellkraft kommt von der Schwerkraft und wächst mit $m$, die Trägheit auch – $m$ kürzt sich heraus.'],
+  ['faden','Dasselbe Fadenpendel schwingt auf dem Mond ($g$ kleiner) …','langsamer ($T$ größer)',['schneller ($T$ kleiner)','genauso schnell','gar nicht'],'$T ~ 1/sqrt(g)$ – kleineres $g$ ergibt größeres $T$.'],
+  ['faden','Bis etwa welchem Winkel gilt $T = 2*pi*sqrt(l/g)$ gut?','bis ca. 10°',['bis ca. 90°','nur bei 0°','für jeden Winkel'],'Bei größeren Winkeln wird $T$ etwas größer.'],
+  ['faden','Wie lang ist ungefähr ein Pendel mit $T = 2 {s}$ (Sekundenpendel)?','ca. 1 m',['ca. 10 cm','ca. 4 m','ca. 20 m'],'$l = g*T^2/(4*pi^2) = 9,81 * 4 / 39,48 ≈ 0,99 {m}$.'],
+  ['faden','Warum geht eine Pendeluhr gleichmäßig?','Bei kleinen Winkeln ist $T$ nicht von der Amplitude abhängig',['Weil die Masse sehr groß ist','Weil sie keine Reibung hat','Weil $T$ von der Temperatur abhängt'],'Die Periodendauer bleibt auch dann gleich, wenn die Amplitude durch Reibung etwas abnimmt.'],
+  ['faden','Ein Fadenpendel wird mit doppelter Masse betrieben. Was passiert mit $T$?','Es bleibt gleich',['Es verdoppelt sich','Es halbiert sich','Es wird $sqrt(2)$-mal so groß'],'Die Masse steht nicht in der Formel.'],
+  ['feder','Von welchen Größen hängt $T$ beim Federpendel ab?','Von der Masse $m$ und der Federkonstanten $D$',['Von $l$ und $g$','Nur von der Amplitude','Von $m$ und $g$'],'$T = 2*pi*sqrt(m/D)$.'],
+  ['feder','Wie verhält sich ein Federpendel auf dem Mond (im Vergleich zur Erde)?','Die Periodendauer ist gleich',['$T$ ist größer','$T$ ist kleiner','Es schwingt nicht'],'$g$ steht nicht in der Formel – die Schwerkraft verschiebt nur die Ruhelage.'],
+  ['feder','Eine härtere Feder (größeres $D$) bewirkt …','kleineres $T$ (schnellere Schwingung)',['größeres $T$','keine Änderung von $T$','kleinere Frequenz'],'$T ~ 1/sqrt(D)$.'],
+  ['feder','Ein voll beladenes Auto federt nach einer Bodenwelle …','langsamer, weil die Masse größer ist',['schneller, weil die Feder stärker gedehnt ist','genauso schnell','gar nicht'],'Größere Masse → größeres $T$.'],
+  ['feder','Die Federkonstante wird vervierfacht. Was passiert mit $T$?','$T$ halbiert sich',['$T$ verdoppelt sich','$T$ vervierfacht sich','$T$ bleibt gleich'],'$T ~ 1/sqrt(D)$: Faktor 4 → 1/2.'],
+  ['kraft','Federpendel in der Ruhelage – was stimmt?','Federkraft und Gewichtskraft sind gleich groß, die Gesamtkraft ist null',['Es wirkt keine Kraft','Die Federkraft ist größer als die Gewichtskraft','Die Gewichtskraft ist null'],'Kräftegleichgewicht in der Ruhelage.'],
+  ['kraft','Wo ist die rücktreibende Kraft am größten?','An den Umkehrpunkten',['In der Ruhelage','Beim Nulldurchgang','Überall gleich'],'$F_r = -D*x$ – maximal bei maximaler Auslenkung.'],
+  ['kraft','Wo ist die Beschleunigung am größten?','An den Umkehrpunkten',['In der Ruhelage','Beim Nulldurchgang','Sie ist konstant'],'$a = F_r/m$ ist dort am größten.'],
+  ['kraft','Die Dämpfungskraft $F_d = -b*v$ ist …','proportional zur Geschwindigkeit und der Bewegung entgegengerichtet',['proportional zur Auslenkung','konstant','proportional zur Masse'],'Sie entzieht dem System Energie (meist als Wärme).'],
+  ['kraft','Was ist die Erregerkraft?','Eine von außen periodisch aufgeprägte Kraft bei der erzwungenen Schwingung',['Die rücktreibende Kraft der Feder','Die Reibungskraft','Die Gewichtskraft'],'$F_e(t) = F_0·cos(omega_e·t)$.'],
+  ['typ','Luft- oder Flüssigkeitsreibung: Wie nimmt die Amplitude ab?','Exponentiell – pro Periode um denselben Faktor',['Linear – pro Periode um denselben Betrag','Gar nicht','Sprunghaft'],'Bei Reibung fester Flächen nimmt sie dagegen linear ab (pro Periode derselbe Betrag).'],
+  ['typ','Reibung zwischen festen Flächen: Wie nimmt die Amplitude ab?','Linear – pro Periode um denselben Betrag',['Exponentiell – pro Periode um denselben Faktor','Sie nimmt zu','Sie bleibt gleich'],'Luftreibung: exponentiell (derselbe Faktor).'],
+  ['typ','Was ist der aperiodische Grenzfall?','Schnellste Rückkehr zur Ruhelage ohne Überschwingen (z. B. Stoßdämpfer)',['Eine Schwingung ohne Dämpfung','Eine Schwingung mit Resonanz','Eine selbsterregte Schwingung'],'Starke Dämpfung: Schwingfall → aperiodischer Grenzfall → Kriechfall.'],
+  ['typ','Was ist der Kriechfall?','Sehr starke Dämpfung: Das System kriecht langsam zur Ruhelage und schwingt nicht mehr',['Schnellstmögliche Rückkehr ohne Überschwingen','Eine Schwingung mit wachsender Amplitude','Resonanz'],'Er liegt jenseits des aperiodischen Grenzfalls.'],
+  ['typ','Mit welcher Frequenz schwingt ein System nach dem Einschwingen bei einer erzwungenen Schwingung?','Mit der Erregerfrequenz',['Mit seiner Eigenfrequenz','Mit der Frequenz null','Mit der doppelten Eigenfrequenz'],'Der Takt kommt von außen.'],
+  ['typ','Wann tritt Resonanz auf?','Wenn die Erregerfrequenz ungefähr der Eigenfrequenz entspricht',['Wenn die Dämpfung sehr groß ist','Wenn die Erregerfrequenz null ist','Wenn die Amplitude klein ist'],'$f_E ≈ f_0$ → Amplitude wird sehr groß. Je schwächer die Dämpfung, desto höher und schärfer die Resonanz.'],
+  ['typ','Je schwächer die Dämpfung, desto …','höher und schärfer die Resonanzspitze',['niedriger die Resonanzspitze','früher klingt die Schwingung ab','größer die Eigenfrequenz'],'Wenig Dämpfung → viel Energieaufnahme bei Resonanz.'],
+  ['typ','Welches ist ein Beispiel für eine <b>selbsterregte</b> Schwingung?','Pendeluhr',['Lautsprechermembran','angeschubste Schaukel','Stoßdämpfer'],'Selbsterregt: Das System steuert die Energiezufuhr selbst (Rückkopplung) – Pendeluhr, Geigensaite.'],
+  ['typ','Welches ist ein Beispiel für eine <b>erzwungene</b> Schwingung?','Lautsprechermembran',['Pendeluhr','Geigensaite','Schaukel ohne Anschubsen'],'Ein äußerer Erreger gibt den Takt vor (auch: angeschubste Schaukel).'],
+  ['typ','Wer bestimmt bei einer selbsterregten Schwingung den Takt?','Das schwingende System selbst (Rückkopplung)',['Ein äußerer Erreger','Die Reibung','Niemand'],'Die Energiezufuhr gleicht genau die Reibungsverluste aus → Amplitude konstant.'],
+  ['typ','Energie wird zugeführt, ein äußerer Erreger mit eigener Frequenz gibt den Takt vor. Welcher Typ?','erzwungene Schwingung',['selbsterregte Schwingung','gedämpfte Schwingung','ungedämpfte freie Schwingung'],'Entscheidungshilfe: Energie zugeführt? Wer gibt den Takt? Äußerer Erreger → erzwungen; System selbst → selbsterregt.'],
+  ['typ','Die Stoßdämpfer eines Autos sind ein Beispiel für …','gewollte Dämpfung einer Feder-Masse-Schwingung',['Resonanz','Selbsterregung','eine ungedämpfte Schwingung'],'Sie lassen Schwingungen nach einer Bodenwelle schnell abklingen.'],
+  ['typ','Wie ändert sich die Periodendauer bei schwacher Dämpfung?','Sie bleibt fast gleich',['Sie wird sehr groß','Sie halbiert sich pro Periode','Sie wird null'],'Die Maxima liegen weiter im gleichen zeitlichen Abstand.'],
+  ['typ','Ein Metronom: Das Laufgewicht wird nach oben geschoben. Das Metronom schwingt …','langsamer',['schneller','gleich schnell','gar nicht'],'Ähnlich wie ein längerer Faden beim Fadenpendel.'],
+  ['typ','Eine Schaukel mit längeren Ketten schwingt …','langsamer',['schneller','gleich schnell','nur mit Dämpfung'],'Schaukel = Pendel: $T ~ sqrt(l)$.'],
+  ['mess','Wofür wird das Foucaultsche Pendel benutzt?','Es zeigt die Drehung der Erde',['Es misst die Fallbeschleunigung genau','Es zeigt Resonanz','Es misst die Masse der Erde'],'Die Schwingungsebene scheint sich zu drehen, weil sich die Erde darunter wegdreht.'],
+  ['mess','Warum dreht sich beim Foucaultschen Pendel scheinbar die Schwingungsebene?','Das Pendel behält wegen seiner Trägheit die Ebene bei, die Erde dreht sich darunter weg',['Weil der Faden sich verdreht','Weil der Wind das Pendel dreht','Weil die Masse zu groß ist'],'Für den Beobachter auf der Erde sieht es so aus, als drehe sich die Ebene.'],
+  ['mess','Wie lange dauert eine volle Drehung der Schwingungsebene am Nordpol?','24 Stunden',['12 Stunden','30 Stunden','Sie dreht sich nicht'],'$T = 24 {h} / sin(phi)$ – am Pol ist $phi = 90°$.'],
+  ['mess','Wie verhält sich das Foucaultsche Pendel am Äquator?','Die Schwingungsebene dreht sich nicht',['24 Stunden pro Umdrehung','Sie dreht sich sehr schnell','Es schwingt nicht'],'$sin(0°) = 0$ → keine Drehung.'],
+  ['mess','Was macht die Fast-Fourier-Transformation (FFT)?','Sie zerlegt ein Schwingungssignal in einzelne Sinus-Frequenzen',['Sie misst die Masse','Sie dämpft die Schwingung','Sie erzeugt Resonanz'],'Damit erkennt man z. B. welches Bauteil (Unwucht) eine Störung verursacht.'],
+  ['mess','Wie funktioniert ein Beschleunigungssensor (z. B. im Smartphone)?','Eine innere Masse drückt wegen ihrer Trägheit auf einen Sensor',['Er misst die Temperatur','Er zählt Pendelschwingungen','Er misst die Lichtstärke'],'Die gemessene Beschleunigung liefert Auslenkung und Kenngrößen.']
+];
+function genMC(tags, seen){
+  const set = tags ? tags.split(',') : null;
+  let pool = BANK.map((b, i) => [b, i]).filter(([b]) => !set || set.includes(b[0]));
+  if(seen){ const fresh = pool.filter(([, i]) => !seen.has(i)); if(fresh.length) pool = fresh; }
+  const [b, idx] = pick(pool);
+  if(seen) seen.add(idx);
+  const opts = shuffle([b[2]].concat(b[3]));
+  return {cat:'konzept', catLabel:CATS.konzept, key:'mc:' + (tags || ''),
+    steps: [{type:'choice', prompt: b[1], options: opts, ans: opts.indexOf(b[2]), explain: '<div class="ln">' + b[4] + '</div>', hints: []}]};
+}
+
+/* ===================== FREITEXT-AUFGABEN (selbst kontrollieren) ===================== */
+const FREE = {
+  def: {title:'Definition', text:'Definiere den Begriff <b>mechanische Schwingung</b> in eigenen Worten.', model:'Eine mechanische Schwingung ist eine <b>zeitlich periodische Hin- und Herbewegung</b> eines Körpers um seine <b>stabile Gleichgewichtslage</b> (Ruhelage). Beispiele: Federpendel, Fadenpendel, Schaukel.', points:['Zeitlich periodisch (regelmäßig wiederholt)','Hin- und Herbewegung','um eine stabile Gleichgewichtslage / Ruhelage']},
+  entst: {title:'Entstehung', text:'Erkläre, <b>warum</b> ein ausgelenktes Federpendel schwingt und nicht einfach zur Ruhelage zurückgeht und dort stehen bleibt.', model:'Wird der Körper ausgelenkt, wirkt eine <b>rücktreibende Kraft</b> zur Ruhelage hin und beschleunigt ihn. In der Ruhelage ist diese Kraft null, aber der Körper hat Geschwindigkeit aufgebaut. Wegen seiner <b>Trägheit</b> schießt er über die Ruhelage hinaus. Auf der anderen Seite wirkt die rücktreibende Kraft wieder zur Ruhelage hin – der Vorgang wiederholt sich. <b>Schwingung = rücktreibende Kraft + Trägheit.</b>', points:['Rücktreibende Kraft zeigt zur Ruhelage','In der Ruhelage ist die Kraft null, die Geschwindigkeit aber maximal','Trägheit: Körper schießt über die Ruhelage hinaus','Auf der anderen Seite wieder rücktreibende Kraft → Wiederholung']},
+  kenn: {title:'Kenngrößen', text:'Nenne die wichtigsten Kenngrößen einer Schwingung mit Formelzeichen, Bedeutung und Einheit.', model:'<ul><li>Auslenkung $y$ bzw. $x$ (m): momentaner Abstand zur Ruhelage</li><li>Amplitude $A$ (m): maximale Auslenkung</li><li>Periodendauer $T$ (s): Zeit für eine vollständige Schwingung</li><li>Frequenz $f$ (Hz = 1/s): Schwingungen pro Sekunde, $f = 1/T$</li><li>Kreisfrequenz $omega$ (rad/s): $omega = 2*pi*f = 2*pi/T$</li><li>Phasenverschiebung $phi$ (rad)</li></ul>', points:['Auslenkung und Amplitude A (in m)','Periodendauer T (in s)','Frequenz f (Hz) mit f = 1/T','Kreisfrequenz ω = 2πf']},
+  energie: {title:'Energie', text:'Beschreibe, wie sich die Energie beim ungedämpften Federpendel während einer Schwingung verändert.', model:'Energie wandelt sich ständig zwischen <b>potenzieller Energie</b> (Spannenergie $1/2*D*x^2$) und <b>kinetischer Energie</b> ($1/2*m*v^2$) um. An den <b>Umkehrpunkten</b> ist $E_pot$ maximal und $E_kin = 0$; in der <b>Ruhelage</b> ist $E_kin$ maximal und $E_pot = 0$. Ungedämpft bleibt die Summe konstant – deshalb bleibt die Amplitude gleich.', points:['Umkehrpunkte: E_pot maximal, E_kin = 0','Ruhelage: E_kin maximal, E_pot = 0','Gesamtenergie konstant (ungedämpft) → Amplitude konstant']},
+  masse: {title:'Masse beim Fadenpendel', text:'Warum hängt die Periodendauer eines Fadenpendels <b>nicht</b> von der Masse ab, die des Federpendels aber schon?', model:'<b>Fadenpendel:</b> Die rücktreibende Kraft kommt von der Schwerkraft und wächst mit der Masse – aber die Trägheit wächst ebenfalls. Beide Effekte heben sich auf, $m$ kürzt sich heraus: $T = 2*pi*sqrt(l/g)$.<br><b>Federpendel:</b> Die Rückstellkraft kommt von der Feder und hängt nicht von $m$ ab. Mehr Masse bedeutet nur mehr Trägheit → größeres $T$: $T = 2*pi*sqrt(m/D)$.', points:['Fadenpendel: Rückstellkraft (Schwerkraft) wächst mit m, Trägheit auch → heben sich auf','Federpendel: Rückstellkraft kommt von der Feder, unabhängig von m','Mehr Masse beim Federpendel = mehr Trägheit = größeres T']},
+  linear: {title:'Linearisieren', text:'Wie kannst du im Experiment überprüfen, dass für das Fadenpendel $T ~ sqrt(l)$ gilt? Beschreibe zwei Möglichkeiten.', model:'1) <b>Quotienten-Test:</b> Für mehrere Längen $T$ messen und $T^2/l$ ausrechnen. Ist der Quotient (annähernd) konstant, gilt $T^2 ~ l$, also $T ~ sqrt(l)$.<br>2) <b>Linearisieren:</b> $T^2$ gegen $l$ auftragen. Ergibt sich eine <b>Ursprungsgerade</b>, ist der Zusammenhang bestätigt.<br>Genauer messen: 10 Schwingungen stoppen und durch 10 teilen.', points:['Mehrere Längen l mit zugehörigem T messen','Quotient T²/l bilden – konstant?','Oder T² gegen l auftragen → Ursprungsgerade']},
+  typen: {title:'Schwingungstypen', text:'Erkläre den Unterschied zwischen <b>erzwungener</b> und <b>selbsterregter</b> Schwingung. Nenne je ein Beispiel.', model:'Bei beiden wird dem System Energie zugeführt. <b>Erzwungen:</b> Ein äußerer Erreger gibt den Takt vor, das System schwingt (nach dem Einschwingen) mit der Erregerfrequenz – z. B. Lautsprechermembran, angeschubste Schaukel. <b>Selbsterregt:</b> Das System steuert die Energiezufuhr selbst (Rückkopplung) und schwingt etwa mit seiner Eigenfrequenz – z. B. Pendeluhr, Geigensaite.', points:['Erzwungen: Takt von außen (Erregerfrequenz)','Selbsterregt: System steuert die Energiezufuhr selbst (Rückkopplung)','Je ein Beispiel (z. B. Lautsprecher / Pendeluhr)']},
+  resonanz: {title:'Resonanz', text:'Was versteht man unter Resonanz? Wovon hängt es ab, wie hoch die Amplitude wird?', model:'Bei einer erzwungenen Schwingung tritt <b>Resonanz</b> auf, wenn die Erregerfrequenz ungefähr der <b>Eigenfrequenz</b> des Systems entspricht ($f_E ≈ f_0$). Dann nimmt das System besonders viel Energie auf und die Amplitude wird <b>sehr groß</b>. Je <b>schwächer die Dämpfung</b>, desto höher und schärfer ist die Resonanzspitze.', points:['f_E ≈ f_0 (Erregerfrequenz = Eigenfrequenz)','Amplitude wird sehr groß','Schwache Dämpfung → höhere, schärfere Resonanz']},
+  foucault: {title:'Foucaultsches Pendel', text:'Was zeigt das Foucaultsche Pendel und warum?', model:'Es zeigt die <b>Drehung der Erde</b>. Das Pendel behält wegen seiner Trägheit seine Schwingungsebene im Raum bei, während sich die Erde darunter wegdreht – für einen Beobachter sieht es so aus, als drehe sich die Schwingungsebene. Die Drehzeit ist $T = 24 {h}/sin(phi)$ (Pol: 24 h, Berlin ca. 30 h, Äquator: keine Drehung).', points:['Zeigt die Erdrotation','Pendel behält seine Schwingungsebene (Trägheit)','Drehzeit hängt von der geografischen Breite ab: 24 h / sin(φ)']},
+  messen: {title:'Messen', text:'Wie misst man die Periodendauer im Schulversuch möglichst genau und wie kann man Schwingungen in der Technik messen?', model:'<b>Schulversuch:</b> Zeit für 10 Schwingungen stoppen und durch 10 teilen – der Reaktionsfehler fällt kaum ins Gewicht.<br><b>Technik:</b> Beschleunigungssensoren (nutzen die Trägheit einer inneren Masse, auch im Smartphone), Wirbelstrom- bzw. Laser-Wegsensoren (Auslenkungs-Zeit-Kurve), Frequenzanalyse (FFT) zerlegt Signale in Sinus-Frequenzen.', points:['10 Schwingungen stoppen, durch 10 teilen','Sensoren (Beschleunigung / Weg)','FFT zerlegt Signal in Frequenzen']}
+};
+function genFree(id){
+  const f = FREE[id];
+  return {cat:'frei', catLabel:CATS.frei, key:'free:' + id, title:f.title, text:f.text, steps:[{type:'free', prompt:'Schreibe deine Antwort auf, vergleiche dann mit der Musterlösung und hake ehrlich ab.', model:f.model, points:f.points}]};
+}
+
+/* ===================== REGISTER ===================== */
+const REG = {
+  factor: a => genFactor(a || undefined), prop: () => genProp(), quot: () => genQuot(), units: () => genUnits(),
+  formula: a => genFormula(a === '' || a == null ? undefined : +a), graph: () => genGraph(),
+  fadenT: genFadenT, fadenL: genFadenL, fadenG: genFadenG, fadenN: genFadenN, fadenMond: genFadenMond, fadenAny: genFadenAny,
+  federT: genFederT, federD: genFederD, federM: genFederM, federHooke: genFederHooke, federAny: genFederAny,
+  pos: genPos, energy: genEnergy,
+  diag: a => ({feder: diagFeder, faden: diagFaden, ty: diagTy, tydamp: diagTyDamp, typen: diagTypen})[a](),
+  free: a => genFree(a), mc: (a, seen) => genMC(a, seen)
+};
+function makeTask(key, seen){
+  const i = key.indexOf(':'), name = i < 0 ? key : key.slice(0, i), arg = i < 0 ? '' : key.slice(i + 1);
+  const t = REG[name](arg, seen);
+  t.key = t.key || key;
+  t.genKey = key;
+  return t;
+}
+const CAT_POOLS = {
+  faktor: ['factor:faden', 'factor:feder', 'factor:'], rechnen_faden: ['fadenAny'], rechnen_feder: ['federAny'], formel: ['formula'],
+  diagramm: ['graph', 'graph', 'diag:ty', 'diag:tydamp', 'diag:typen'], kraefte: ['diag:feder', 'diag:faden', 'pos', 'pos', 'energy'],
+  konzept: ['mc:'], einheiten: ['units'], prop: ['prop', 'prop', 'quot']
+};
+/* ===================== LEKTIONEN ===================== */
+const LESSONS = [
+  {id:'l1', icon:'🌊', title:'1 · Was ist eine Schwingung?', sub:'Definition, Entstehung, Energie',
+   theory:`<div class="box"><b>Mechanische Schwingung:</b> zeitlich <b>periodische Hin- und Herbewegung</b> eines Körpers um seine <b>stabile Gleichgewichtslage</b> (Ruhelage). Beispiele: Federpendel, Fadenpendel, Schaukel.</div>
+<h3>Wie entsteht sie?</h3>
+<ul><li><b>Rücktreibende Kraft:</b> Wird das System ausgelenkt, wirkt eine Kraft zur Ruhelage hin.</li>
+<li><b>Trägheit:</b> In der Ruhelage ist die Kraft null, der Körper hat aber Geschwindigkeit → er schießt über die Ruhelage hinaus.</li></ul>
+<div class="box ok"><b>Schwingung = rücktreibende Kraft + Trägheit.</b></div>
+<h3>Energie</h3>
+<table><tr><th>Ort</th><th>$E_kin = 1/2*m*v^2$</th><th>$E_pot = 1/2*D*x^2$</th></tr><tr><td>Ruhelage ($x = 0$)</td><td>maximal</td><td>null</td></tr><tr><td>Umkehrpunkt ($x = A$)</td><td>null</td><td>maximal</td></tr></table>
+<p>Ungedämpft: $E_kin + E_pot = konstant$ → Amplitude bleibt gleich (nur ein Modell).</p>
+<p><b>Harmonisch:</b> Die rücktreibende Kraft ist proportional zur Auslenkung (Hooke): $F_r = -D*x$.</p>`,
+   items:['free:def','free:entst','mc:basis','mc:basis','free:energie','mc:basis'], more:['mc:basis','mc:kenn']},
+
+  {id:'l2', icon:'📏', title:'2 · Kenngrößen & Grundformeln', sub:'A, T, f, ω – Einheiten und Umrechnen',
+   theory:`<table><tr><th>Größe</th><th>Symbol</th><th>Bedeutung</th><th>Einheit</th></tr>
+<tr><td>Auslenkung</td><td>$x(t)$ bzw. $y(t)$</td><td>Abstand zur Ruhelage</td><td>m</td></tr>
+<tr><td>Amplitude</td><td>$A$</td><td>maximale Auslenkung</td><td>m</td></tr>
+<tr><td>Periodendauer</td><td>$T$</td><td>Zeit für eine volle Schwingung</td><td>s</td></tr>
+<tr><td>Frequenz</td><td>$f$</td><td>Schwingungen pro Sekunde</td><td>Hz = 1/s</td></tr>
+<tr><td>Kreisfrequenz</td><td>$omega$</td><td>Winkelgeschwindigkeit der Schwingung</td><td>rad/s</td></tr>
+<tr><td>Phase</td><td>$phi$</td><td>Verschiebung auf der Zeitachse</td><td>rad</td></tr></table>
+<div class="fbox">$f = 1/T$ <span>$T = 1/f$</span> <span>$omega = 2*pi*f = 2*pi/T$</span> <span>$x(t) = A*cos(omega*t + phi)$</span></div>
+<p>$T$ und $f$ sind <b>antiproportional</b>: doppelte Periodendauer → halbe Frequenz.</p>
+<div class="box">Beispiel: Pendel mit $A = 5 {cm}$ braucht $T = 2 {s}$ → $f = 0,5 {Hz}$, $omega = 2*pi*0,5 ≈ 3,14 {rad/s}$.</div>`,
+   items:['formula:2','formula:3','formula:4','formula:5','formula:7','units','units','units','free:kenn','mc:kenn'], more:['units','formula:','mc:kenn']},
+
+  {id:'l3', icon:'📈', title:'3 · Das t-y-Diagramm', sub:'A, T und f ablesen, gedämpft erkennen',
+   theory:`<h3>Ablese-Ablauf</h3>
+<ol><li>Höchsten Punkt suchen (erstes Maximum).</li><li><b>A</b> = Abstand dieses Punkts zur Nulllinie (nicht Max → Min!).</li><li>Benachbartes zweites Maximum suchen.</li><li><b>T</b> = zeitlicher Abstand der beiden Maxima.</li><li><b>f = 1/T</b> berechnen.</li><li>Amplitude über mehrere Perioden prüfen: konstant → ungedämpft; abnehmend → gedämpft.</li></ol>
+<div class="box">Nulldurchgänge: Körper in der Ruhelage mit <b>maximaler Geschwindigkeit</b>. Gleichsinnige Nulldurchgänge: $T$ auseinander, direkt aufeinanderfolgende nur $T/2$.</div>
+<div class="box warn">Gedämpft: Maxima liegen auf einer abklingenden <b>Hüllkurve</b>, $T$ bleibt (fast) gleich.</div>`,
+   items:['diag:ty','graph','graph','diag:tydamp','graph','mc:diagr'], more:['graph','mc:diagr']},
+
+  {id:'l4', icon:'🧮', title:'4 · Proportionalitäten', sub:'Faktor rein – Faktor raus, Quotienten-Test',
+   theory:`<table><tr><th>Zusammenhang</th><th>x × 2</th><th>x × 4</th><th>x × 9</th></tr>
+<tr><td>$y ~ x$</td><td>y × 2</td><td>y × 4</td><td>y × 9</td></tr>
+<tr><td>$y ~ x^2$</td><td>y × 4</td><td>y × 16</td><td>y × 81</td></tr>
+<tr><td>$y ~ sqrt(x)$</td><td>y × 1,41</td><td>y × 2</td><td>y × 3</td></tr>
+<tr><td>$y ~ 1/x$</td><td>y × 0,5</td><td>y × 0,25</td><td>y × 0,11</td></tr>
+<tr><td>$y ~ 1/sqrt(x)$</td><td>y × 0,71</td><td>y × 0,5</td><td>y × 0,33</td></tr></table>
+<div class="box ok"><b>Merke:</b> Bei einem Wurzel-Zusammenhang muss man die Ursache <b>vervierfachen</b>, um die Wirkung zu <b>verdoppeln</b>.</div>
+<h3>Im Experiment nachweisen</h3>
+<ul><li><b>Quotienten-Test:</b> $y ~ sqrt(x)$ → $y^2/x$ konstant; $y ~ x$ → $y/x$ konstant; $y ~ 1/x$ → $y·x$ konstant.</li><li><b>Linearisieren:</b> z. B. $T^2$ gegen $m$ auftragen → Ursprungsgerade.</li></ul>`,
+   items:['prop','prop','prop','prop','quot','mc:prop','free:linear'], more:['prop','quot']},
+
+  {id:'l5', icon:'⏱️', title:'5 · Fadenpendel – Formel & Faktoren', sub:'T hängt von l und g ab – Aufgaben im Kopf',
+   theory:`<div class="fbox">$T = 2*pi*sqrt(l/g)$ <span>$g ≈ 9,81 {m/s^2}$ (Erde), $1,62 {m/s^2}$ (Mond)</span></div>
+<table><tr><th>Größe ändert sich</th><th>Auswirkung auf T</th><th>Proportion</th></tr>
+<tr><td>Fadenlänge $l$ größer</td><td>T größer</td><td>$T ~ sqrt(l)$</td></tr>
+<tr><td>Fallbeschleunigung $g$ größer</td><td>T kleiner</td><td>$T ~ 1/sqrt(g)$</td></tr>
+<tr><td>Masse $m$ größer</td><td>keine</td><td>–</td></tr>
+<tr><td>Amplitude (kleine Winkel, bis ca. 10°)</td><td>keine</td><td>–</td></tr></table>
+<div class="box">Länge × 4 → $T$ × 2. Länge × 9 → $T$ × 3. Länge × 16 → $T$ × 4 …<br>Warum nicht $m$? Mehr Masse = stärkere Rückstellkraft, aber auch mehr Trägheit – beides gleicht sich aus.</div>`,
+   items:['formula:0','mc:faden','factor:faden','factor:faden','factor:faden','factor:faden','factor:faden','free:masse'], more:['factor:faden','mc:faden']},
+
+  {id:'l6', icon:'🔢', title:'6 · Fadenpendel – Rechnen', sub:'Werte gegeben, Schritt für Schritt lösen',
+   theory:`<h3>Rechenschema</h3>
+<ol><li><b>Formel</b> hinschreiben (und ggf. umstellen).</li><li><b>Einsetzen</b> – mit Einheiten (m, s, m/s²).</li><li>In <b>Teilschritten</b> rechnen: Bruch → Wurzel → mal $2*pi$.</li><li>Ergebnis mit <b>Einheit</b> und sinnvoller Rundung angeben.</li></ol>
+<div class="fbox">$T = 2*pi*sqrt(l/g)$ <span>$l = g*T^2/(4*pi^2)$</span> <span>$g = 4*pi^2*l/T^2$</span></div>
+<div class="box">Sekundenpendel: $T = 2 {s}$ → $l ≈ 1 {m}$. Auf dem Mond ist $T$ etwa $sqrt(6) ≈ 2,45$-mal so groß.</div>
+<div class="box warn">Die Antwortfelder verstehen auch Rechnungen, z. B. <code>2*pi*sqrt(0,5/9,81)</code>. Der Taschenrechner rechts hat „↳ Ergebnis ins Antwortfeld“.</div>`,
+   items:['fadenT','fadenL','fadenG','fadenN','fadenMond','fadenT'], more:['fadenAny']},
+
+  {id:'l7', icon:'🧷', title:'7 · Federpendel – Formel & Faktoren', sub:'T hängt von m und D ab – Aufgaben im Kopf',
+   theory:`<div class="fbox">$T = 2*pi*sqrt(m/D)$ <span>$F_r = -D*x$</span> <span>$omega = sqrt(D/m)$</span></div>
+<table><tr><th>Größe ändert sich</th><th>Auswirkung auf T</th><th>Proportion</th></tr>
+<tr><td>Masse $m$ größer</td><td>T größer</td><td>$T ~ sqrt(m)$</td></tr>
+<tr><td>Federkonstante $D$ größer</td><td>T kleiner</td><td>$T ~ 1/sqrt(D)$</td></tr>
+<tr><td>Amplitude $A$ größer</td><td>keine</td><td>–</td></tr>
+<tr><td>Fallbeschleunigung $g$ anders</td><td>keine</td><td>–</td></tr></table>
+<div class="box">Masse × 4 → $T$ × 2. Feder 4-mal härter → $T$ halbiert. Auf dem Mond schwingt ein Federpendel genauso schnell wie auf der Erde (g verschiebt nur die Ruhelage).</div>`,
+   items:['formula:1','mc:feder','factor:feder','factor:feder','factor:feder','factor:feder','factor:feder','factor:'], more:['factor:feder','mc:feder']},
+
+  {id:'l8', icon:'🧮', title:'8 · Federpendel – Rechnen', sub:'Werte gegeben, Schritt für Schritt lösen',
+   theory:`<div class="fbox">$T = 2*pi*sqrt(m/D)$ <span>$D = 4*pi^2*m/T^2$</span> <span>$m = D*T^2/(4*pi^2)$</span> <span>$D = F/x$</span></div>
+<ul><li>Einheit: $kg/(N/m) = s^2$, denn $1 {N} = 1 {kg*m/s^2}$.</li><li>Hooke: $F = D*x$ – <b>x in Metern</b> einsetzen (cm → m umrechnen!).</li></ul>
+<div class="box">Beispiel: $m = 0,5 {kg}$, $D = 20 {N/m}$ → $T = 2*pi*sqrt(0,025) ≈ 0,99 {s}$, $f ≈ 1,0 {Hz}$.</div>`,
+   items:['federT','federD','federM','federHooke','federT'], more:['federAny']},
+
+  {id:'l9', icon:'↕️', title:'9 · Kräfte & Energie', sub:'Welche Kraft wirkt wann? – Diagramme beschriften',
+   theory:`<table><tr><th>Kraft</th><th>Formel</th><th>Wirkung</th></tr>
+<tr><td>Rücktreibende Kraft</td><td>$F_r = -D*x$</td><td>zieht zur Ruhelage, ~ Auslenkung</td></tr>
+<tr><td>Trägheitskraft</td><td>$F = m*a$</td><td>sorgt für das Überschwingen</td></tr>
+<tr><td>Dämpfungskraft</td><td>$F_d = -b*v$</td><td>entzieht Energie, ~ Geschwindigkeit</td></tr>
+<tr><td>Erregerkraft</td><td>$F_e(t) = F_0*cos(omega_e*t)$</td><td>führt bei erzwungener Schwingung periodisch Energie zu</td></tr></table>
+<table><tr><th></th><th>Ruhelage</th><th>Umkehrpunkt</th></tr><tr><td>Auslenkung</td><td>0</td><td>maximal ($A$)</td></tr><tr><td>Geschwindigkeit</td><td>maximal</td><td>0</td></tr><tr><td>rücktreibende Kraft / Beschleunigung</td><td>0</td><td>maximal</td></tr><tr><td>$E_kin$</td><td>maximal</td><td>0</td></tr><tr><td>$E_pot$</td><td>0</td><td>maximal</td></tr></table>
+<div class="box">Federpendel in der Ruhelage: $F_G = F_Feder$ (Gesamtkraft 0). Darüber/darunter bleibt die Differenz als rücktreibende Kraft – sie zeigt immer zur Ruhelage hin.</div>`,
+   items:['diag:feder','diag:faden','pos','pos','pos','pos','energy','mc:kraft'], more:['pos','energy','mc:kraft']},
+
+  {id:'l10', icon:'🎛️', title:'10 · Schwingungstypen & Beispiele', sub:'gedämpft, erzwungen, selbsterregt, Resonanz',
+   theory:`<table><tr><th>Typ</th><th>Energie</th><th>Amplitude</th><th>Frequenz</th><th>Beispiel</th></tr>
+<tr><td>Ungedämpft frei</td><td>bleibt erhalten</td><td>konstant</td><td>Eigenfrequenz $f_0$</td><td>ideales Federpendel (Modell)</td></tr>
+<tr><td>Gedämpft frei</td><td>geht durch Reibung verloren</td><td>nimmt ab</td><td>≈ $f_0$</td><td>echtes Pendel, Schaukel ohne Anschubsen</td></tr>
+<tr><td>Erzwungen</td><td>Erreger liefert Energie, Takt von außen</td><td>konstant</td><td>Erregerfrequenz $f_E$</td><td>Lautsprechermembran, angeschubste Schaukel</td></tr>
+<tr><td>Selbsterregt</td><td>System steuert Zufuhr selbst</td><td>konstant</td><td>≈ $f_0$</td><td>Pendeluhr, Geigensaite</td></tr></table>
+<ul><li><b>Resonanz:</b> $f_E ≈ f_0$ → Amplitude sehr groß; je schwächer die Dämpfung, desto höher und schärfer.</li><li><b>Dämpfung:</b> Luft/Flüssigkeit → exponentiell (derselbe Faktor pro Periode); feste Reibung → linear (derselbe Betrag).</li><li>Starke Dämpfung: Schwingfall → aperiodischer Grenzfall (schnellste Rückkehr, z. B. Stoßdämpfer) → Kriechfall.</li></ul>
+<div class="box"><b>Entscheidungshilfe:</b> Wird Energie zugeführt? Nein → Amplitude gleich: ungedämpft; Amplitude fällt: gedämpft. Ja → Wer gibt den Takt? Äußerer Erreger: erzwungen. Das System selbst: selbsterregt.</div>`,
+   items:['diag:typen','mc:typ','mc:typ','mc:typ','mc:typ','free:typen','free:resonanz'], more:['mc:typ']},
+
+  {id:'l11', icon:'🔬', title:'11 · Messen & Foucault', sub:'Schwingungen messen, Foucaultsches Pendel',
+   theory:`<ul><li><b>Schulversuch:</b> Zeit für <b>10 Schwingungen</b> stoppen, durch 10 teilen.</li><li><b>Beschleunigungssensoren</b> (Trägheit einer inneren Masse, auch im Smartphone), <b>Wirbelstrom-/Laser-Wegsensoren</b> (liefern direkt die t-y-Kurve), <b>FFT</b> (zerlegt in Sinus-Frequenzen).</li></ul>
+<h3>Foucaultsches Pendel</h3>
+<p>Sehr langes Pendel, das die <b>Erddrehung</b> zeigt: Es behält wegen der Trägheit seine Schwingungsebene, die Erde dreht sich darunter weg. Drehzeit $T = 24 {h}/sin(phi)$: Pol 24 h, Berlin (52,5°) ca. 30 h, Äquator keine Drehung. Nordhalbkugel: im Uhrzeigersinn. 1851 in Paris (Foucault).</p>`,
+   items:['mc:mess','mc:mess','mc:mess','free:messen','free:foucault'], more:['mc:mess']}
+];
+const SPECIAL = [
+  {id:'zufall', icon:'🎲', title:'Zufalls-Aufgaben', sub:''},
+  {id:'test', icon:'📝', title:'Testsimulation', sub:''}
+];
+const CAT_LESSON = {faktor:'l5', rechnen_faden:'l6', rechnen_feder:'l8', formel:'l2', diagramm:'l3', kraefte:'l9', konzept:'l10', einheiten:'l2', prop:'l4', frei:'l1'};
+
+/* ===================== FORTSCHRITT ===================== */
+let prog = S.get('prog', {}), catProg = S.get('catprog', {});
+function rec(id, cat, good, total){
+  (prog[id] = prog[id] || {n:0, c:0}); prog[id].n += total; prog[id].c += good;
+  (catProg[cat] = catProg[cat] || {n:0, c:0}); catProg[cat].n += total; catProg[cat].c += good;
+  S.set('prog', prog); S.set('catprog', catProg); updNav(); updGlobal();
+}
+function totals(){ let n = 0, c = 0; Object.values(prog).forEach(p => { n += p.n; c += p.c; }); return {n, c}; }
+function updGlobal(){
+  const t = totals();
+  document.getElementById('g-txt').textContent = t.n ? 'Trefferquote ' + Math.round(100 * t.c / t.n) + ' % (' + t.c + '/' + t.n + ' Teilaufgaben)' : 'Noch nichts gerechnet – los geht’s!';
+  document.getElementById('g-bar').style.width = (t.n ? 100 * t.c / t.n : 0) + '%';
+}
+document.getElementById('g-reset').addEventListener('click', () => {
+  if(!confirm('Gesamten Fortschritt zurücksetzen? (Notizen bleiben erhalten)')) return;
+  prog = {}; catProg = {}; S.set('prog', prog); S.set('catprog', catProg); updNav(); updGlobal(); route();
+});
+
+/* ===================== NAVIGATION ===================== */
+const nav = document.getElementById('nav'), main = document.getElementById('main');
+function buildNav(){
+  nav.innerHTML = '';
+  const add = (id, icon, title) => {
+    const a = h('a', null, '<span class="ic">' + icon + '</span><span class="tx">' + title + '</span><span class="st"></span>');
+    a.dataset.id = id; a.href = '#' + id; nav.append(a);
+  };
+  add('start', '🏁', 'Start & Formelblatt');
+  LESSONS.forEach(L => add(L.id, L.icon, L.title));
+  nav.append(h('div', 'sep'));
+  SPECIAL.forEach(L => add(L.id, L.icon, L.title));
+  updNav();
+}
+function updNav(){
+  nav.querySelectorAll('a').forEach(a => {
+    const p = prog[a.dataset.id]; a.querySelector('.st').textContent = p && p.n ? Math.round(100 * p.c / p.n) + ' %' : '';
+    a.classList.toggle('on', a.dataset.id === currentId);
+  });
+}
+let currentId = 'start';
+
+/* ===================== NOTIZEN ===================== */
+const notesEl = document.getElementById('notes'), notesLabel = document.getElementById('n-label');
+let notesKey = 'start', notesTimer = null;
+function loadNotes(id, name){
+  notesKey = id; notesEl.value = S.get('note_' + id, '');
+  notesLabel.textContent = '📝 Notizen – ' + name;
+}
+notesEl.addEventListener('input', () => { clearTimeout(notesTimer); notesTimer = setTimeout(() => S.set('note_' + notesKey, notesEl.value), 300); });
+document.getElementById('n-clear').addEventListener('click', () => { if(notesEl.value && !confirm('Notizen dieser Seite löschen?')) return; notesEl.value = ''; S.set('note_' + notesKey, ''); });
+document.getElementById('fab').addEventListener('click', () => document.getElementById('side').scrollIntoView({behavior:'smooth'}));
+
+/* ===================== SEITEN ===================== */
+function placeTask(key, host, lessonId, seen){
+  const t = makeTask(key, seen);
+  const regenOk = !/^(free:|diag:(feder|faden|ty|tydamp))/.test(key);
+  const node = renderTask(t, {
+    regen: regenOk ? () => placeTask(key, host, lessonId, seen) : null,
+    onDone: r => rec(lessonId, t.cat, r.good, r.total)
+  });
+  host.replaceChildren(node);
+}
+function renderLesson(L){
+  main.innerHTML = '';
+  main.append(h('div', 'card', '<h1 class="lt">' + L.icon + ' ' + L.title + '</h1><p class="sub" style="margin:0">' + L.sub + '</p>'));
+  const d = h('details', 'theory'); d.open = true;
+  d.innerHTML = '<summary>📖 Das musst du wissen (Kurzfassung)</summary><div class="tb">' + tx(L.theory) + '</div>';
+  main.append(d);
+  const seen = new Set();
+  L.items.forEach(k => { const host = h('div'); main.append(host); placeTask(k, host, L.id, seen); });
+  const more = h('div', 'more');
+  const b = h('button', 'btn pri', '➕ Noch eine Aufgabe dieser Lektion'); b.type = 'button';
+  b.onclick = () => { const host = h('div'); main.insertBefore(host, more); placeTask(pick(L.more), host, L.id, seen); host.scrollIntoView({behavior:'smooth', block:'start'}); };
+  const nx = LESSONS[LESSONS.indexOf(L) + 1];
+  more.append(b);
+  if(nx){ const n = h('a', 'btn', 'Weiter: ' + nx.title + ' →'); n.href = '#' + nx.id; n.style.textDecoration = 'none'; more.append(n); }
+  main.append(more);
+}
+
+function renderStart(){
+  main.innerHTML = '';
+  const c = h('div', 'card');
+  c.innerHTML = `<h1 class="lt">🏁 Willkommen – Physik-Test üben</h1>
+<p class="sub">Thema: <b>Mechanische Schwingungen – Fadenpendel &amp; Federpendel</b>. Der Stoff stammt aus eurem Nextcloud-Collective „Physik › 1 Mechanik › 1.1 Mechanische Schwingungen“.</p>
+<div class="grid2">
+<div class="box"><b>So funktioniert’s</b><ul style="margin:6px 0 0 18px"><li>Links wählst du eine <b>Lektion</b> (1–11).</li><li>Bei Fehlern erscheint die <b>Schritt-für-Schritt-Erklärung</b>.</li><li>💡 <b>Tipp</b> gibt Hinweise, 👁 <b>Lösung anzeigen</b> verrät alles.</li><li>Rechts: <b>Taschenrechner</b> und <b>Notizen</b> (werden gespeichert).</li></ul></div>
+<div class="box warn"><b>Antworten eingeben</b><ul style="margin:6px 0 0 18px"><li>Zahlen mit Komma oder Punkt. Rechnungen gehen auch: <code>2*pi*sqrt(0,5/9,81)</code>.</li><li>Formeln tippen, z. B. <code>a*sqrt(b/c)</code> – unter dem Feld siehst du sie schön gesetzt. <code>pi</code> / <code>π</code>, <code>sqrt</code> / <code>√</code>, <code>^</code> für Hoch.</li><li>Brüche gehen auch: <code>1/3</code>.</li></ul></div></div>
+<div class="more"><a class="btn pri" href="#l1" style="text-decoration:none">Mit Lektion 1 starten →</a><a class="btn" href="#zufall" style="text-decoration:none">🎲 Zufalls-Aufgaben</a><a class="btn" href="#test" style="text-decoration:none">📝 Testsimulation</a></div>`;
+  main.append(c);
+
+  const t = totals();
+  const cats = Object.entries(catProg).filter(([, p]) => p.n >= 3).sort((a, b) => a[1].c / a[1].n - b[1].c / b[1].n);
+  if(cats.length){
+    const w = h('div', 'card');
+    w.innerHTML = '<h2>📊 Deine Schwachstellen</h2><p class="sub">Nach Trefferquote sortiert – die schwächsten zuerst.</p><div class="stats">' +
+      cats.slice(0, 4).map(([k, p]) => '<div class="stat"><b>' + Math.round(100 * p.c / p.n) + ' %</b>' + CATS[k] + '<br><a class="lnk" href="#' + CAT_LESSON[k] + '">→ üben</a></div>').join('') + '</div>';
+    main.append(w);
+  }
+  const w2 = h('div', 'card');
+  w2.innerHTML = `<h2>✅ Das musst du für den Test können</h2>
+<ul>
+<li>Definition <b>mechanische Schwingung</b>; Entstehung: <b>rücktreibende Kraft + Trägheit</b> <a class="lnk" href="#l1">(L1)</a></li>
+<li>Kenngrößen $A$, $T$, $f$, $omega$ mit Einheiten; $f = 1/T$ <a class="lnk" href="#l2">(L2)</a></li>
+<li>t-y-Diagramm: A, T, f ablesen; gedämpft erkennen <a class="lnk" href="#l3">(L3)</a></li>
+<li>Proportionalitäten ($y ~ sqrt(x)$, $y ~ 1/x$ …), Quotienten-Test, Linearisieren <a class="lnk" href="#l4">(L4)</a></li>
+<li><b>Fadenpendel</b> $T = 2*pi*sqrt(l/g)$: Faktoren im Kopf, Rechnen, Umstellen <a class="lnk" href="#l5">(L5)</a> <a class="lnk" href="#l6">(L6)</a></li>
+<li><b>Federpendel</b> $T = 2*pi*sqrt(m/D)$: Faktoren im Kopf, Rechnen, Hooke <a class="lnk" href="#l7">(L7)</a> <a class="lnk" href="#l8">(L8)</a></li>
+<li>Welche <b>Kräfte</b> wann wirken (Diagramme!), Energie in Ruhelage/Umkehrpunkt <a class="lnk" href="#l9">(L9)</a></li>
+<li>Schwingungstypen: gedämpft, erzwungen, selbsterregt, Resonanz <a class="lnk" href="#l10">(L10)</a></li>
+<li>Messen von Schwingungen, Foucaultsches Pendel <a class="lnk" href="#l11">(L11)</a></li></ul>
+<div class="box">Hinweis: In deiner Nextcloud liegt unter <i>Schule › Physik › 2026-2027</i> aktuell nur „Elektro Strom“ (Ohmsches Gesetz, Schaltkreise). Das ist <b>nicht</b> Teil dieser Seite – der Schwingungsstoff steht im Collective „Physik“.</div>`;
+  main.append(tx2(w2));
+
+  const f = h('details', 'theory'); f.open = true;
+  f.innerHTML = '<summary>🧾 Formelblatt</summary><div class="tb">' + tx(`
+<div class="fbox">$f = 1/T$ <span>$T = 1/f$</span> <span>$omega = 2*pi*f = 2*pi/T$</span></div>
+<div class="fbox"><b>Fadenpendel:</b> $T = 2*pi*sqrt(l/g)$ <span>$l = g*T^2/(4*pi^2)$</span> <span>$g = 4*pi^2*l/T^2$</span></div>
+<div class="fbox"><b>Federpendel:</b> $T = 2*pi*sqrt(m/D)$ <span>$D = 4*pi^2*m/T^2$</span> <span>$m = D*T^2/(4*pi^2)$</span></div>
+<div class="fbox"><b>Kraft &amp; Bewegung:</b> $F_r = -D*x$ <span>$m*a = -D*x$</span> <span>$x(t) = A*cos(omega*t + phi)$</span> <span>$F_d = -b*v$</span></div>
+<div class="fbox"><b>Energie:</b> $E_kin = 1/2*m*v^2$ <span>$E_pot = 1/2*D*x^2$</span> <span>$E_kin + E_pot = konstant$</span></div>
+<div class="fbox"><b>Foucault:</b> $T = 24 {h}/sin(phi)$ &nbsp; <b>Werte:</b> $g = 9,81 {m/s^2}$ (Erde), $1,62 {m/s^2}$ (Mond)</div>`) + '</div>';
+  main.append(f);
+}
+function tx2(node){ node.innerHTML = tx(node.innerHTML); return node; }
+
+/* ---------- Zufalls-Generator ---------- */
+const CAT_ORDER = ['faktor', 'rechnen_faden', 'rechnen_feder', 'formel', 'diagramm', 'kraefte', 'konzept', 'einheiten', 'prop'];
+function renderRandom(){
+  main.innerHTML = '';
+  const sel = new Set(S.get('rsel', CAT_ORDER));
+  let count = 0, good = 0, total = 0;
+  const c = h('div', 'card');
+  c.innerHTML = '<h1 class="lt">🎲 Zufalls-Aufgaben</h1><p class="sub">Unendlich viele neue Aufgaben mit neuen Zahlen. Wähle die Themen, die du üben willst.</p>';
+  const chips = h('div', 'chips');
+  CAT_ORDER.forEach(k => {
+    const b = h('button', sel.has(k) ? 'on' : '', CATS[k]); b.type = 'button';
+    b.onclick = () => { if(sel.has(k)) sel.delete(k); else sel.add(k); b.classList.toggle('on'); S.set('rsel', [...sel]); };
+    chips.append(b);
+  });
+  c.append(chips);
+  const bar = h('div', 'more'); bar.style.margin = '0';
+  const go = h('button', 'btn pri', '🎲 Neue Zufallsaufgabe'); go.type = 'button';
+  const sc = h('span', 'mut', 'Bisher: 0 Aufgaben');
+  bar.append(go, sc); c.append(bar); main.append(c);
+  const host = h('div'); main.append(host);
+  function next(){
+    const cats = [...sel]; if(!cats.length){ host.innerHTML = '<div class="card">Wähle mindestens ein Thema aus.</div>'; return; }
+    const key = pick(pick(cats.map(k => CAT_POOLS[k])));
+    const t = makeTask(key);
+    const node = renderTask(t, {regen: next, onDone: r => {
+      count++; good += r.good; total += r.total; rec('zufall', t.cat, r.good, r.total);
+      sc.textContent = 'Bisher: ' + count + ' Aufgaben · ' + Math.round(100 * good / total) + ' % richtig im ersten Versuch';
+      const n = h('button', 'btn pri', 'Nächste Aufgabe ▶'); n.type = 'button'; n.onclick = next;
+      node.querySelector('.tfoot').append(n);
+    }});
+    host.replaceChildren(node);
+  }
+  go.onclick = next; next();
+}
+
+/* ---------- Testsimulation ---------- */
+const TEST_MIX = ['factor:faden', 'factor:feder', 'factor:', 'fadenAny', 'fadenAny', 'federAny', 'federAny', 'formula', 'formula', 'graph', 'mc:', 'mc:', 'mc:typ', 'pos', 'prop', 'units', 'diag:feder', 'diag:ty'];
+function renderTest(){
+  main.innerHTML = '';
+  const c = h('div', 'card');
+  c.innerHTML = `<h1 class="lt">📝 Testsimulation</h1><p class="sub">Wie im echten Test: keine Tipps, keine Lösung vorab. Jede Teilaufgabe wird einmal geprüft, danach siehst du die Erklärung. Am Ende gibt es die Auswertung.</p>`;
+  const n = h('select', 'sel'); [8, 12, 16].forEach(x => n.append(new Option(x + ' Aufgaben', x, false, x === 12)));
+  const start = h('button', 'btn pri', '▶ Test starten'); start.type = 'button'; start.style.marginLeft = '10px';
+  c.append(n, start); main.append(c);
+  const host = h('div'); main.append(host);
+  start.onclick = () => {
+    const keys = shuffle(TEST_MIX).slice(0, +n.value);
+    let i = 0, good = 0, total = 0, t0 = Date.now(); const byCat = {};
+    c.style.display = 'none';
+    const timer = h('div', 'card'); main.insertBefore(timer, host);
+    let clock = '0:00';
+    const tick = setInterval(() => { if(!document.body.contains(timer)){ clearInterval(tick); return; } const s = Math.floor((Date.now() - t0) / 1000); clock = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); const tm = timer.querySelector('.tm'); if(tm) tm.textContent = clock; }, 1000);
+    function show(){
+      timer.innerHTML = '<b>Aufgabe ' + (i + 1) + ' von ' + keys.length + '</b> &nbsp; ⏱ <span class="tm">' + clock + '</span>';
+      const t = makeTask(keys[i]);
+      const node = renderTask(t, {strict: true, onDone: r => {
+        good += r.good; total += r.total; (byCat[t.cat] = byCat[t.cat] || {c:0, n:0}); byCat[t.cat].c += r.good; byCat[t.cat].n += r.total;
+        rec('test', t.cat, r.good, r.total);
+        const b = h('button', 'btn pri', i + 1 < keys.length ? 'Weiter ▶' : 'Auswertung ▶'); b.type = 'button';
+        b.onclick = () => { i++; if(i < keys.length) show(); else finish(); };
+        node.querySelector('.tfoot').append(b);
+      }});
+      host.replaceChildren(node);
+    }
+    function finish(){
+      clearInterval(tick); timer.remove();
+      const p = Math.round(100 * good / total);
+      const w = Object.entries(byCat).sort((a, b) => a[1].c / a[1].n - b[1].c / b[1].n);
+      host.innerHTML = '<div class="card"><h2>' + (p >= 85 ? '🏆 ' : p >= 60 ? '👍 ' : '💪 ') + 'Auswertung: ' + p + ' %</h2><p>' + good + ' von ' + total + ' Teilaufgaben richtig.</p><div class="stats">' +
+        w.map(([k, v]) => '<div class="stat"><b>' + Math.round(100 * v.c / v.n) + ' %</b>' + CATS[k] + '<br><a class="lnk" href="#' + CAT_LESSON[k] + '">→ üben</a></div>').join('') +
+        '</div><button class="btn pri" id="again">Nochmal</button></div>';
+      document.getElementById('again').onclick = renderTest;
+    }
+    show();
+  };
+}
+
+/* ===================== ROUTER ===================== */
+function route(){
+  const id = (location.hash || '#start').slice(1);
+  currentId = id;
+  const L = LESSONS.find(x => x.id === id);
+  if(L){ renderLesson(L); loadNotes(id, L.title.replace(/^\d+ · /, '')); }
+  else if(id === 'zufall'){ renderRandom(); loadNotes(id, 'Zufalls-Aufgaben'); }
+  else if(id === 'test'){ renderTest(); loadNotes(id, 'Testsimulation'); }
+  else { currentId = 'start'; renderStart(); loadNotes('start', 'Allgemein'); }
+  updNav(); window.scrollTo({top: 0});
+}
+window.addEventListener('hashchange', route);
+buildNav(); updGlobal(); route();
+</script>
+</body>
+</html>
